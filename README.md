@@ -45,7 +45,6 @@ The technical difficulty of this application is the right amount to finish befor
 
 **Optional Nice-to-have Stories**
 
-* [fill in your required user stories here]
 * Explore Page
 * Favorite/follow portfolios
 * Post comments on portfolios
