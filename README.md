@@ -90,8 +90,7 @@ The technical difficulty of this application is the right amount to finish befor
 * Search -> Search Results -> Profile
 
 ## Wireframes
-[Add picture of your hand sketched wireframes in this section]
-<img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
+![Wireframe](wireframe.jpeg)
 
 ### [BONUS] Digital Wireframes & Mockups
 
