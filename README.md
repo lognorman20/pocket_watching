@@ -78,12 +78,16 @@ The technical difficulty of this application is the right amount to finish befor
 
 * Timeline (home screen)
 * My Profile (user portfolio view)
+* Search (to find specific users)
+* Search Results (to show the users matching a certain criteria)
+* General profile view
 
 **Flow Navigation** (Screen to Screen)
 
 * Forced Log-in -> Account creation if no log in is available
 * Timeline
-* My Profile4
+* My Profile
+* Search -> Search Results -> Profile
 
 ## Wireframes
 [Add picture of your hand sketched wireframes in this section]
