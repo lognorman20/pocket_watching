@@ -119,35 +119,46 @@ Model - Wallet
 #### Parse Database Queries
 * Profile View
    * (Read/GET) Query all wallets that the user is the owner of
- ```  
-ParseQuery<ParseObject> query = ParseQuery.getQuery("wallet");
-query.whereEqualTo("owner", "vdR18yWtV5");
-query.getInBackground(new GetCallback<ParseObject>() {
-  public void done(ParseObject object, ParseException e) {
-    if (object == null) {
-      Log.d("wallets", "The query request failed.");
-    } else {
-      Log.d("wallets", "Retrieved the object.");
-    }
-  }
-});
-```
+		```  
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("wallet");
+		query.whereEqualTo("owner", "vdR18yWtV5");
+		query.getInBackground(new GetCallback<ParseObject>() {
+		  public void done(ParseObject object, ParseException e) {
+		    if (object == null) {
+		      Log.d("wallets", "The query request failed.");
+		    } else {
+		      Log.d("wallets", "Retrieved the object.");
+		    }
+		  }
+		});
+		```
 * Sign up page
 	* (Read/GET) Check if the user's chosen username is already in the database
-```  
-ParseQuery<ParseObject> query = ParseQuery.getQuery("user");
-query.whereEqualTo("username", "tj");
-query.getInBackground(new GetCallback<ParseObject>() {
- public void done(ParseObject object, ParseException e) {
-   if (object == null) {
-     Log.d("users", "The query request failed.");
-   } else {
-     Log.d("users", "Retrieved the object.");
-   }
- }
-});
-```
-* (Create/POST) Add the user's username/password to the database
-	* Create new User object with the user's username & password input into the 	database
+		```  
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("user");
+		query.whereEqualTo("username", "tj");
+		query.getInBackground(new GetCallback<ParseObject>() {
+		 public void done(ParseObject object, ParseException e) {
+		   if (object == null) {
+		     Log.d("users", "The query request failed.");
+		   } else {
+		     Log.d("users", "Retrieved the object.");
+		   }
+		 }
+		});
+		```
+
+	* (Create/POST) Add the user's username/password to the database
+		* Create new User object with the user's username & password input into the database
 
 #### API calls
+| HTTP Verb | Endpoint                                                                                                                            | Description                                                        | API       |
+|:---------:|:-----------------------------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------:|:---------:|
+| `GET`     | /api?module=account&action=balancehistory&address=0xddbd2b932c763ba5b1b7ae3b362eac3e8d40121a&blockno=8000000&apikey=YourApiKeyToken | Get Historical Ether Balance for a single Address By BlockNo       | Etherscan |
+| `GET`     | /0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8/erc20?chain=eth'                                                                        | Gets token balances for a specific address                         | Moralis   |
+| `GET`     | /{address}                                                                                                                          | Gets native transactions in descending order based on block number | Moralis   |
+| `GET`     | /{address}/nft                                                                                                                      | Gets the native NFTs held by the given wallet                      | Moralis   |
+| `GET`     | /{address}/nft/transfers                                                                                                            | Gets the NFT transfers from a given wallet                         | Moralis   |
+|           |                                                                                                                                     |                                                                    |           |
+|           |                                                                                                                                     |                                                                    |           |
+                                                          |
