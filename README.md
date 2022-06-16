@@ -98,9 +98,27 @@ The technical difficulty of this application is the right amount to finish befor
 
 ## Schema 
 [This section will be completed in Unit 9]
+
 ### Models
-[Add table of models]
+
+Model - User
+| Property | Type   | Description                                |
+|----------|--------|--------------------------------------------|
+| username | string | A user's chosen username                   |
+| password | string | A user's chosen password for their account |
+
+Model - Wallet
+| Property      | Type            | Description                                                      |
+|---------------|-----------------|------------------------------------------------------------------|
+| owner         | Pointer to User | Pointer to the User object that is the owner of the given wallet |
+| walletAddress | String          | A string of the wallet address                                   |
+| symbol        | String          | The symbol of the crypto token that the address pertains to      |
+
 ### Networking
-- [Add list of network requests by screen ]
+* Profile View
+   * (Read/GET) Query all wallets that the user is the owner of
+   ```
+   posts.query('cheese')
+   ```
 - [Create basic snippets for each Parse network request]
 - [OPTIONAL: List endpoints if using existing API such as Yelp]
