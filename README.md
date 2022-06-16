@@ -1,3 +1,4 @@
+
 Original App Design Project - README Template
 ===
 
@@ -115,10 +116,38 @@ Model - Wallet
 | symbol        | String          | The symbol of the crypto token that the address pertains to      |
 
 ### Networking
+#### Parse Database Queries
 * Profile View
    * (Read/GET) Query all wallets that the user is the owner of
-   ```
-   posts.query('cheese')
-   ```
-- [Create basic snippets for each Parse network request]
-- [OPTIONAL: List endpoints if using existing API such as Yelp]
+ ```  
+ParseQuery<ParseObject> query = ParseQuery.getQuery("wallet");
+query.whereEqualTo("owner", "vdR18yWtV5");
+query.getInBackground(new GetCallback<ParseObject>() {
+  public void done(ParseObject object, ParseException e) {
+    if (object == null) {
+      Log.d("wallets", "The query request failed.");
+    } else {
+      Log.d("wallets", "Retrieved the object.");
+    }
+  }
+});
+```
+* Sign up page
+	* (Read/GET) Check if the user's chosen username is already in the database
+```  
+ParseQuery<ParseObject> query = ParseQuery.getQuery("user");
+query.whereEqualTo("username", "tj");
+query.getInBackground(new GetCallback<ParseObject>() {
+ public void done(ParseObject object, ParseException e) {
+   if (object == null) {
+     Log.d("users", "The query request failed.");
+   } else {
+     Log.d("users", "Retrieved the object.");
+   }
+ }
+});
+```
+* (Create/POST) Add the user's username/password to the database
+	* Create new User object with the user's username & password input into the 	database
+
+#### API calls
