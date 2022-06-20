@@ -1,4 +1,4 @@
-package com.example.pocketwatching;
+package com.example.pocketwatching.Models;
 
 import android.app.Application;
 
@@ -28,14 +28,11 @@ public class ParseApplication extends Application {
 
         // set applicationId, and server server based on the values in the back4app settings.
         // any network interceptors must be added with the Configuration Builder given this syntax
+        ParseObject.registerSubclass(Wallet.class);
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("uF2i7ZrD4CkPHTxsniwzhD5KtaIeLtAFcRUKjwHX") // should correspond to Application Id env variable
                 .clientKey("i7snmuRhJJR2D6wAlq72pIteQwDr2K1Z33DPbm1v")  // should correspond to Client key env variable
                 .server("https://parseapi.back4app.com").build());
-
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
     }
 
 

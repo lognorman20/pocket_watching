@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
+    tools:context=".Activities.LoginActivity">
 
     <EditText
         android:id="@+id/etUsername"
@@ -46,7 +46,6 @@
         android:layout_weight="1"
         android:ems="10"
         android:hint="Wallet Address"
-        android:inputType="textPassword"
         android:minHeight="48dp"
         android:textColor="@color/black"
         android:textColorHint="@color/black"
@@ -54,6 +53,22 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:hint="Email"
+        android:minHeight="48dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etWallet" />
 
     <Button
         android:id="@+id/btnSignup"
@@ -68,6 +83,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etWallet" />
+        app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

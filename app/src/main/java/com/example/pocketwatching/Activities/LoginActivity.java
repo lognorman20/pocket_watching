@@ -1,4 +1,4 @@
-package com.example.pocketwatching;
+package com.example.pocketwatching.Activities;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -8,6 +8,7 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pocketwatching.R;
 import com.parse.ParseUser;
 
 public class LoginActivity extends AppCompatActivity {
