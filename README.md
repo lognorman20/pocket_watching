@@ -13,7 +13,7 @@ Original App Design Project - README Template
 ## Overview
 ### Description
 [Description of your app]
-This mobile application tracks crytpo portfolios in a social media like fashion. It displays the various assets that a user has invested in and allows for comments to be posted along with updates on each investment decison made.
+This mobile application tracks crypto portfolios in a social media like fashion. It displays the various assets that a user has invested in and allows for comments to be posted along with updates on each investment decison made.
 
 ### App Evaluation
 [Evaluation of your app across the following attributes]
