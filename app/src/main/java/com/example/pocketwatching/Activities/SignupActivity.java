@@ -1,5 +1,6 @@
 package com.example.pocketwatching.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -69,6 +70,7 @@ public class SignupActivity extends AppCompatActivity {
                         public void done(ParseException e) {
                             if (e == null){
                                 Toast.makeText(SignupActivity.this, "Successfully signed up " + username, Toast.LENGTH_SHORT).show();
+                                goProfileActivity();
                             } else {
                                 Toast.makeText(SignupActivity.this, "Failed to save wallet for " + username, Toast.LENGTH_SHORT).show();
                                 Log.e("debugging", "Failed to save wallet for " + username + ". " + e);
@@ -82,5 +84,11 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void goProfileActivity() {
+        Intent i = new Intent(this, ProfileActivity.class);
+        startActivity(i);
+        finish();
     }
 }
