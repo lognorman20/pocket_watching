@@ -8,7 +8,7 @@
     tools:context=".Activities.LoginActivity">
 
     <Button
-        android:id="@+id/btnSignup"
+        android:id="@+id/btnLoginLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="350dp"
@@ -31,7 +31,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@color/white"
         app:backgroundTint="@color/design_default_color_error"
-        app:layout_constraintBottom_toTopOf="@+id/btnSignup"
+        app:layout_constraintBottom_toTopOf="@+id/btnLoginLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

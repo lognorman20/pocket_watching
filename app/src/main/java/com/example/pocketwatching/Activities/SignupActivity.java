@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
@@ -35,7 +34,7 @@ public class SignupActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         etWallet = findViewById(R.id.etWallet);
         etEmail = findViewById(R.id.etEmail);
-        btnSignup = findViewById(R.id.btnSignup);
+        btnSignup = findViewById(R.id.btnLoginLogin);
 
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override

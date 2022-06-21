@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnSignup = findViewById(R.id.btnSignup);
+        btnSignup = findViewById(R.id.btnLoginLogin);
         btnLogin = findViewById(R.id.btnLogin);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -46,7 +47,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void goLoginActivity() {
-        Intent i = new Intent(this, LoginActivity.class);
+        Intent i;
+        if (ParseUser.getCurrentUser() != null) {
+            Log.i("debugging", "User already logged in");
+            i = new Intent(this, ProfileActivity.class);
+        } else {
+            Log.i("debugging", "User not logged in");
+            i = new Intent(this, LoginActivity.class);
+        }
         startActivity(i);
     }
 
