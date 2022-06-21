@@ -161,4 +161,16 @@ Model - Wallet
 | `GET`     | /{address}/nft/transfers                                                                                                            | Gets the NFT transfers from a given wallet                         | Moralis   |
 |           |                                                                                                                                     |                                                                    |           |
 |           |                                                                                                                                     |                                                                    |           |
-                                                          |
+
+####
+Visualizations for stretch
+Technical problem 1
+Combining API data 
+Visualizing the historical balance of a wallet
+Core feature
+Stretch vs. Core
+Core
+Portfolio & historical data
+Stretch
+Searching for other people’s portfolios
+Comments
