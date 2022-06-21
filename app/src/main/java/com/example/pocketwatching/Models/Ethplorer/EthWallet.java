@@ -3,9 +3,11 @@ package com.example.pocketwatching.Models.Ethplorer;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
-public class EthWallet {
+public class EthWallet extends JSONObject {
 
     @SerializedName("address")
     @Expose
