@@ -17,6 +17,6 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         tvTest = findViewById(R.id.tvTest);
-        tvTest.setText("cheese");
+        tvTest.setText("butter");
     }
 }
