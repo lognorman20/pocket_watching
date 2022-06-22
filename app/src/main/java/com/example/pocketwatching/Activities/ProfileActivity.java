@@ -37,7 +37,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        tvTest = findViewById(R.id.tvTest);
         btnLogout = findViewById(R.id.btnLogout);
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -56,13 +55,12 @@ public class ProfileActivity extends AppCompatActivity {
             public void done(List<Wallet> objects, ParseException e) {
                 if (e == null) {
                     userWalletAddress = objects.get(0).getWalletAddress();
-                    getAddress(userWalletAddress);
+                    getEthWallet(userWalletAddress);
                 } else {
                     Log.e("debugging", "Could not get wallet address");
                 }
             }
         });
-
     }
 
     private void goMainActivity() {
@@ -71,8 +69,8 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
     }
 
-    private void getAddress(String address) {
-        Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getAddress(address);
+    private void getEthWallet(String address) {
+        Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getEthWallet(address);
         call.enqueue(new Callback<EthWallet>() {
             @Override
             public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
@@ -84,7 +82,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<EthWallet> call, Throwable t) {
                 Toast.makeText(ProfileActivity.this, "TestTwo", Toast.LENGTH_SHORT).show();
-
             }
         });
     }
