@@ -38,7 +38,6 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         btnLogout = findViewById(R.id.btnLogout);
-
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,16 +55,16 @@ public class ProfileActivity extends AppCompatActivity {
                 if (e == null) {
                     userWalletAddress = objects.get(0).getWalletAddress();
                     getEthWallet(userWalletAddress);
-                } else {
-                    Log.e("debugging", "Could not get wallet address");
                 }
             }
         });
     }
 
     private void goMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        Intent i = new Intent(this, MainActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // this makes sure the Back button won't work
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // same as above
+        startActivity(i);
         finish();
     }
 
@@ -85,5 +84,4 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
-
 }
