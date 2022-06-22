@@ -22,6 +22,8 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -35,6 +37,10 @@ import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity {
     private Button btnLogout;
+    private TextView ethBalance;
+    private TextView txCount;
+    private TextView ethDiff;
+
     private List<EthWallet> userEthWallets;
     private List<Wallet> userWallets;
 
@@ -43,8 +49,12 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        userEthWallets = new ArrayList<>();
         btnLogout = findViewById(R.id.btnLogout);
+        ethBalance = findViewById(R.id.tvEthBalance);
+        txCount = findViewById(R.id.tvCountTx);
+        ethDiff = findViewById(R.id.tvEthDiff);
+
+        userEthWallets = new ArrayList<>();
 
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
         query.whereEqualTo("owner", ParseUser.getCurrentUser());
@@ -96,12 +106,11 @@ public class ProfileActivity extends AppCompatActivity {
                 return;
             }
         });
-
     }
 
     private void populateProfile() {
-        for (int i = 0; i < userEthWallets.size(); i++) {
-            Log.i("populate", userEthWallets.get(i).getAddress());
-        }
+        ethBalance.setText(userEthWallets.get(0).getEth().getBalance().toString());
+        ethDiff.setText(userEthWallets.get(0).getEth().getPrice().toString());
+        txCount.setText(userEthWallets.get(0).getCountTxs());
     }
 }
