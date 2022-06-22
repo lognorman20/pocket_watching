@@ -24,6 +24,10 @@ import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,18 +57,11 @@ public class ProfileActivity extends AppCompatActivity {
                         String walletAddress = userWallets.get(i).getWalletAddress();
                         getEthWallet(walletAddress);
                     }
-
-                    Log.i("debugging", "size = " + userEthWallets.size());
-
-                    for (int i = 0; i < userEthWallets.size(); i++) {
-                        Double walletBalance = userEthWallets.get(i).getEth().getBalance();
-                        Log.i("testing", walletBalance.toString());
-                    }
                 }
             }
         });
 
-
+        Log.i("debugging", String.valueOf(userEthWallets.size()));
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,13 +79,15 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
     }
 
-    private void getEthWallet(String address) {
+    private synchronized void getEthWallet(String address) {
         Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getEthWallet(address);
         call.enqueue(new Callback<EthWallet>() {
             @Override
             public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
                 userEthWallets.add(response.body());
-                Log.i("debugging", "added wallet");
+                if (userEthWallets.size() == userWallets.size()) {
+                    populateProfile();
+                }
             }
 
             @Override
@@ -97,5 +96,12 @@ public class ProfileActivity extends AppCompatActivity {
                 return;
             }
         });
+
+    }
+
+    private void populateProfile() {
+        for (int i = 0; i < userEthWallets.size(); i++) {
+            Log.i("populate", userEthWallets.get(i).getAddress());
+        }
     }
 }
