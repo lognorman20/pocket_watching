@@ -15,5 +15,5 @@ public interface EthplorerApi {
     String BASE_URL = "https://api.ethplorer.io/";
 
     @GET("getAddressInfo/{address}?apiKey=freekey")
-    Call<JsonObject> getAddress(@Path("address") String address);
+    Call<EthWallet> getAddress(@Path("address") String address);
 }

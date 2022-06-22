@@ -47,7 +47,7 @@ public class TokenInfo {
     private Integer ethTransfersCount;
     @SerializedName("price")
     @Expose
-    private Boolean price;
+    private Object price;
     @SerializedName("publicTags")
     @Expose
     private List<String> publicTags = null;
@@ -156,11 +156,11 @@ public class TokenInfo {
         this.ethTransfersCount = ethTransfersCount;
     }
 
-    public Boolean getPrice() {
+    public Object getPrice() {
         return price;
     }
 
-    public void setPrice(Boolean price) {
+    public void setPrice(Object price) {
         this.price = price;
     }
 

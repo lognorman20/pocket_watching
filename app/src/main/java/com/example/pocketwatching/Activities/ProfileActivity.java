@@ -1,7 +1,6 @@
 package com.example.pocketwatching.Activities;
 
 import android.content.Intent;
-import android.location.Address;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pocketwatching.Clients.EthplorerClient;
-import com.example.pocketwatching.Models.Ethplorer.Eth;
 import com.example.pocketwatching.Models.Ethplorer.EthWallet;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
@@ -25,12 +23,9 @@ import com.parse.ParseUser;
 
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProfileActivity extends AppCompatActivity {
     private TextView tvTest;
@@ -77,15 +72,18 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getAddress(String address) {
-        Call<JsonObject> call = EthplorerClient.getInstance().getEthplorerApi().getAddress(address);
-        call.enqueue(new Callback<JsonObject>() {
+        Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getAddress(address);
+        call.enqueue(new Callback<EthWallet>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.i("d", String.valueOf(response.body().get("address")));
+            public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
+                // do parsing checks here
+                EthWallet userWallet = response.body();
+                Log.i("debugging", "Successfully got a response: " + userWallet.getEth().getBalance());
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(Call<EthWallet> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "TestTwo", Toast.LENGTH_SHORT).show();
 
             }
         });
