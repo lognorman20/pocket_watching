@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pocketwatching.Clients.EthplorerClient;
+import com.example.pocketwatching.Models.Ethplorer.Eth;
 import com.example.pocketwatching.Models.Ethplorer.EthWallet;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
@@ -21,6 +22,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -28,34 +30,46 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity {
-    private TextView tvTest;
-    private String userWalletAddress;
     private Button btnLogout;
+    private List<EthWallet> userEthWallets;
+    private List<Wallet> userWallets;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        userEthWallets = new ArrayList<>();
         btnLogout = findViewById(R.id.btnLogout);
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ParseUser.logOut();
-                goMainActivity();
-            }
-        });
 
-        // TODO: Get all user wallets instead of just one
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
         query.whereEqualTo("owner", ParseUser.getCurrentUser());
         query.findInBackground(new FindCallback<Wallet>() {
             @Override
             public void done(List<Wallet> objects, ParseException e) {
                 if (e == null) {
-                    userWalletAddress = objects.get(0).getWalletAddress();
-                    getEthWallet(userWalletAddress);
+                    userWallets = objects;
+                    for (int i = 0; i < userWallets.size(); i++) {
+                        String walletAddress = userWallets.get(i).getWalletAddress();
+                        getEthWallet(walletAddress);
+                    }
+
+                    Log.i("debugging", "size = " + userEthWallets.size());
+
+                    for (int i = 0; i < userEthWallets.size(); i++) {
+                        Double walletBalance = userEthWallets.get(i).getEth().getBalance();
+                        Log.i("testing", walletBalance.toString());
+                    }
                 }
+            }
+        });
+
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseUser.logOut();
+                goMainActivity();
             }
         });
     }
@@ -73,14 +87,14 @@ public class ProfileActivity extends AppCompatActivity {
         call.enqueue(new Callback<EthWallet>() {
             @Override
             public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
-                // do parsing checks here
-                EthWallet userWallet = response.body();
-                Log.i("debugging", "Successfully got a response: " + userWallet.getEth().getBalance());
+                userEthWallets.add(response.body());
+                Log.i("debugging", "added wallet");
             }
 
             @Override
             public void onFailure(Call<EthWallet> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "TestTwo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Failed to get user wallet", Toast.LENGTH_SHORT).show();
+                return;
             }
         });
     }
