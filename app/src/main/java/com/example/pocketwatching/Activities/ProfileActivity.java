@@ -2,7 +2,6 @@ package com.example.pocketwatching.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,26 +11,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pocketwatching.Clients.EthplorerClient;
-import com.example.pocketwatching.Models.Ethplorer.Eth;
 import com.example.pocketwatching.Models.Ethplorer.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.Token;
 import com.example.pocketwatching.Models.Ethplorer.TokenInfo;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
-import com.google.gson.JsonObject;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,7 +31,7 @@ import retrofit2.Response;
 public class ProfileActivity extends AppCompatActivity {
     private Button btnLogout;
     private TextView tvEthBalance;
-    private TextView tvPortfolioBalance;
+    private TextView tvPortfolioValue;
     private TextView tvTopThreeTokens;
     private TextView tvCountTx;
     private TextView tvEthPrice;
@@ -48,8 +39,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static List<EthWallet> userEthWallets;
     private List<Wallet> userWallets;
-    private List<TokenInfo> valuableTokens;
-    private List<TokenInfo> notValuableTokens;
+    private List<Token> valuableTokens;
+    private List<Token> notValuableTokens;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         btnLogout = findViewById(R.id.btnLogout);
         tvEthBalance = findViewById(R.id.tvEthBalance);
-        tvPortfolioBalance = findViewById(R.id.tvPortfolioBalance);
+        tvPortfolioValue = findViewById(R.id.tvPortfolioValue);
         tvTopThreeTokens = findViewById(R.id.tvTopThreeTokens);
         tvTotalTokens = findViewById(R.id.tvTotalTokens);
         tvCountTx = findViewById(R.id.tvCountTx);
@@ -100,7 +91,6 @@ public class ProfileActivity extends AppCompatActivity {
                 userEthWallets.add(response.body());
                 if (userEthWallets.size() == userWallets.size()) {
                     initValuableTokens();
-                    Log.i("valuable tokens", String.valueOf(valuableTokens.size() + "..." + notValuableTokens.size()));
                     populateProfile();
                 }
             }
@@ -127,9 +117,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     // binds values onto the display
     private void populateProfile() {
-        tvEthBalance.setText(getEthBalance());
-        tvCountTx.setText(getTxCount());
-        tvEthPrice.setText(getEthPrice());
+        tvEthBalance.setText(getEthAmount().toString() + " ETH");
+        tvCountTx.setText(getTxCount()  + " total transactions");
+        tvEthPrice.setText("$" + getEthPrice());
         tvTotalTokens.setText(getTotalTokens());
     }
 
@@ -142,9 +132,9 @@ public class ProfileActivity extends AppCompatActivity {
                 Token token = userEthWallets.get(i).getTokens().get(j);
                 TokenInfo tokenInfo = token.getTokenInfo();
                 if (tokenInfo.getPrice().equals(false)) {
-                    notValuableTokens.add(tokenInfo);
+                    notValuableTokens.add(token);
                 } else {
-                    valuableTokens.add(tokenInfo);
+                    valuableTokens.add(token);
                 }
             }
         }
@@ -152,31 +142,49 @@ public class ProfileActivity extends AppCompatActivity {
 
     /***** Getter functions *****/
     // gets the amount of eth in all wallets
-    private String getEthBalance() {
+    private Double getEthAmount() {
         Double tempBalance = 0.0;
         for (int i = 0; i < userEthWallets.size(); i++) {
             tempBalance += userEthWallets.get(i).getEth().getBalance();
         }
-        return tempBalance + " ETH";
+        return tempBalance;
     }
 
     // gets the total transaction count from a given wallet
-    private static String getTxCount() {
+    private int getTxCount() {
         int count = 0;
         for (int i = 0; i < userEthWallets.size(); i++) {
             count += userEthWallets.get(i).getCountTxs();
         }
-        String output = String.valueOf(count);
-        return output + " total transactions";
+        return count;
     }
 
     // gets current eth price
-    private String getEthPrice() {
-        return "$" + userEthWallets.get(0).getEth().getPrice().getRate().toString();
+    private Double getEthPrice() {
+        return userEthWallets.get(0).getEth().getPrice().getRate();
     }
 
     // gets total number of tokens that aren't ETH
     private int getTotalTokens() {
         return valuableTokens.size() + notValuableTokens.size();
+    }
+
+    // get total portfolio balance
+    private Double getPortfolioBalance() {
+        Double balance = getEthAmount();
+        for (int i = 0; i < valuableTokens.size(); i++) {
+//            Price price = (Price) valuableTokens.get(i).get;
+        }
+        return balance;
+    }
+
+    // get balance of a given token
+    private Double getTokenAmount(Token token) {
+        return token.getBalance();
+    }
+
+    private Double getTokenBalance(Token token) {
+        Double amount = getTokenAmount(token);
+        return amount;
     }
 }
