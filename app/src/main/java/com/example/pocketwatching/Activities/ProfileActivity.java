@@ -49,6 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+<<<<<<< HEAD
         btnLogout = findViewById(R.id.btnLogout);
         ethBalance = findViewById(R.id.tvEthBalance);
         txCount = findViewById(R.id.tvCountTx);
@@ -112,5 +113,9 @@ public class ProfileActivity extends AppCompatActivity {
         ethBalance.setText(userEthWallets.get(0).getEth().getBalance().toString());
         ethDiff.setText(userEthWallets.get(0).getEth().getPrice().toString());
         txCount.setText(userEthWallets.get(0).getCountTxs());
+=======
+        tvTest = findViewById(R.id.tvTest);
+        tvTest.setText("butter");
+>>>>>>> parent of a2bc3e7 (testing branches once again)
     }
 }
