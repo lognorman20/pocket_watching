@@ -18,7 +18,6 @@ import com.example.pocketwatching.Models.Ethplorer.Token;
 import com.example.pocketwatching.Models.Ethplorer.TokenInfo;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
-import com.google.gson.Gson;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -52,7 +51,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         btnLogout = findViewById(R.id.btnLogout);
-        tvEthBalance = findViewById(R.id.tvEthBalance);
+        tvEthBalance = findViewById(R.id.tvEthAmount);
         tvPortfolioValue = findViewById(R.id.tvPortfolioValue);
         tvTopThreeTokens = findViewById(R.id.tvTopThreeTokens);
         tvTotalTokens = findViewById(R.id.tvTotalTokens);
@@ -123,11 +122,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     // binds values onto the display
     private void populateProfile() {
-        tvEthBalance.setText(getEthAmount().toString() + " ETH");
-        tvCountTx.setText(getTxCount()  + " total transactions");
-        tvEthPrice.setText("$" + getEthPrice());
-        tvTotalTokens.setText( String.valueOf(getTotalTokens()));
-        tvPortfolioValue.setText("$" + getPortfolioBalance().toString());
+        tvPortfolioValue.setText("$" + String.format("%,.2f", getPortfolioBalance()));
+        tvEthBalance.setText(String.format("%,.2f", getEthAmount()) + " ETH");
+        tvCountTx.setText(String.format("%,d", getTxCount())  + " total transactions");
+        tvEthPrice.setText("$" + String.format("%,.2f", getEthPrice()));
+        tvTotalTokens.setText(String.format("%,d", getTotalTokens()));
     }
 
     /***** Initialization functions *****/
