@@ -25,19 +25,21 @@ public class Price extends Object {
     private Double availableSupply;
     @SerializedName("volume24h")
     @Expose
-    private Double volume24h;
-    @SerializedName("volDiff1")
-    @Expose
-    private Double volDiff1;
-    @SerializedName("volDiff7")
-    @Expose
-    private Double volDiff7;
-    @SerializedName("volDiff30")
-    @Expose
     private Double volDiff30;
     @SerializedName("diff30d")
     @Expose
     private Double diff30d;
+    @SerializedName("currency")
+    @Expose
+    private String currency;
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
 
     public Double getRate() {
         return rate;
@@ -85,38 +87,6 @@ public class Price extends Object {
 
     public void setAvailableSupply(Double availableSupply) {
         this.availableSupply = availableSupply;
-    }
-
-    public Double getVolume24h() {
-        return volume24h;
-    }
-
-    public void setVolume24h(Double volume24h) {
-        this.volume24h = volume24h;
-    }
-
-    public Double getVolDiff1() {
-        return volDiff1;
-    }
-
-    public void setVolDiff1(Double volDiff1) {
-        this.volDiff1 = volDiff1;
-    }
-
-    public Double getVolDiff7() {
-        return volDiff7;
-    }
-
-    public void setVolDiff7(Double volDiff7) {
-        this.volDiff7 = volDiff7;
-    }
-
-    public Double getVolDiff30() {
-        return volDiff30;
-    }
-
-    public void setVolDiff30(Double volDiff30) {
-        this.volDiff30 = volDiff30;
     }
 
     public Double getDiff30d() {

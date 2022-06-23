@@ -2,6 +2,7 @@ package com.example.pocketwatching.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,10 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pocketwatching.Clients.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Models.Ethplorer.EthWallet;
+import com.example.pocketwatching.Models.Ethplorer.Price;
 import com.example.pocketwatching.Models.Ethplorer.Token;
 import com.example.pocketwatching.Models.Ethplorer.TokenInfo;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
+import com.google.gson.Gson;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -100,6 +103,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<EthWallet> call, Throwable t) {
                 Toast.makeText(ProfileActivity.this, "Failed to get user wallet", Toast.LENGTH_SHORT).show();
+                Log.e("deserialize", t.toString());
                 return;
             }
         });
@@ -173,24 +177,30 @@ public class ProfileActivity extends AppCompatActivity {
 
     // get total portfolio balance
     private Double getPortfolioBalance() {
-        Double balance = getEthAmount();
+        Double balance = getEthBalance();
         for (int i = 0; i < valuableTokens.size(); i++) {
             balance += getTokenBalance(valuableTokens.get(i));
         }
         return balance;
     }
 
-    // get balance of a given token
+
+    // gets amount of a given token
     private Double getTokenAmount(Token token) {
         return token.getBalance();
     }
 
-    // gets dollar value of token
-    private Double getTokenBalance(Token token) {
-        Double amount = getTokenAmount(token) * token.getTokenInfo().getDecimals();
-
-//        Double balance = amount * price.getRate();
-//        return balance;
-        return amount;
+    // gets eth balance in $
+    private Double getEthBalance() {
+        return getEthAmount() * getEthPrice();
     }
+
+    // gets token balance in $
+    private Double getTokenBalance(Token token) {
+        Double amount = getTokenAmount(token) / (Math.pow(10, token.getTokenInfo().getDecimals()));
+        Price price = (Price) token.getTokenInfo().getPrice(); // problem line
+        Double balance = amount * price.getRate();
+        return balance;
+    }
+
 }
