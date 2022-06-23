@@ -110,7 +110,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void populateProfile() {
         ethBalance.setText(userEthWallets.get(0).getEth().getBalance().toString());
-        ethDiff.setText(userEthWallets.get(0).getEth().getPrice().toString());
-        txCount.setText(userEthWallets.get(0).getCountTxs());
+        txCount.setText(userEthWallets.get(0).getCountTxs().toString());
+        ethDiff.setText(userEthWallets.get(0).getEth().getPrice().getRate().toString());
     }
 }
