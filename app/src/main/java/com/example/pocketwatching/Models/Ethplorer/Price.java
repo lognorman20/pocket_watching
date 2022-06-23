@@ -3,7 +3,7 @@ package com.example.pocketwatching.Models.Ethplorer;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Price {
+public class Price extends Object {
 
     @SerializedName("rate")
     @Expose

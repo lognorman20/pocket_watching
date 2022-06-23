@@ -10,7 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.pocketwatching.Clients.EthplorerClient;
+import com.example.pocketwatching.Clients.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Models.Ethplorer.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.Token;
 import com.example.pocketwatching.Models.Ethplorer.TokenInfo;
@@ -42,6 +42,7 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
 
+    /************ Core functions ***********/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +84,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    // gets EthWallet object from given address
     private synchronized void getEthWallet(String address) {
         Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getEthWallet(address);
         call.enqueue(new Callback<EthWallet>() {
@@ -120,13 +122,13 @@ public class ProfileActivity extends AppCompatActivity {
         tvEthBalance.setText(getEthAmount().toString() + " ETH");
         tvCountTx.setText(getTxCount()  + " total transactions");
         tvEthPrice.setText("$" + getEthPrice());
-        tvTotalTokens.setText(getTotalTokens());
+        tvTotalTokens.setText( String.valueOf(getTotalTokens()));
+        tvPortfolioValue.setText("$" + getPortfolioBalance().toString());
     }
 
     /***** Initialization functions *****/
     // init lists of valuable and not valuable tokens -- get total tokens here?
     private void initValuableTokens() {
-        int count = 0;
         for (int i = 0; i < userEthWallets.size(); i++) {
             for (int j = 0; j < userEthWallets.get(i).getTokens().size(); j++) {
                 Token token = userEthWallets.get(i).getTokens().get(j);
@@ -173,7 +175,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Double getPortfolioBalance() {
         Double balance = getEthAmount();
         for (int i = 0; i < valuableTokens.size(); i++) {
-//            Price price = (Price) valuableTokens.get(i).get;
+            balance += getTokenBalance(valuableTokens.get(i));
         }
         return balance;
     }
@@ -183,8 +185,12 @@ public class ProfileActivity extends AppCompatActivity {
         return token.getBalance();
     }
 
+    // gets dollar value of token
     private Double getTokenBalance(Token token) {
-        Double amount = getTokenAmount(token);
+        Double amount = getTokenAmount(token) * token.getTokenInfo().getDecimals();
+
+//        Double balance = amount * price.getRate();
+//        return balance;
         return amount;
     }
 }

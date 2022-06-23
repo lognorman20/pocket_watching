@@ -68,8 +68,8 @@ public class TokenInfo {
         this.name = name;
     }
 
-    public String getDecimals() {
-        return decimals;
+    public Double getDecimals() {
+        return Double.parseDouble(decimals);
     }
 
     public void setDecimals(String decimals) {
@@ -160,7 +160,7 @@ public class TokenInfo {
         return price;
     }
 
-    public void setPrice(Object price) {
+    public void setPrice(Price price) {
         this.price = price;
     }
 
