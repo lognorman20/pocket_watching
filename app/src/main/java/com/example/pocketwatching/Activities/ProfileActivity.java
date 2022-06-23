@@ -112,6 +112,5 @@ public class ProfileActivity extends AppCompatActivity {
         ethBalance.setText(userEthWallets.get(0).getEth().getBalance().toString());
         txCount.setText(userEthWallets.get(0).getCountTxs().toString());
         ethDiff.setText(userEthWallets.get(0).getEth().getPrice().getRate().toString());
-
     }
 }
