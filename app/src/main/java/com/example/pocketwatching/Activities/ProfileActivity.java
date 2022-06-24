@@ -1,5 +1,7 @@
 package com.example.pocketwatching.Activities;
 
+import static java.util.Comparator.reverseOrder;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,8 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pocketwatching.Clients.Ethplorer.EthplorerClient;
+import com.example.pocketwatching.Etc.TokenBalanceComparator;
 import com.example.pocketwatching.Models.Ethplorer.EthWallet;
-import com.example.pocketwatching.Models.Ethplorer.Price;
 import com.example.pocketwatching.Models.Ethplorer.Token;
 import com.example.pocketwatching.Models.Ethplorer.TokenInfo;
 import com.example.pocketwatching.Models.Wallet;
@@ -24,7 +26,10 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,6 +48,8 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Wallet> userWallets;
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
+    private PriorityQueue<Token> topThreeTokens;
+    private Comparator<Token> comparator;
 
     /************ Core functions ***********/
     @Override
@@ -61,6 +68,18 @@ public class ProfileActivity extends AppCompatActivity {
         userEthWallets = new ArrayList<>();
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
+//        comparator = new TokenBalanceComparator();
+        topThreeTokens = new PriorityQueue<Token>(Comparator.reverseOrder(), new Comparator<Token>() {
+            @Override
+            public int compare(Token one, Token two) {
+                if (one.getTokenBalance() < two.getTokenBalance()){
+                    return -1;
+                } else if (one.getTokenBalance() > two.getTokenBalance()) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
 
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
         query.whereEqualTo("owner", ParseUser.getCurrentUser());
@@ -122,15 +141,21 @@ public class ProfileActivity extends AppCompatActivity {
 
     // binds values onto the display
     private void populateProfile() {
-        tvPortfolioValue.setText("$" + String.format("%,.2f", getPortfolioBalance()));
-        tvEthBalance.setText(String.format("%,.2f", getEthAmount()) + " ETH");
-        tvCountTx.setText(String.format("%,d", getTxCount())  + " total transactions");
-        tvEthPrice.setText("$" + String.format("%,.2f", getEthPrice()));
-        tvTotalTokens.setText(String.format("%,d", getTotalTokens()));
+        String portfolioValue = "$" + String.format("%,.2f", getPortfolioBalance());
+        String ethBalance = String.format("%,.2f", getEthAmount()) + " ETH";
+        String countTx = String.format("%,d", getTxCount()) + " total transactions";
+        String ethPrice = "$" + String.format("%,.2f", getEthPrice());
+        String totalTokens = String.format("%,d", getTotalTokens());
+
+        tvPortfolioValue.setText(portfolioValue);
+        tvEthBalance.setText(ethBalance);
+        tvCountTx.setText(countTx);
+        tvEthPrice.setText(ethPrice);
+        tvTotalTokens.setText(totalTokens);
     }
 
     /***** Initialization functions *****/
-    // init lists of valuable and not valuable tokens -- get total tokens here?
+    // init lists of valuable/not valuable tokens, top 3 tokens
     private void initValuableTokens() {
         for (int i = 0; i < userEthWallets.size(); i++) {
             for (int j = 0; j < userEthWallets.get(i).getTokens().size(); j++) {
@@ -139,9 +164,16 @@ public class ProfileActivity extends AppCompatActivity {
                 if (tokenInfo.getPrice().equals(false)) {
                     notValuableTokens.add(token);
                 } else {
+                    Log.i("topthreetokens", String.valueOf(token.getTokenBalance()));
+                    topThreeTokens.add(token);
                     valuableTokens.add(token);
                 }
             }
+        }
+
+        Log.i("topthreetokens", "output:");
+        while (topThreeTokens.isEmpty() == false) {
+            Log.i("topthreetokens", topThreeTokens.remove().getTokenBalance().toString());
         }
     }
 
@@ -178,11 +210,10 @@ public class ProfileActivity extends AppCompatActivity {
     private Double getPortfolioBalance() {
         Double balance = getEthBalance();
         for (int i = 0; i < valuableTokens.size(); i++) {
-            balance += getTokenBalance(valuableTokens.get(i));
+            balance += valuableTokens.get(i).getTokenBalance();
         }
         return balance;
     }
-
 
     // gets amount of a given token
     private Double getTokenAmount(Token token) {
@@ -193,13 +224,4 @@ public class ProfileActivity extends AppCompatActivity {
     private Double getEthBalance() {
         return getEthAmount() * getEthPrice();
     }
-
-    // gets token balance in $
-    private Double getTokenBalance(Token token) {
-        Double amount = getTokenAmount(token) / (Math.pow(10, token.getTokenInfo().getDecimals()));
-        Price price = (Price) token.getTokenInfo().getPrice(); // problem line
-        Double balance = amount * price.getRate();
-        return balance;
-    }
-
 }

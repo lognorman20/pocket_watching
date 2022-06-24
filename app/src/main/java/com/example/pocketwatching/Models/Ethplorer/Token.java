@@ -61,4 +61,11 @@ public class Token {
         this.rawBalance = rawBalance;
     }
 
+    // gets token balance in $
+    public Double getTokenBalance() {
+        Double amount = getBalance() / (Math.pow(10, getTokenInfo().getDecimals()));
+        Price price = (Price) getTokenInfo().getPrice(); // problem line
+        Double balance = amount * price.getRate();
+        return balance;
+    }
 }
