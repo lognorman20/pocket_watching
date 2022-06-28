@@ -13,9 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pocketwatching.Clients.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Etc.TokenAmountComparator;
-import com.example.pocketwatching.Models.Ethplorer.EthWallet;
-import com.example.pocketwatching.Models.Ethplorer.Token;
-import com.example.pocketwatching.Models.Ethplorer.TokenInfo;
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
 import com.google.common.collect.MinMaxPriorityQueue;
@@ -40,6 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvCountTx;
     private TextView tvEthPrice;
     private TextView tvTotalTokens;
+    private TextView tvWelcome;
 
     private static List<EthWallet> userEthWallets;
     private List<Wallet> userWallets;
@@ -60,11 +61,14 @@ public class ProfileActivity extends AppCompatActivity {
         tvTotalTokens = findViewById(R.id.tvTotalTokens);
         tvCountTx = findViewById(R.id.tvCountTx);
         tvEthPrice = findViewById(R.id.tvEthPrice);
+        tvWelcome = findViewById(R.id.tvWelcome);
 
         userEthWallets = new ArrayList<>();
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
         topTokensByAmount = new ArrayList<>();
+
+        tvWelcome.setText(ParseUser.getCurrentUser().getUsername() + "'s Portfolio");
 
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
         query.whereEqualTo("owner", ParseUser.getCurrentUser());

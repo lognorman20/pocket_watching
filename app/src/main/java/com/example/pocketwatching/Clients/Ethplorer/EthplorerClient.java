@@ -1,6 +1,6 @@
 package com.example.pocketwatching.Clients.Ethplorer;
 
-import com.example.pocketwatching.Models.Ethplorer.TokenInfo;
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
