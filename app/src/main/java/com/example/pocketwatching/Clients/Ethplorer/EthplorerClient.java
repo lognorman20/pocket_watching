@@ -24,8 +24,6 @@ public class EthplorerClient {
         myEthplorerApi = retrofit.create(EthplorerApi.class);
     }
 
-
-
     public static synchronized EthplorerClient getInstance() {
         if (instance == null) {
             instance = new EthplorerClient();

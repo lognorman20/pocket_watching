@@ -16,6 +16,7 @@ import com.example.pocketwatching.Etc.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
+import com.example.pocketwatching.Models.TxHistory;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
 import com.google.common.collect.MinMaxPriorityQueue;
@@ -48,7 +49,9 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Token> notValuableTokens;
     private ArrayList<Token> topTokensByAmount;
 
-    /************ Core functions ***********/
+    /**************************************************/
+    /***************** Core Functions *****************/
+    /**************************************************/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,16 +82,11 @@ public class ProfileActivity extends AppCompatActivity {
                     userWallets = objects;
                     for (int i = 0; i < userWallets.size(); i++) {
                         String walletAddress = userWallets.get(i).getWalletAddress();
-                        getEthWallet(walletAddress);
-//                        getTxHistory(walletAddress);
+                        getEthWallet(walletAddress); // buggy lines, have issues running in parallel
+                        getTxHistory(walletAddress); // buggy lines, have issues running in parallel
                     }
                 } else {
-                    // is this how i should throw errors?
-                    try {
-                        throw new Exception("There was an error: " + e);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+                    Toast.makeText(ProfileActivity.this, "Failed to get user wallets", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -117,31 +115,31 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<EthWallet> call, Throwable t) {
-                // how much does line length matter?
-                Toast.makeText(ProfileActivity.this, "Failed to get user wallet", Toast.LENGTH_SHORT).show();
-                // see note above about throwing exceptions, keeping log for now
-                Log.e("deserialize", t.toString());
+                Toast.makeText(ProfileActivity.this, "Failed to get user wallet. " + t, Toast.LENGTH_SHORT).show();
                 return;
             }
         });
     }
 
-//    private synchronized void getTxHistory(String address) {
-//        Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getTxHistory(address);
-//        call.enqueue(new Callback<EthWallet>() {
-//            @Override
-//            public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
-//                Toast.makeText(ProfileActivity.this, "yessirski", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<EthWallet> call, Throwable t) {
-//                Log.e("debugging", "nah bro");
-//            }
-//        });
-//    }
+    private synchronized void getTxHistory(String address) {
+        Call<List<TxHistory>> call = (Call<List<TxHistory>>) EthplorerClient.getInstance().getEthplorerApi().getTxHistory(address);
+        call.enqueue(new Callback<List<TxHistory>>() {
+            @Override
+            public void onResponse(Call<List<TxHistory>> call, Response<List<TxHistory>> response) {
+                Toast.makeText(ProfileActivity.this, "Successfully got txHistory", Toast.LENGTH_SHORT).show();
+                Log.i("txHistory", String.valueOf(response.body().size()));
+            }
 
-    /************ Helper functions ***********/
+            @Override
+            public void onFailure(Call<List<TxHistory>> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "Failed to get txHistory", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**************************************************/
+    /**************** Helper Functions ****************/
+    /**************************************************/
 
     /***** General helper functions *****/
     // takes the user to the main activity
