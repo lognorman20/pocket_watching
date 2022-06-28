@@ -28,6 +28,7 @@ import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -82,13 +83,17 @@ public class ProfileActivity extends AppCompatActivity {
                     userWallets = objects;
                     for (int i = 0; i < userWallets.size(); i++) {
                         String walletAddress = userWallets.get(i).getWalletAddress();
-                        getEthWallet(walletAddress); // buggy lines, have issues running in parallel
-                        getTxHistory(walletAddress); // buggy lines, have issues running in parallel
+                        getEthWallet(walletAddress);
+                        try {
+                            Thread.sleep(1500); // optimize with observables?
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                        getTxHistory(walletAddress);
                     }
                 } else {
                     Toast.makeText(ProfileActivity.this, "Failed to get user wallets", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
