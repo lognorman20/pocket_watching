@@ -90,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
                         String walletAddress = userWallets.get(i).getWalletAddress();
                         getEthWallet(walletAddress);
                         try {
-                            Thread.sleep(1500); // optimize with observables?
+                            Thread.sleep(1600); // optimize with observables?
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
@@ -140,7 +140,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<TxHistory>> call, Response<List<TxHistory>> response) {
                 Toast.makeText(ProfileActivity.this, "Successfully got txHistory", Toast.LENGTH_SHORT).show();
-                Log.i("txHistory", String.valueOf(response.body().size()));
+
             }
 
             @Override

@@ -14,9 +14,6 @@ public class TxHistory {
     @SerializedName("to")
     @Expose
     private String to;
-    @SerializedName("hash")
-    @Expose
-    private String hash;
     @SerializedName("value")
     @Expose
     private float value;
@@ -52,14 +49,6 @@ public class TxHistory {
 
     public void setTo(String to) {
         this.to = to;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public void setHash(String hash) {
-        this.hash = hash;
     }
 
     public float getValue() {
