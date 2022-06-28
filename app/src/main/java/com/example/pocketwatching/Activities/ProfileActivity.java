@@ -88,6 +88,7 @@ public class ProfileActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(ProfileActivity.this, "Failed to get user wallets", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
