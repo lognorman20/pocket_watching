@@ -69,17 +69,17 @@ public class ProfileActivity extends AppCompatActivity {
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
 //        comparator = new TokenBalanceComparator();
-        topThreeTokens = new PriorityQueue<Token>(Comparator.reverseOrder(), new Comparator<Token>() {
-            @Override
-            public int compare(Token one, Token two) {
-                if (one.getTokenBalance() < two.getTokenBalance()){
-                    return -1;
-                } else if (one.getTokenBalance() > two.getTokenBalance()) {
-                    return 1;
-                }
-                return 0;
-            }
-        });
+//        topThreeTokens = new PriorityQueue<Token>(Comparator.reverseOrder(), new Comparator<Token>() {
+//            @Override
+//            public int compare(Token one, Token two) {
+//                if (one.getTokenBalance() < two.getTokenBalance()){
+//                    return -1;
+//                } else if (one.getTokenBalance() > two.getTokenBalance()) {
+//                    return 1;
+//                }
+//                return 0;
+//            }
+//        });
 
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
         query.whereEqualTo("owner", ParseUser.getCurrentUser());
@@ -92,6 +92,9 @@ public class ProfileActivity extends AppCompatActivity {
                         String walletAddress = userWallets.get(i).getWalletAddress();
                         getEthWallet(walletAddress);
                     }
+                } else {
+                    Log.e("debugging", "nah bro there was an error: " + e);
+
                 }
             }
         });
@@ -107,6 +110,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // gets EthWallet object from given address
     private synchronized void getEthWallet(String address) {
+        Log.i("debugging", "init values on the screen...");
         Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getEthWallet(address);
         call.enqueue(new Callback<EthWallet>() {
             @Override
@@ -165,16 +169,16 @@ public class ProfileActivity extends AppCompatActivity {
                     notValuableTokens.add(token);
                 } else {
                     Log.i("topthreetokens", String.valueOf(token.getTokenBalance()));
-                    topThreeTokens.add(token);
+//                    topThreeTokens.add(token);
                     valuableTokens.add(token);
                 }
             }
         }
 
-        Log.i("topthreetokens", "output:");
-        while (topThreeTokens.isEmpty() == false) {
-            Log.i("topthreetokens", topThreeTokens.remove().getTokenBalance().toString());
-        }
+//        Log.i("topthreetokens", "output:");
+//        while (topThreeTokens.isEmpty() == false) {
+//            Log.i("topthreetokens", topThreeTokens.remove().getTokenBalance().toString());
+//        }
     }
 
     /***** Getter functions *****/
