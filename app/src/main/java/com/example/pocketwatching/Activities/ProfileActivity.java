@@ -76,6 +76,7 @@ public class ProfileActivity extends AppCompatActivity {
                     for (int i = 0; i < userWallets.size(); i++) {
                         String walletAddress = userWallets.get(i).getWalletAddress();
                         getEthWallet(walletAddress);
+//                        getTxHistory(walletAddress);
                     }
                 } else {
                     // is this how i should throw errors?
@@ -106,7 +107,7 @@ public class ProfileActivity extends AppCompatActivity {
                 userEthWallets.add(response.body());
                 if (userEthWallets.size() == userWallets.size()) {
                     initValuableTokens();
-                    populateProfile();
+                    addPortfolioData();
                 }
             }
 
@@ -121,6 +122,21 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+//    private synchronized void getTxHistory(String address) {
+//        Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getTxHistory(address);
+//        call.enqueue(new Callback<EthWallet>() {
+//            @Override
+//            public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
+//                Toast.makeText(ProfileActivity.this, "yessirski", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<EthWallet> call, Throwable t) {
+//                Log.e("debugging", "nah bro");
+//            }
+//        });
+//    }
+
     /************ Helper functions ***********/
 
     /***** General helper functions *****/
@@ -134,7 +150,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     // binds values onto the display
-    private void populateProfile() {
+    private void addPortfolioData() {
         String portfolioValue = "$" + String.format("%,.2f", getPortfolioBalance());
         String ethBalance = String.format("%,.2f", getTotalEthAmount()) + " ETH";
         String countTx = String.format("%,d", getTxCount()) + " total transactions";

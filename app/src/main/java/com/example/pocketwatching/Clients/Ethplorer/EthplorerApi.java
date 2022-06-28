@@ -16,4 +16,7 @@ public interface EthplorerApi {
 
     @GET("getAddressInfo/{address}?apiKey=freekey")
     Call<EthWallet> getEthWallet(@Path("address") String address);
+
+//    @GET("getAddressHistory/{address}?apiKey=freekey")
+//    Call<EthWallet> getTxHistory(@Path("address") String address);
 }
