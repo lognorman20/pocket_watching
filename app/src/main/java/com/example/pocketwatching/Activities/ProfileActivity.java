@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Clients.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Etc.TokenAmountComparator;
@@ -50,6 +52,8 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Token> notValuableTokens;
     private ArrayList<Token> topTokensByAmount;
 
+    private RecyclerView rvTransactions;
+
     /**************************************************/
     /***************** Core Functions *****************/
     /**************************************************/
@@ -66,6 +70,7 @@ public class ProfileActivity extends AppCompatActivity {
         tvCountTx = findViewById(R.id.tvCountTx);
         tvEthPrice = findViewById(R.id.tvEthPrice);
         tvWelcome = findViewById(R.id.tvWelcome);
+        rvTransactions = findViewById(R.id.rvTransactions);
 
         userEthWallets = new ArrayList<>();
         valuableTokens = new ArrayList<>();
@@ -104,6 +109,8 @@ public class ProfileActivity extends AppCompatActivity {
                 goMainActivity();
             }
         });
+
+//        rvTransactions.setLayoutManager(new LinearLayoutManager());
     }
 
     // gets EthWallet object from given address
