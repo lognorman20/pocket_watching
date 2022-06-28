@@ -54,4 +54,9 @@ public class EthWallet extends JSONObject {
         this.tokens = tokens;
     }
 
+    // gets eth balance in $
+    public Double getEthBalance() {
+        return getEth().getAmount() * getEth().getPrice().getRate();
+    }
+
 }

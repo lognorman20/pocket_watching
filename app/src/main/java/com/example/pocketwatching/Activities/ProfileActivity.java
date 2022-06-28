@@ -1,7 +1,5 @@
 package com.example.pocketwatching.Activities;
 
-import static java.util.Comparator.reverseOrder;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,22 +12,21 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pocketwatching.Clients.Ethplorer.EthplorerClient;
-import com.example.pocketwatching.Etc.TokenBalanceComparator;
+import com.example.pocketwatching.Etc.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.Token;
 import com.example.pocketwatching.Models.Ethplorer.TokenInfo;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
+import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,7 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Wallet> userWallets;
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
-    private PriorityQueue<Token> topThreeTokens;
+    private MinMaxPriorityQueue<Token> topThreeTokens;
     private Comparator<Token> comparator;
 
     /************ Core functions ***********/
@@ -68,18 +65,8 @@ public class ProfileActivity extends AppCompatActivity {
         userEthWallets = new ArrayList<>();
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
-//        comparator = new TokenBalanceComparator();
-//        topThreeTokens = new PriorityQueue<Token>(Comparator.reverseOrder(), new Comparator<Token>() {
-//            @Override
-//            public int compare(Token one, Token two) {
-//                if (one.getTokenBalance() < two.getTokenBalance()){
-//                    return -1;
-//                } else if (one.getTokenBalance() > two.getTokenBalance()) {
-//                    return 1;
-//                }
-//                return 0;
-//            }
-//        });
+        comparator = new TokenAmountComparator();
+        topThreeTokens = MinMaxPriorityQueue.orderedBy(comparator).create();
 
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
         query.whereEqualTo("owner", ParseUser.getCurrentUser());
@@ -168,27 +155,28 @@ public class ProfileActivity extends AppCompatActivity {
                 if (tokenInfo.getPrice().equals(false)) {
                     notValuableTokens.add(token);
                 } else {
-                    Log.i("topthreetokens", String.valueOf(token.getTokenBalance()));
-//                    topThreeTokens.add(token);
+                    Log.i("topthreetokens", String.valueOf(token.getTokenAmount()));
+                    topThreeTokens.add(token);
                     valuableTokens.add(token);
                 }
             }
         }
 
-//        Log.i("topthreetokens", "output:");
-//        while (topThreeTokens.isEmpty() == false) {
-//            Log.i("topthreetokens", topThreeTokens.remove().getTokenBalance().toString());
-//        }
+        Log.i("topthreetokens", "output:");
+        while (topThreeTokens.isEmpty() == false) {
+            Token lastToken = topThreeTokens.remove();
+            Log.i("topthreetokens", lastToken.getTokenInfo().getSymbol() + " " + lastToken.getTokenAmount());
+        }
     }
 
     /***** Getter functions *****/
     // gets the amount of eth in all wallets
     private Double getEthAmount() {
-        Double tempBalance = 0.0;
+        Double tempAmount = 0.0;
         for (int i = 0; i < userEthWallets.size(); i++) {
-            tempBalance += userEthWallets.get(i).getEth().getBalance();
+            tempAmount += userEthWallets.get(i).getEth().getAmount();
         }
-        return tempBalance;
+        return tempAmount;
     }
 
     // gets the total transaction count from a given wallet
@@ -212,20 +200,17 @@ public class ProfileActivity extends AppCompatActivity {
 
     // get total portfolio balance
     private Double getPortfolioBalance() {
-        Double balance = getEthBalance();
+        Double balance = 0.0;
+
+        // getting eth balance from each wallet
+        for (int i = 0; i < userEthWallets.size(); i++) {
+            balance += userEthWallets.get(i).getEthBalance();
+        }
+
+        // getting other token balances from each wallet
         for (int i = 0; i < valuableTokens.size(); i++) {
-            balance += valuableTokens.get(i).getTokenBalance();
+            balance += valuableTokens.get(i).getTokenAmount();
         }
         return balance;
-    }
-
-    // gets amount of a given token
-    private Double getTokenAmount(Token token) {
-        return token.getBalance();
-    }
-
-    // gets eth balance in $
-    private Double getEthBalance() {
-        return getEthAmount() * getEthPrice();
     }
 }
