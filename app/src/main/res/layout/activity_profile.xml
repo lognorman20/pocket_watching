@@ -3,6 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/tvPortfolioValue"
+        android:layout_width="278dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="83dp"
+        android:layout_marginEnd="23dp"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="82dp"
+        android:text="Portfolio Value"
+        android:textSize="12sp" />
+
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
@@ -16,43 +39,6 @@
         android:text="Log Out" />
 
     <TextView
-        android:id="@+id/tvWalletAddress"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="69dp"
-        android:layout_marginEnd="9dp"
-        android:text="0x2efb50e952580f4ff32d8d2122853432bbf2e204"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="69dp"
-        android:text="Wallet Address"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/tvEthBalance"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="87dp"
-        android:layout_marginTop="92dp"
-        android:layout_marginEnd="23dp"
-        android:text="57626.14017601567"
-        android:textSize="12sp" />
-
-    <TextView
         android:id="@+id/tvCountTx"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -60,46 +46,9 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="115dp"
-        android:layout_marginEnd="45dp"
-        android:text="237"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/tvEthDiff"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="138dp"
-        android:layout_marginEnd="45dp"
-        android:text="-6.6"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="92dp"
-        android:text="ETH Balance"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="138dp"
-        android:text="ETH Diff"
+        android:layout_marginStart="62dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="47dp"
         android:textSize="12sp" />
 
     <TextView
@@ -108,9 +57,104 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="115dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="128dp"
         android:text="# of Txs"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="151dp"
+        android:text="ETH Price"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvEthPrice"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="39dp"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="173dp"
+        android:text="Total Tokens"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvTotalTokens"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="172dp"
+        android:layout_marginEnd="21dp"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvTopThreeTokens"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="195dp"
+        android:layout_marginEnd="17dp"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="195dp"
+        android:text="Top 3 Tokens"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="105dp"
+        android:text="ETH Amount"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tvEthAmount"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="85dp"
+        android:layout_marginTop="105dp"
+        android:layout_marginEnd="24dp"
         android:textSize="12sp" />
 
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.example.pocketwatching.Clients;
+package com.example.pocketwatching.Clients.Ethplorer;
 
 import android.location.Address;
 

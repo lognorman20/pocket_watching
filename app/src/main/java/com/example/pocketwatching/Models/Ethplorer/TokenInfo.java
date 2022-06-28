@@ -1,6 +1,17 @@
 package com.example.pocketwatching.Models.Ethplorer;
 
+import android.util.Log;
+
+import java.lang.reflect.Type;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -68,8 +79,8 @@ public class TokenInfo {
         this.name = name;
     }
 
-    public String getDecimals() {
-        return decimals;
+    public Double getDecimals() {
+        return Double.parseDouble(decimals);
     }
 
     public void setDecimals(String decimals) {
@@ -160,7 +171,7 @@ public class TokenInfo {
         return price;
     }
 
-    public void setPrice(Object price) {
+    public void setPrice(Price price) {
         this.price = price;
     }
 
@@ -170,6 +181,40 @@ public class TokenInfo {
 
     public void setPublicTags(List<String> publicTags) {
         this.publicTags = publicTags;
+    }
+
+    public static class DataStateDeserializer implements JsonDeserializer<TokenInfo> {
+        @Override
+        public TokenInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            TokenInfo tokenInfo = new Gson().fromJson(json, TokenInfo.class);
+            JsonObject elem;
+            try {
+                elem = (JsonObject) json.getAsJsonObject().get("price");
+            } catch (Exception e){
+                elem = null;
+            }
+
+            if (elem != null) {
+                Price price = new Gson().fromJson(json, Price.class);
+                price.setRate(elem.get("rate").getAsDouble());
+                price.setDiff(elem.get("diff").getAsDouble());
+                price.setDiff7d(elem.get("diff7d").getAsDouble());
+                price.setTs(elem.get("ts").getAsInt());
+                price.setMarketCapUsd(elem.get("marketCapUsd").getAsDouble());
+                price.setAvailableSupply(elem.get("availableSupply").getAsDouble());
+
+                if (elem.has("diff30d")){
+                    price.setDiff30d(elem.get("diff30d").getAsDouble());
+                }
+
+                price.setDiff7d(elem.get("diff7d").getAsDouble());
+                price.setCurrency(elem.get("currency").getAsString());
+
+                tokenInfo.setPrice(price);
+            }
+
+            return tokenInfo;
+        }
     }
 
 }

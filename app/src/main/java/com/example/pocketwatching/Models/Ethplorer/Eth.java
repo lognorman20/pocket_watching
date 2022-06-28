@@ -22,11 +22,11 @@ public class Eth {
         this.price = price;
     }
 
-    public Double getBalance() {
+    public Double getAmount() {
         return balance;
     }
 
-    public void setBalance(Double balance) {
+    public void setAmount(Double balance) {
         this.balance = balance;
     }
 
@@ -34,7 +34,7 @@ public class Eth {
         return rawBalance;
     }
 
-    public void setRawBalance(String rawBalance) {
+    public void setRawAmount(String rawBalance) {
         this.rawBalance = rawBalance;
     }
 }

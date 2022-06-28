@@ -11,25 +11,22 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.pocketwatching.Clients.EthplorerClient;
-import com.example.pocketwatching.Models.Ethplorer.Eth;
+import com.example.pocketwatching.Clients.Ethplorer.EthplorerClient;
+import com.example.pocketwatching.Etc.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.EthWallet;
+import com.example.pocketwatching.Models.Ethplorer.Token;
+import com.example.pocketwatching.Models.Ethplorer.TokenInfo;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
-import com.google.gson.JsonObject;
+import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,24 +34,37 @@ import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity {
     private Button btnLogout;
-    private TextView ethBalance;
-    private TextView txCount;
-    private TextView ethDiff;
+    private TextView tvEthBalance;
+    private TextView tvPortfolioValue;
+    private TextView tvTopThreeTokens;
+    private TextView tvCountTx;
+    private TextView tvEthPrice;
+    private TextView tvTotalTokens;
 
-    private List<EthWallet> userEthWallets;
+    private static List<EthWallet> userEthWallets;
     private List<Wallet> userWallets;
+    private List<Token> valuableTokens;
+    private List<Token> notValuableTokens;
+    private ArrayList<Token> topTokensByAmount;
 
+    /************ Core functions ***********/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
         btnLogout = findViewById(R.id.btnLogout);
-        ethBalance = findViewById(R.id.tvEthBalance);
-        txCount = findViewById(R.id.tvCountTx);
-        ethDiff = findViewById(R.id.tvEthDiff);
+        tvEthBalance = findViewById(R.id.tvEthAmount);
+        tvPortfolioValue = findViewById(R.id.tvPortfolioValue);
+        tvTopThreeTokens = findViewById(R.id.tvTopThreeTokens);
+        tvTotalTokens = findViewById(R.id.tvTotalTokens);
+        tvCountTx = findViewById(R.id.tvCountTx);
+        tvEthPrice = findViewById(R.id.tvEthPrice);
 
         userEthWallets = new ArrayList<>();
+        valuableTokens = new ArrayList<>();
+        notValuableTokens = new ArrayList<>();
+        topTokensByAmount = new ArrayList<>();
 
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
         query.whereEqualTo("owner", ParseUser.getCurrentUser());
@@ -67,11 +77,17 @@ public class ProfileActivity extends AppCompatActivity {
                         String walletAddress = userWallets.get(i).getWalletAddress();
                         getEthWallet(walletAddress);
                     }
+                } else {
+                    // is this how i should throw errors?
+                    try {
+                        throw new Exception("There was an error: " + e);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         });
 
-        Log.i("debugging", String.valueOf(userEthWallets.size()));
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,6 +97,34 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    // gets EthWallet object from given address
+    private synchronized void getEthWallet(String address) {
+        Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getEthWallet(address);
+        call.enqueue(new Callback<EthWallet>() {
+            @Override
+            public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
+                userEthWallets.add(response.body());
+                if (userEthWallets.size() == userWallets.size()) {
+                    initValuableTokens();
+                    populateProfile();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EthWallet> call, Throwable t) {
+                // how much does line length matter?
+                Toast.makeText(ProfileActivity.this, "Failed to get user wallet", Toast.LENGTH_SHORT).show();
+                // see note above about throwing exceptions, keeping log for now
+                Log.e("deserialize", t.toString());
+                return;
+            }
+        });
+    }
+
+    /************ Helper functions ***********/
+
+    /***** General helper functions *****/
+    // takes the user to the main activity
     private void goMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // this makes sure the Back button won't work
@@ -89,28 +133,101 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
     }
 
-    private synchronized void getEthWallet(String address) {
-        Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getEthWallet(address);
-        call.enqueue(new Callback<EthWallet>() {
-            @Override
-            public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
-                userEthWallets.add(response.body());
-                if (userEthWallets.size() == userWallets.size()) {
-                    populateProfile();
-                }
-            }
+    // binds values onto the display
+    private void populateProfile() {
+        String portfolioValue = "$" + String.format("%,.2f", getPortfolioBalance());
+        String ethBalance = String.format("%,.2f", getTotalEthAmount()) + " ETH";
+        String countTx = String.format("%,d", getTxCount()) + " total transactions";
+        String ethPrice = "$" + String.format("%,.2f", getEthPrice());
+        String totalTokens = String.format("%,d", getTotalTokens());
+        String topThreeTokensText = String.valueOf(getTopThreeTokensByAmount());
 
-            @Override
-            public void onFailure(Call<EthWallet> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "Failed to get user wallet", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        });
+        tvPortfolioValue.setText(portfolioValue);
+        tvEthBalance.setText(ethBalance);
+        tvCountTx.setText(countTx);
+        tvEthPrice.setText(ethPrice);
+        tvTotalTokens.setText(totalTokens);
+        tvTopThreeTokens.setText(topThreeTokensText);
     }
 
-    private void populateProfile() {
-        ethBalance.setText(userEthWallets.get(0).getEth().getBalance().toString());
-        txCount.setText(userEthWallets.get(0).getCountTxs().toString());
-        ethDiff.setText(userEthWallets.get(0).getEth().getPrice().getRate().toString());
+    /***** Initialization functions *****/
+    // init lists of valuable/not valuable tokens, top 3 tokens
+    private void initValuableTokens() {
+        Comparator<Token> comparator = new TokenAmountComparator();
+        MinMaxPriorityQueue<Token> topThreeTokens = MinMaxPriorityQueue.orderedBy(comparator).create();
+
+        for (int i = 0; i < userEthWallets.size(); i++) {
+            for (int j = 0; j < userEthWallets.get(i).getTokens().size(); j++) {
+                Token token = userEthWallets.get(i).getTokens().get(j);
+                TokenInfo tokenInfo = token.getTokenInfo();
+                if (tokenInfo.getPrice().equals(false)) {
+                    notValuableTokens.add(token);
+                } else {
+                    topThreeTokens.add(token);
+                    valuableTokens.add(token);
+                }
+            }
+        }
+
+        // gets the top three tokens by investment distribution, add balance based implementation??
+        for (int i = 0; i < topThreeTokens.size(); i++) {
+            topTokensByAmount.add(topThreeTokens.pollLast());
+        }
+    }
+
+    /***** Getter functions *****/
+    // gets the amount of eth in all wallets
+    private Double getTotalEthAmount() {
+        Double tempAmount = 0.0;
+        for (int i = 0; i < userEthWallets.size(); i++) {
+            tempAmount += userEthWallets.get(i).getEth().getAmount();
+        }
+        return tempAmount;
+    }
+
+    // gets the total transaction count from a given wallet
+    private int getTxCount() {
+        int count = 0;
+        for (int i = 0; i < userEthWallets.size(); i++) {
+            count += userEthWallets.get(i).getCountTxs();
+        }
+        return count;
+    }
+
+    // gets current eth price
+    private Double getEthPrice() {
+        return userEthWallets.get(0).getEth().getPrice().getRate();
+    }
+
+    // gets total number of tokens that aren't ETH
+    private int getTotalTokens() {
+        return valuableTokens.size() + notValuableTokens.size();
+    }
+
+    // get total portfolio balance
+    private Double getPortfolioBalance() {
+        Double balance = 0.0;
+
+        // getting eth balance from each wallet
+        for (int i = 0; i < userEthWallets.size(); i++) {
+            balance += userEthWallets.get(i).getEthBalance();
+        }
+
+        // getting other token balances from each wallet
+        for (int i = 0; i < valuableTokens.size(); i++) {
+            balance += valuableTokens.get(i).getTokenAmount();
+        }
+        return balance;
+    }
+
+    // gets list of top three tokens by amount
+    private List<String> getTopThreeTokensByAmount() {
+        List<String> output = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            if (topTokensByAmount.get(i) != null) {
+                output.add(topTokensByAmount.get(i).getTokenInfo().getSymbol());
+            }
+        }
+        return output;
     }
 }

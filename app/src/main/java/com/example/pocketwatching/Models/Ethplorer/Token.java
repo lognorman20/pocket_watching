@@ -29,11 +29,11 @@ public class Token {
         this.tokenInfo = tokenInfo;
     }
 
-    public Double getBalance() {
+    public Double getAmount() {
         return balance;
     }
 
-    public void setBalance(Double balance) {
+    public void setAmount(Double balance) {
         this.balance = balance;
     }
 
@@ -53,12 +53,19 @@ public class Token {
         this.totalOut = totalOut;
     }
 
-    public String getRawBalance() {
+    public String getRawAmount() {
         return rawBalance;
     }
 
-    public void setRawBalance(String rawBalance) {
+    public void setRawAmount(String rawBalance) {
         this.rawBalance = rawBalance;
     }
 
+    // gets token balance in $
+    public Double getTokenAmount() {
+        Double amount = getAmount() / (Math.pow(10, getTokenInfo().getDecimals()));
+        Price price = (Price) getTokenInfo().getPrice(); // problem line
+        Double balance = amount * price.getRate();
+        return balance;
+    }
 }
