@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,16 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvTotalTokens;
     private TextView tvWelcome;
 
+    // text views that don't change
+    private TextView portfolioInformation;
+    private TextView portfolioBalance;
+    private TextView totalTokens;
+    private TextView ethAmount;
+    private TextView numTx;
+    private TextView topThreeTokens;
+    private TextView ethPrice;
+
+
     private static List<EthWallet> userEthWallets;
     private List<Wallet> userWallets;
     private List<Token> valuableTokens;
@@ -61,6 +72,8 @@ public class ProfileActivity extends AppCompatActivity {
     private RecyclerView rvTransactions;
     private TransactionAdapter adapter;
     private List<Transaction> txs;
+
+    private ProgressBar pbApi;
 
     public ProfileActivity() {}
 
@@ -81,6 +94,9 @@ public class ProfileActivity extends AppCompatActivity {
         tvEthPrice = findViewById(R.id.tvEthPrice);
         tvWelcome = findViewById(R.id.tvWelcome);
 
+        pbApi = findViewById(R.id.pbApi);
+        pbApi.setVisibility(View.INVISIBLE);
+
         rvTransactions = findViewById(R.id.rvTransactions);
         txs = new ArrayList<>();
         adapter = new TransactionAdapter(this, txs);
@@ -89,6 +105,8 @@ public class ProfileActivity extends AppCompatActivity {
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
         topTokensByAmount = new ArrayList<>();
+
+        startLoading();
 
         tvWelcome.setText(ParseUser.getCurrentUser().getUsername() + "'s Portfolio");
 
@@ -125,6 +143,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvTransactions.setAdapter(adapter);
+    }
+
+    private void startLoading() {
+        tvWelcome.setVisibility(View.INVISIBLE);
+        tvWelcome.setVisibility(View.INVISIBLE);
+
+
+        pbApi.setVisibility(View.VISIBLE);
     }
 
     // gets EthWallet object from given address
