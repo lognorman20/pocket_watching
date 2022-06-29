@@ -143,7 +143,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-            btnLogout.setOnClickListener(new View.OnClickListener() {
+        btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ParseUser.logOut();
@@ -153,38 +153,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvTransactions.setAdapter(adapter);
-    }
-
-    private void startLoading() {
-        tvWelcome.setVisibility(View.INVISIBLE);
-        btnLogout.setVisibility(View.INVISIBLE);
-        rvTransactions.setVisibility(View.INVISIBLE);
-        portfolioInformation.setVisibility(View.INVISIBLE);
-        portfolioBalance.setVisibility(View.INVISIBLE);
-        totalTokens.setVisibility(View.INVISIBLE);
-        ethAmount.setVisibility(View.INVISIBLE);
-        numTx.setVisibility(View.INVISIBLE);
-        topThreeTokens.setVisibility(View.INVISIBLE);
-        ethPrice.setVisibility(View.INVISIBLE);
-        transactionHistory.setVisibility(View.INVISIBLE);
-
-        pbApi.setVisibility(View.VISIBLE);
-    }
-
-    private void stopLoading() {
-        tvWelcome.setVisibility(View.VISIBLE);
-        btnLogout.setVisibility(View.VISIBLE);
-        rvTransactions.setVisibility(View.VISIBLE);
-        portfolioInformation.setVisibility(View.VISIBLE);
-        portfolioBalance.setVisibility(View.VISIBLE);
-        totalTokens.setVisibility(View.VISIBLE);
-        ethAmount.setVisibility(View.VISIBLE);
-        numTx.setVisibility(View.VISIBLE);
-        topThreeTokens.setVisibility(View.VISIBLE);
-        ethPrice.setVisibility(View.VISIBLE);
-        transactionHistory.setVisibility(View.VISIBLE);
-
-        pbApi.setVisibility(View.INVISIBLE);
     }
 
     // gets EthWallet object from given address
@@ -286,6 +254,40 @@ public class ProfileActivity extends AppCompatActivity {
         for (int i = 0; i < topThreeTokens.size(); i++) {
             topTokensByAmount.add(topThreeTokens.pollLast());
         }
+    }
+
+    // shows loading screen
+    private void startLoading() {
+        tvWelcome.setVisibility(View.INVISIBLE);
+        btnLogout.setVisibility(View.INVISIBLE);
+        rvTransactions.setVisibility(View.INVISIBLE);
+        portfolioInformation.setVisibility(View.INVISIBLE);
+        portfolioBalance.setVisibility(View.INVISIBLE);
+        totalTokens.setVisibility(View.INVISIBLE);
+        ethAmount.setVisibility(View.INVISIBLE);
+        numTx.setVisibility(View.INVISIBLE);
+        topThreeTokens.setVisibility(View.INVISIBLE);
+        ethPrice.setVisibility(View.INVISIBLE);
+        transactionHistory.setVisibility(View.INVISIBLE);
+
+        pbApi.setVisibility(View.VISIBLE);
+    }
+
+    // hides loading screen
+    private void stopLoading() {
+        tvWelcome.setVisibility(View.VISIBLE);
+        btnLogout.setVisibility(View.VISIBLE);
+        rvTransactions.setVisibility(View.VISIBLE);
+        portfolioInformation.setVisibility(View.VISIBLE);
+        portfolioBalance.setVisibility(View.VISIBLE);
+        totalTokens.setVisibility(View.VISIBLE);
+        ethAmount.setVisibility(View.VISIBLE);
+        numTx.setVisibility(View.VISIBLE);
+        topThreeTokens.setVisibility(View.VISIBLE);
+        ethPrice.setVisibility(View.VISIBLE);
+        transactionHistory.setVisibility(View.VISIBLE);
+
+        pbApi.setVisibility(View.INVISIBLE);
     }
 
     /***** Getter functions *****/
