@@ -1,5 +1,7 @@
 package com.example.pocketwatching.Activities;
 
+import static com.example.pocketwatching.Models.Transaction.fromTxHistoryList;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,12 +12,17 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Clients.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Etc.TokenAmountComparator;
-import com.example.pocketwatching.Models.Ethplorer.EthWallet;
-import com.example.pocketwatching.Models.Ethplorer.Token;
-import com.example.pocketwatching.Models.Ethplorer.TokenInfo;
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
+import com.example.pocketwatching.Models.Transaction;
+import com.example.pocketwatching.Models.TxHistory;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
 import com.google.common.collect.MinMaxPriorityQueue;
@@ -24,9 +31,12 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,6 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvCountTx;
     private TextView tvEthPrice;
     private TextView tvTotalTokens;
+    private TextView tvWelcome;
 
     private static List<EthWallet> userEthWallets;
     private List<Wallet> userWallets;
@@ -47,7 +58,15 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Token> notValuableTokens;
     private ArrayList<Token> topTokensByAmount;
 
-    /************ Core functions ***********/
+    private RecyclerView rvTransactions;
+    private TransactionAdapter adapter;
+    private List<Transaction> txs;
+
+    public ProfileActivity() {}
+
+    /**************************************************/
+    /***************** Core Functions *****************/
+    /**************************************************/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +79,18 @@ public class ProfileActivity extends AppCompatActivity {
         tvTotalTokens = findViewById(R.id.tvTotalTokens);
         tvCountTx = findViewById(R.id.tvCountTx);
         tvEthPrice = findViewById(R.id.tvEthPrice);
+        tvWelcome = findViewById(R.id.tvWelcome);
+
+        rvTransactions = findViewById(R.id.rvTransactions);
+        txs = new ArrayList<>();
+        adapter = new TransactionAdapter(this, txs);
 
         userEthWallets = new ArrayList<>();
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
         topTokensByAmount = new ArrayList<>();
+
+        tvWelcome.setText(ParseUser.getCurrentUser().getUsername() + "'s Portfolio");
 
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
         query.whereEqualTo("owner", ParseUser.getCurrentUser());
@@ -76,25 +102,29 @@ public class ProfileActivity extends AppCompatActivity {
                     for (int i = 0; i < userWallets.size(); i++) {
                         String walletAddress = userWallets.get(i).getWalletAddress();
                         getEthWallet(walletAddress);
+                        try {
+                            Thread.sleep(2000); // optimize with observables?
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                        getTxHistory(walletAddress);
                     }
                 } else {
-                    // is this how i should throw errors?
-                    try {
-                        throw new Exception("There was an error: " + e);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+                    Toast.makeText(ProfileActivity.this, "Failed to get user wallets", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+            btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ParseUser.logOut();
                 goMainActivity();
             }
         });
+
+        rvTransactions.setLayoutManager(new LinearLayoutManager(this));
+        rvTransactions.setAdapter(adapter);
     }
 
     // gets EthWallet object from given address
@@ -106,22 +136,44 @@ public class ProfileActivity extends AppCompatActivity {
                 userEthWallets.add(response.body());
                 if (userEthWallets.size() == userWallets.size()) {
                     initValuableTokens();
-                    populateProfile();
+                    addPortfolioData();
                 }
             }
 
             @Override
             public void onFailure(Call<EthWallet> call, Throwable t) {
-                // how much does line length matter?
-                Toast.makeText(ProfileActivity.this, "Failed to get user wallet", Toast.LENGTH_SHORT).show();
-                // see note above about throwing exceptions, keeping log for now
-                Log.e("deserialize", t.toString());
+                Toast.makeText(ProfileActivity.this, "Failed to get user wallet. " + t, Toast.LENGTH_SHORT).show();
                 return;
             }
         });
     }
 
-    /************ Helper functions ***********/
+    private synchronized void getTxHistory(String address) {
+        Call<List<TxHistory>> call = (Call<List<TxHistory>>) EthplorerClient.getInstance().getEthplorerApi().getTxHistory(address);
+        call.enqueue(new Callback<List<TxHistory>>() {
+            @Override
+            public void onResponse(Call<List<TxHistory>> call, Response<List<TxHistory>> response) {
+                try {
+                    List<TxHistory> txHistory = response.body();
+                    List<Transaction> cheese = fromTxHistoryList(txHistory);
+                    txs.addAll(cheese);
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    Toast.makeText(ProfileActivity.this, "Failed to add txHistory to txs", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<TxHistory>> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "Failed to get txHistory", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**************************************************/
+    /**************** Helper Functions ****************/
+    /**************************************************/
 
     /***** General helper functions *****/
     // takes the user to the main activity
@@ -134,7 +186,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     // binds values onto the display
-    private void populateProfile() {
+    private void addPortfolioData() {
         String portfolioValue = "$" + String.format("%,.2f", getPortfolioBalance());
         String ethBalance = String.format("%,.2f", getTotalEthAmount()) + " ETH";
         String countTx = String.format("%,d", getTxCount()) + " total transactions";
@@ -223,10 +275,12 @@ public class ProfileActivity extends AppCompatActivity {
     // gets list of top three tokens by amount
     private List<String> getTopThreeTokensByAmount() {
         List<String> output = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            if (topTokensByAmount.get(i) != null) {
+        int i = 0;
+        while (i < 3) {
+            if (i < topTokensByAmount.size()) {
                 output.add(topTokensByAmount.get(i).getTokenInfo().getSymbol());
             }
+            i++;
         }
         return output;
     }

@@ -47,9 +47,9 @@ public class LoginActivity extends AppCompatActivity {
             public void done(ParseUser user, ParseException e) {
                 if (e != null) {
                     Toast.makeText(LoginActivity.this, "Issue with login", Toast.LENGTH_SHORT).show();
+                    Log.e("login debugging", String.valueOf(e));
                     return;
                 }
-                Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
                 goProfileActivity();
             }
         });
