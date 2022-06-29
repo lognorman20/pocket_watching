@@ -1,19 +1,11 @@
-package com.example.pocketwatching.Models;
+package com.example.pocketwatching.Models.Ethplorer;
 
-import android.util.Log;
-
-import com.parse.ParseException;
-
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 // might be obsolete, txHistory handles these issues

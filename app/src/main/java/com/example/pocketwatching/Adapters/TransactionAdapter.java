@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pocketwatching.Models.Transaction;
+import com.example.pocketwatching.Models.Ethplorer.Transaction;
 import com.example.pocketwatching.R;
 
 import java.util.List;

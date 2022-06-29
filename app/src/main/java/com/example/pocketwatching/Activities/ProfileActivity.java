@@ -1,10 +1,9 @@
 package com.example.pocketwatching.Activities;
 
-import static com.example.pocketwatching.Models.Transaction.fromTxHistoryList;
+import static com.example.pocketwatching.Models.Ethplorer.Transaction.fromTxHistoryList;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -22,8 +21,8 @@ import com.example.pocketwatching.Etc.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
-import com.example.pocketwatching.Models.Transaction;
-import com.example.pocketwatching.Models.TxHistory;
+import com.example.pocketwatching.Models.Ethplorer.Transaction;
+import com.example.pocketwatching.Models.Ethplorer.TxHistory;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
 import com.google.common.collect.MinMaxPriorityQueue;
@@ -37,7 +36,6 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -222,13 +220,13 @@ public class ProfileActivity extends AppCompatActivity {
         String totalTokens = String.format("%,d", getTotalTokens());
         String topThreeTokensText = String.valueOf(getTopThreeTokensByAmount());
 
-        stopLoading();
         tvPortfolioValue.setText(portfolioValue);
         tvEthBalance.setText(ethBalance);
         tvCountTx.setText(countTx);
         tvEthPrice.setText(ethPrice);
         tvTotalTokens.setText(totalTokens);
         tvTopThreeTokens.setText(topThreeTokensText);
+        stopLoading();
     }
 
     /***** Initialization functions *****/
@@ -346,5 +344,15 @@ public class ProfileActivity extends AppCompatActivity {
             i++;
         }
         return output;
+    }
+
+    private void getHistoricalBalance() {
+        /*
+        1) Get the current block height from moralis
+        2) Get the block height from last week from moralis
+        3) Break block heights into intervals to get wallet balances from
+        4) Query an API for wallet balance at each interval
+        5) Add balance and time pair to another list
+        */
     }
 }
