@@ -171,6 +171,22 @@ public class ProfileActivity extends AppCompatActivity {
         pbApi.setVisibility(View.VISIBLE);
     }
 
+    private void stopLoading() {
+        tvWelcome.setVisibility(View.VISIBLE);
+        btnLogout.setVisibility(View.VISIBLE);
+        rvTransactions.setVisibility(View.VISIBLE);
+        portfolioInformation.setVisibility(View.VISIBLE);
+        portfolioBalance.setVisibility(View.VISIBLE);
+        totalTokens.setVisibility(View.VISIBLE);
+        ethAmount.setVisibility(View.VISIBLE);
+        numTx.setVisibility(View.VISIBLE);
+        topThreeTokens.setVisibility(View.VISIBLE);
+        ethPrice.setVisibility(View.VISIBLE);
+        transactionHistory.setVisibility(View.VISIBLE);
+
+        pbApi.setVisibility(View.INVISIBLE);
+    }
+
     // gets EthWallet object from given address
     private synchronized void getEthWallet(String address) {
         Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getEthWallet(address);
@@ -238,6 +254,7 @@ public class ProfileActivity extends AppCompatActivity {
         String totalTokens = String.format("%,d", getTotalTokens());
         String topThreeTokensText = String.valueOf(getTopThreeTokensByAmount());
 
+        stopLoading();
         tvPortfolioValue.setText(portfolioValue);
         tvEthBalance.setText(ethBalance);
         tvCountTx.setText(countTx);
