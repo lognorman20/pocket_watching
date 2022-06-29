@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tvFrom"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="6/28/22" />
+        tools:text="6/28/22 12:56" />
 
     <TextView
         android:id="@+id/textView14"
@@ -120,15 +120,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/bruh"
-        android:layout_width="45dp"
+        android:id="@+id/tvTo"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="125dp"
-        android:text="cheese"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="88dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="0xd24" />
+        tools:text="0xd24..." />
 
     <ImageView
         android:id="@+id/ivArrow"
@@ -138,24 +137,24 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="6dp"
+        android:layout_marginEnd="4dp"
         android:layout_toEndOf="@+id/tvFrom"
-        app:layout_constraintEnd_toStartOf="@+id/bruh"
+        app:layout_constraintEnd_toStartOf="@+id/tvTo"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_arrow_forward_24" />
 
     <TextView
         android:id="@+id/tvFrom"
-        android:layout_width="40dp"
+        android:layout_width="50dp"
         android:layout_height="18dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
         app:layout_constraintEnd_toStartOf="@+id/ivArrow"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="0x2ef" />
+        tools:text="0x2ef..." />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

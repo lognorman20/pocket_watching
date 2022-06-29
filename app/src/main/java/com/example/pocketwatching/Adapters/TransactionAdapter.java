@@ -63,7 +63,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvTo = itemView.findViewById(R.id.tvFrom);
+            tvTo = itemView.findViewById(R.id.tvTo);
             tvFrom = itemView.findViewById(R.id.tvFrom);
             tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
             tvValue = itemView.findViewById(R.id.tvValue);
@@ -73,8 +73,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }
 
         public void bind(Transaction tx) {
-            tvTo.setText("aisdlkhakshdlakhsdlkahsdlkahsdlkahsd");
-            tvFrom.setText(tx.from.substring(0,5));
+            tvTo.setText(tx.to.substring(0,5) + "...");
+            tvFrom.setText(tx.from.substring(0,5) + "...");
             tvTimestamp.setText(tx.timestamp);
             tvValue.setText(tx.value.toString());
             tvUsdPrice.setText(tx.usdPrice.toString());
