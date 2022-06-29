@@ -73,12 +73,16 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }
 
         public void bind(Transaction tx) {
+            String value = String.format("%,.2f", tx.value);
+            String usdPrice = "$" + String.format("%,.2f", tx.usdPrice);
+            String usdValue = "$" + String.format("%,.2f", tx.usdValue);
+
             tvTo.setText(tx.to.substring(0,5) + "...");
             tvFrom.setText(tx.from.substring(0,5) + "...");
             tvTimestamp.setText(tx.timestamp);
-            tvValue.setText(tx.value.toString());
-            tvUsdPrice.setText(tx.usdPrice.toString());
-            tvUsdValue.setText(tx.usdValue.toString());
+            tvValue.setText(value);
+            tvUsdPrice.setText(usdPrice);
+            tvUsdValue.setText(usdValue);
             // add ability to change the arrow based on sending or receiving
         }
     }

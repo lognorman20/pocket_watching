@@ -31,7 +31,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginEnd="36dp"
         android:text="USD Value"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -40,7 +40,7 @@
 
     <TextView
         android:id="@+id/textView11"
-        android:layout_width="50dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
@@ -48,7 +48,7 @@
         android:layout_marginStart="43dp"
         android:layout_marginTop="11dp"
         android:layout_marginEnd="49dp"
-        android:text="Value"
+        android:text="Token Value"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toStartOf="@+id/textView14"

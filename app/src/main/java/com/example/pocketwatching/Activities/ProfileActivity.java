@@ -62,8 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TransactionAdapter adapter;
     private List<Transaction> txs;
 
-    public ProfileActivity() {
-    }
+    public ProfileActivity() {}
 
     /**************************************************/
     /***************** Core Functions *****************/
@@ -276,10 +275,12 @@ public class ProfileActivity extends AppCompatActivity {
     // gets list of top three tokens by amount
     private List<String> getTopThreeTokensByAmount() {
         List<String> output = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            if (topTokensByAmount.get(i) != null) {
+        int i = 0;
+        while (i < 3) {
+            if (i < topTokensByAmount.size()) {
                 output.add(topTokensByAmount.get(i).getTokenInfo().getSymbol());
             }
+            i++;
         }
         return output;
     }
