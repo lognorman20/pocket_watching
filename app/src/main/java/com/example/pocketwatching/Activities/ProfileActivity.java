@@ -61,6 +61,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView numTx;
     private TextView topThreeTokens;
     private TextView ethPrice;
+    private TextView transactionHistory;
 
 
     private static List<EthWallet> userEthWallets;
@@ -93,6 +94,15 @@ public class ProfileActivity extends AppCompatActivity {
         tvCountTx = findViewById(R.id.tvCountTx);
         tvEthPrice = findViewById(R.id.tvEthPrice);
         tvWelcome = findViewById(R.id.tvWelcome);
+
+        portfolioInformation = findViewById(R.id.portfolioInformation);
+        portfolioBalance = findViewById(R.id.portfolioBalance);
+        totalTokens = findViewById(R.id.totalTokens);
+        ethAmount = findViewById(R.id.ethAmount);
+        numTx = findViewById(R.id.numTx);
+        topThreeTokens = findViewById(R.id.topThreeTokens);
+        ethPrice = findViewById(R.id.ethPrice);
+        transactionHistory = findViewById(R.id.transactionHistory);
 
         pbApi = findViewById(R.id.pbApi);
         pbApi.setVisibility(View.INVISIBLE);
@@ -147,8 +157,16 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void startLoading() {
         tvWelcome.setVisibility(View.INVISIBLE);
-        tvWelcome.setVisibility(View.INVISIBLE);
-
+        btnLogout.setVisibility(View.INVISIBLE);
+        rvTransactions.setVisibility(View.INVISIBLE);
+        portfolioInformation.setVisibility(View.INVISIBLE);
+        portfolioBalance.setVisibility(View.INVISIBLE);
+        totalTokens.setVisibility(View.INVISIBLE);
+        ethAmount.setVisibility(View.INVISIBLE);
+        numTx.setVisibility(View.INVISIBLE);
+        topThreeTokens.setVisibility(View.INVISIBLE);
+        ethPrice.setVisibility(View.INVISIBLE);
+        transactionHistory.setVisibility(View.INVISIBLE);
 
         pbApi.setVisibility(View.VISIBLE);
     }
