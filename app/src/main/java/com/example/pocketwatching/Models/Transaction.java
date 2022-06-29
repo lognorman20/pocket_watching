@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 // might be obsolete, txHistory handles these issues
 public class Transaction {
@@ -54,8 +55,9 @@ public class Transaction {
     public static String toDate(long unixTime) {
         Date date = new Date();
         date.setTime(unixTime * 1000);
-        SimpleDateFormat sdf = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm");
-        sdf.setTimeZone(java.util.TimeZone.getTimeZone("GMT-4"));
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("M/dd/yy h:mm a");
+        TimeZone tz = TimeZone.getDefault();
+        sdf.setTimeZone(java.util.TimeZone.getTimeZone(String.valueOf(tz)));
         String formattedDate = sdf.format(date);
         return formattedDate;
     }
