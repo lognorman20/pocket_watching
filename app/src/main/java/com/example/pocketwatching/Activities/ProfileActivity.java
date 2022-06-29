@@ -1,5 +1,7 @@
 package com.example.pocketwatching.Activities;
 
+import static com.example.pocketwatching.Models.Transaction.fromTxHistoryList;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,11 +15,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Clients.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Etc.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
+import com.example.pocketwatching.Models.Transaction;
 import com.example.pocketwatching.Models.TxHistory;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
@@ -26,6 +30,8 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,6 +59,11 @@ public class ProfileActivity extends AppCompatActivity {
     private ArrayList<Token> topTokensByAmount;
 
     private RecyclerView rvTransactions;
+    private TransactionAdapter adapter;
+    private List<Transaction> txs;
+
+    public ProfileActivity() {
+    }
 
     /**************************************************/
     /***************** Core Functions *****************/
@@ -70,7 +81,10 @@ public class ProfileActivity extends AppCompatActivity {
         tvCountTx = findViewById(R.id.tvCountTx);
         tvEthPrice = findViewById(R.id.tvEthPrice);
         tvWelcome = findViewById(R.id.tvWelcome);
+
         rvTransactions = findViewById(R.id.rvTransactions);
+        txs = new ArrayList<>();
+        adapter = new TransactionAdapter(this, txs);
 
         userEthWallets = new ArrayList<>();
         valuableTokens = new ArrayList<>();
@@ -90,7 +104,7 @@ public class ProfileActivity extends AppCompatActivity {
                         String walletAddress = userWallets.get(i).getWalletAddress();
                         getEthWallet(walletAddress);
                         try {
-                            Thread.sleep(1600); // optimize with observables?
+                            Thread.sleep(2000); // optimize with observables?
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
@@ -102,7 +116,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+            btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ParseUser.logOut();
@@ -110,7 +124,8 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-//        rvTransactions.setLayoutManager(new LinearLayoutManager());
+        rvTransactions.setLayoutManager(new LinearLayoutManager(this));
+        rvTransactions.setAdapter(adapter);
     }
 
     // gets EthWallet object from given address
@@ -139,8 +154,15 @@ public class ProfileActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<TxHistory>>() {
             @Override
             public void onResponse(Call<List<TxHistory>> call, Response<List<TxHistory>> response) {
-                Toast.makeText(ProfileActivity.this, "Successfully got txHistory", Toast.LENGTH_SHORT).show();
-
+                try {
+                    List<TxHistory> txHistory = response.body();
+                    List<Transaction> cheese = fromTxHistoryList(txHistory);
+                    txs.addAll(cheese);
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    Toast.makeText(ProfileActivity.this, "Failed to add txHistory to txs", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
             }
 
             @Override

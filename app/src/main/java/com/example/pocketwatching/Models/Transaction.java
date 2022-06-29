@@ -14,43 +14,65 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+// might be obsolete, txHistory handles these issues
 public class Transaction {
-    private String timestamp;
-    private String from;
-    private String to;
-    private Double value;
-    private Double usdPrice;
-    private Double usdValue;
-    private boolean success;
+    public String timestamp;
+    public String from;
+    public String to;
+    public Double value;
+    public Double usdPrice;
+    public Double usdValue;
+    public boolean success;
 
-    public static Transaction fromJson(JSONObject jsonObject) throws JSONException {
+    public static final int SECOND_MILLIS = 1000;
+    public static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
+    public static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
+    public static final int DAY_MILLIS = 24 * HOUR_MILLIS;
+
+    public static Transaction fromJson(TxHistory history) throws JSONException {
         Transaction tx = new Transaction();
-        tx.from = (String) jsonObject.get("from");
-        tx.success = (boolean) jsonObject.get("success");
-        tx.to = (String) jsonObject.get("to");
-        tx.timestamp = toDate((String) jsonObject.get("timestamp"));
-        tx.usdPrice = (Double) jsonObject.get("usdPrice");
-        tx.usdValue = (Double) jsonObject.get("usdValue");
-        tx.value = (Double) jsonObject.get("value");
+        tx.from = history.getFrom();
+        tx.success = history.isSuccess();
+        tx.to = history.getTo();
+        tx.timestamp = toDate(history.getTimestamp());
+        tx.usdPrice = Double.valueOf(history.getUsdPrice());
+        tx.usdValue = Double.valueOf(history.getUsdValue());
+        tx.value = Double.valueOf(history.getValue());
         return tx;
     }
 
-    public static List<Transaction> fromJsonArray(JSONArray jsonArray) throws JSONException {
+    public static List<Transaction> fromTxHistoryList(List<TxHistory> txHistory) throws JSONException {
         List<Transaction> txs = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            Transaction newTx = fromJson(jsonArray.getJSONObject(i));
-            if (newTx != null) {
-                txs.add(newTx);
-            }
+        for (int i = 0; i < txHistory.size(); i++) {
+            Transaction tx = fromJson(txHistory.get(i));
+            txs.add(tx);
         }
         return txs;
     }
 
-    public static String toDate(String unixTime) {
-        Date date = new Date();
-        date.setTime(Long.parseLong(unixTime) * 1000);
-        return String.valueOf(date);
+    public static String toDate(long unixTime) {
+        String format = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(format, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        long time = unixTime;
+        long now = System.currentTimeMillis();
+
+        final long diff = now - time;
+        if (diff < MINUTE_MILLIS) {
+            return "just now";
+        } else if (diff < 2 * MINUTE_MILLIS) {
+            return "a minute ago";
+        } else if (diff < 50 * MINUTE_MILLIS) {
+            return diff / MINUTE_MILLIS + " m";
+        } else if (diff < 90 * MINUTE_MILLIS) {
+            return "an hour ago";
+        } else if (diff < 24 * HOUR_MILLIS) {
+            return diff / HOUR_MILLIS + " h";
+        } else if (diff < 48 * HOUR_MILLIS) {
+            return "yesterday";
+        } else {
+            return diff / DAY_MILLIS + " d";
+        }
     }
-
-
 }

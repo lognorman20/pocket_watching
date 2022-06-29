@@ -3,7 +3,9 @@ package com.example.pocketwatching.Models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TxHistory {
+import org.json.JSONObject;
+
+public class TxHistory extends JSONObject {
 
     @SerializedName("timestamp")
     @Expose

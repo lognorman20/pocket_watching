@@ -4,14 +4,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Models.Transaction;
 import com.example.pocketwatching.R;
-
-import org.json.JSONException;
 
 import java.util.List;
 
@@ -34,11 +34,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull TransactionAdapter.ViewHolder holder, int position) {
         Transaction tx = txs.get(position);
-        try {
-            holder.bind(tx);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        holder.bind(tx);
     }
 
     @Override
@@ -57,12 +53,33 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        
+        TextView tvTo;
+        TextView tvFrom;
+        TextView tvTimestamp;
+        TextView tvValue;
+        TextView tvUsdPrice;
+        TextView tvUsdValue;
+        ImageView ivArrow;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvTo = itemView.findViewById(R.id.tvFrom);
+            tvFrom = itemView.findViewById(R.id.tvFrom);
+            tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
+            tvValue = itemView.findViewById(R.id.tvValue);
+            tvUsdPrice = itemView.findViewById(R.id.tvUsdPrice);
+            tvUsdValue = itemView.findViewById(R.id.tvUsdValue);
+            ivArrow = itemView.findViewById(R.id.ivArrow);
         }
 
         public void bind(Transaction tx) {
+            tvTo.setText("aisdlkhakshdlakhsdlkahsdlkahsdlkahsd");
+            tvFrom.setText(tx.from.substring(0,5));
+            tvTimestamp.setText(tx.timestamp);
+            tvValue.setText(tx.value.toString());
+            tvUsdPrice.setText(tx.usdPrice.toString());
+            tvUsdValue.setText(tx.usdValue.toString());
+            // add ability to change the arrow based on sending or receiving
         }
     }
 }
