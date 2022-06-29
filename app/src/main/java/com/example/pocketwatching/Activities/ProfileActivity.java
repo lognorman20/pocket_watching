@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,17 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvTotalTokens;
     private TextView tvWelcome;
 
+    // text views that don't change
+    private TextView portfolioInformation;
+    private TextView portfolioBalance;
+    private TextView totalTokens;
+    private TextView ethAmount;
+    private TextView numTx;
+    private TextView topThreeTokens;
+    private TextView ethPrice;
+    private TextView transactionHistory;
+
+
     private static List<EthWallet> userEthWallets;
     private List<Wallet> userWallets;
     private List<Token> valuableTokens;
@@ -61,6 +73,8 @@ public class ProfileActivity extends AppCompatActivity {
     private RecyclerView rvTransactions;
     private TransactionAdapter adapter;
     private List<Transaction> txs;
+
+    private ProgressBar pbApi;
 
     public ProfileActivity() {}
 
@@ -81,6 +95,18 @@ public class ProfileActivity extends AppCompatActivity {
         tvEthPrice = findViewById(R.id.tvEthPrice);
         tvWelcome = findViewById(R.id.tvWelcome);
 
+        portfolioInformation = findViewById(R.id.portfolioInformation);
+        portfolioBalance = findViewById(R.id.portfolioBalance);
+        totalTokens = findViewById(R.id.totalTokens);
+        ethAmount = findViewById(R.id.ethAmount);
+        numTx = findViewById(R.id.numTx);
+        topThreeTokens = findViewById(R.id.topThreeTokens);
+        ethPrice = findViewById(R.id.ethPrice);
+        transactionHistory = findViewById(R.id.transactionHistory);
+
+        pbApi = findViewById(R.id.pbApi);
+        pbApi.setVisibility(View.INVISIBLE);
+
         rvTransactions = findViewById(R.id.rvTransactions);
         txs = new ArrayList<>();
         adapter = new TransactionAdapter(this, txs);
@@ -89,6 +115,8 @@ public class ProfileActivity extends AppCompatActivity {
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
         topTokensByAmount = new ArrayList<>();
+
+        startLoading();
 
         tvWelcome.setText(ParseUser.getCurrentUser().getUsername() + "'s Portfolio");
 
@@ -125,6 +153,38 @@ public class ProfileActivity extends AppCompatActivity {
 
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvTransactions.setAdapter(adapter);
+    }
+
+    private void startLoading() {
+        tvWelcome.setVisibility(View.INVISIBLE);
+        btnLogout.setVisibility(View.INVISIBLE);
+        rvTransactions.setVisibility(View.INVISIBLE);
+        portfolioInformation.setVisibility(View.INVISIBLE);
+        portfolioBalance.setVisibility(View.INVISIBLE);
+        totalTokens.setVisibility(View.INVISIBLE);
+        ethAmount.setVisibility(View.INVISIBLE);
+        numTx.setVisibility(View.INVISIBLE);
+        topThreeTokens.setVisibility(View.INVISIBLE);
+        ethPrice.setVisibility(View.INVISIBLE);
+        transactionHistory.setVisibility(View.INVISIBLE);
+
+        pbApi.setVisibility(View.VISIBLE);
+    }
+
+    private void stopLoading() {
+        tvWelcome.setVisibility(View.VISIBLE);
+        btnLogout.setVisibility(View.VISIBLE);
+        rvTransactions.setVisibility(View.VISIBLE);
+        portfolioInformation.setVisibility(View.VISIBLE);
+        portfolioBalance.setVisibility(View.VISIBLE);
+        totalTokens.setVisibility(View.VISIBLE);
+        ethAmount.setVisibility(View.VISIBLE);
+        numTx.setVisibility(View.VISIBLE);
+        topThreeTokens.setVisibility(View.VISIBLE);
+        ethPrice.setVisibility(View.VISIBLE);
+        transactionHistory.setVisibility(View.VISIBLE);
+
+        pbApi.setVisibility(View.INVISIBLE);
     }
 
     // gets EthWallet object from given address
@@ -194,6 +254,7 @@ public class ProfileActivity extends AppCompatActivity {
         String totalTokens = String.format("%,d", getTotalTokens());
         String topThreeTokensText = String.valueOf(getTopThreeTokensByAmount());
 
+        stopLoading();
         tvPortfolioValue.setText(portfolioValue);
         tvEthBalance.setText(ethBalance);
         tvCountTx.setText(countTx);
