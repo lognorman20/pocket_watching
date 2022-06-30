@@ -1,6 +1,6 @@
 package com.example.pocketwatching.Activities;
 
-import static com.example.pocketwatching.Models.Transaction.fromTxHistoryList;
+import static com.example.pocketwatching.Models.Ethplorer.Transaction.fromTxHistoryList;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,12 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Clients.Ethplorer.EthplorerClient;
+import com.example.pocketwatching.Clients.Moralis.MoralisClient;
 import com.example.pocketwatching.Etc.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
-import com.example.pocketwatching.Models.Transaction;
-import com.example.pocketwatching.Models.TxHistory;
+import com.example.pocketwatching.Models.Ethplorer.Transaction;
+import com.example.pocketwatching.Models.Ethplorer.TxHistory;
+import com.example.pocketwatching.Models.Moralis.DateToBlock;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
 import com.google.common.collect.MinMaxPriorityQueue;
@@ -37,7 +39,6 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -104,55 +105,57 @@ public class ProfileActivity extends AppCompatActivity {
         ethPrice = findViewById(R.id.ethPrice);
         transactionHistory = findViewById(R.id.transactionHistory);
 
-        pbApi = findViewById(R.id.pbApi);
-        pbApi.setVisibility(View.INVISIBLE);
+        getHistoricalBalance();
 
-        rvTransactions = findViewById(R.id.rvTransactions);
-        txs = new ArrayList<>();
-        adapter = new TransactionAdapter(this, txs);
-
-        userEthWallets = new ArrayList<>();
-        valuableTokens = new ArrayList<>();
-        notValuableTokens = new ArrayList<>();
-        topTokensByAmount = new ArrayList<>();
-
-        startLoading();
-
-        tvWelcome.setText(ParseUser.getCurrentUser().getUsername() + "'s Portfolio");
-
-        ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
-        query.whereEqualTo("owner", ParseUser.getCurrentUser());
-        query.findInBackground(new FindCallback<Wallet>() {
-            @Override
-            public void done(List<Wallet> objects, ParseException e) {
-                if (e == null) {
-                    userWallets = objects;
-                    for (int i = 0; i < userWallets.size(); i++) {
-                        String walletAddress = userWallets.get(i).getWalletAddress();
-                        getEthWallet(walletAddress);
-                        try {
-                            Thread.sleep(2000); // optimize with observables?
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
-                        }
-                        getTxHistory(walletAddress);
-                    }
-                } else {
-                    Toast.makeText(ProfileActivity.this, "Failed to get user wallets", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ParseUser.logOut();
-                goMainActivity();
-            }
-        });
-
-        rvTransactions.setLayoutManager(new LinearLayoutManager(this));
-        rvTransactions.setAdapter(adapter);
+//        pbApi = findViewById(R.id.pbApi);
+//        pbApi.setVisibility(View.INVISIBLE);
+//
+//        rvTransactions = findViewById(R.id.rvTransactions);
+//        txs = new ArrayList<>();
+//        adapter = new TransactionAdapter(this, txs);
+//
+//        userEthWallets = new ArrayList<>();
+//        valuableTokens = new ArrayList<>();
+//        notValuableTokens = new ArrayList<>();
+//        topTokensByAmount = new ArrayList<>();
+//
+//        startLoading();
+//
+//        tvWelcome.setText(ParseUser.getCurrentUser().getUsername() + "'s Portfolio");
+//
+//        ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
+//        query.whereEqualTo("owner", ParseUser.getCurrentUser());
+//        query.findInBackground(new FindCallback<Wallet>() {
+//            @Override
+//            public void done(List<Wallet> objects, ParseException e) {
+//                if (e == null) {
+//                    userWallets = objects;
+//                    for (int i = 0; i < userWallets.size(); i++) {
+//                        String walletAddress = userWallets.get(i).getWalletAddress();
+//                        getEthWallet(walletAddress);
+//                        try {
+//                            Thread.sleep(2000); // optimize with observables?
+//                        } catch (InterruptedException ex) {
+//                            ex.printStackTrace();
+//                        }
+//                        getTxHistory(walletAddress);
+//                    }
+//                } else {
+//                    Toast.makeText(ProfileActivity.this, "Failed to get user wallets", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//
+//        btnLogout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ParseUser.logOut();
+//                goMainActivity();
+//            }
+//        });
+//
+//        rvTransactions.setLayoutManager(new LinearLayoutManager(this));
+//        rvTransactions.setAdapter(adapter);
     }
 
     // gets EthWallet object from given address
@@ -199,6 +202,29 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    private void getHistoricalBalance() {
+        /*
+        1) Get the current block height from moralis
+        2) Get the block height from last week from moralis
+        3) Break block heights into intervals to get wallet balances from
+        4) Query an API for wallet balance at each interval
+        5) Add balance and time pair to another list
+        */
+        String timestamp = String.valueOf((System.currentTimeMillis() / 1000L));
+        Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().getDateToBlock(timestamp);
+        call.enqueue(new Callback<DateToBlock>() {
+            @Override
+            public void onResponse(Call<DateToBlock> call, Response<DateToBlock> response) {
+                getLastWeekBlock(timestamp, response.body().getBlock());
+            }
+
+            @Override
+            public void onFailure(Call<DateToBlock> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "Failed to access the API", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     /**************************************************/
     /**************** Helper Functions ****************/
     /**************************************************/
@@ -222,13 +248,13 @@ public class ProfileActivity extends AppCompatActivity {
         String totalTokens = String.format("%,d", getTotalTokens());
         String topThreeTokensText = String.valueOf(getTopThreeTokensByAmount());
 
-        stopLoading();
         tvPortfolioValue.setText(portfolioValue);
         tvEthBalance.setText(ethBalance);
         tvCountTx.setText(countTx);
         tvEthPrice.setText(ethPrice);
         tvTotalTokens.setText(totalTokens);
         tvTopThreeTokens.setText(topThreeTokensText);
+        stopLoading();
     }
 
     /***** Initialization functions *****/
@@ -254,6 +280,11 @@ public class ProfileActivity extends AppCompatActivity {
         for (int i = 0; i < topThreeTokens.size(); i++) {
             topTokensByAmount.add(topThreeTokens.pollLast());
         }
+    }
+
+    private void breakBlockIntervals(int prevBlock, int currBlock) {
+        int diff = (currBlock - prevBlock) / 7;
+        Toast.makeText(this, String.valueOf(diff), Toast.LENGTH_SHORT).show();
     }
 
     // shows loading screen
@@ -346,5 +377,21 @@ public class ProfileActivity extends AppCompatActivity {
             i++;
         }
         return output;
+    }
+
+    private void getLastWeekBlock(String currTime, int currBlock) {
+        String timestamp = String.valueOf(Long.parseLong(currTime) - 604800);
+        Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().getDateToBlock(timestamp);
+        call.enqueue(new Callback<DateToBlock>() {
+            @Override
+            public void onResponse(Call<DateToBlock> call, Response<DateToBlock> response) {
+                breakBlockIntervals(response.body().getBlock(), currBlock);
+            }
+
+            @Override
+            public void onFailure(Call<DateToBlock> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "Failed to access the API", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

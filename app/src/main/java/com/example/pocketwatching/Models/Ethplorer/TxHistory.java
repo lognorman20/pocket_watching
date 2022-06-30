@@ -1,4 +1,4 @@
-package com.example.pocketwatching.Models;
+package com.example.pocketwatching.Models.Ethplorer;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -1,7 +1,7 @@
 package com.example.pocketwatching.Clients.Ethplorer;
 
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
-import com.example.pocketwatching.Models.TxHistory;
+import com.example.pocketwatching.Models.Ethplorer.TxHistory;
 
 import java.util.List;
 
