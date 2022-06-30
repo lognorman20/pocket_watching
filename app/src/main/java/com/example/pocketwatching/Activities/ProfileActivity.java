@@ -28,6 +28,7 @@ import com.example.pocketwatching.Models.Ethplorer.Transaction;
 import com.example.pocketwatching.Models.Ethplorer.TxHistory;
 import com.example.pocketwatching.Models.Moralis.BlockBalance;
 import com.example.pocketwatching.Models.Moralis.DateToBlock;
+import com.example.pocketwatching.Models.Poloniex.EthPrice;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
 import com.google.common.collect.MinMaxPriorityQueue;
@@ -48,7 +49,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity {
-    private Button btnLogout;
+    private static List<EthWallet> userEthWallets;
+
+    // text views that change
     private TextView tvEthBalance;
     private TextView tvPortfolioValue;
     private TextView tvTopThreeTokens;
@@ -67,20 +70,23 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView ethPrice;
     private TextView transactionHistory;
 
-
-    private static List<EthWallet> userEthWallets;
+    // variables for helper functions
     private List<Wallet> userWallets;
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
     private List<Token> topTokensByAmount;
     private List<Integer> blockHeights;
     private List<Double> blockBalances;
-
-    private RecyclerView rvTransactions;
-    private TransactionAdapter adapter;
+    private List<Double> ethPrices;
     private List<Transaction> txs;
 
+    // screen elements
+    private RecyclerView rvTransactions;
+    private TransactionAdapter adapter;
+
+    // widgets and buttons
     private ProgressBar pbApi;
+    private Button btnLogout;
 
     public ProfileActivity() {}
 
@@ -123,6 +129,7 @@ public class ProfileActivity extends AppCompatActivity {
         topTokensByAmount = new ArrayList<>();
         blockHeights = new ArrayList<>();
         blockBalances = new ArrayList<Double>(Collections.nCopies(7, -9.9));
+        ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
 
         startLoading();
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
@@ -223,23 +230,26 @@ public class ProfileActivity extends AppCompatActivity {
         // get eth value for each day in the last week
         getEthPrices(times.get(0), times.get(6));
         // get block height at each timestamp in the past week
+        // then for each wallet, get wallet balance at each block height in the past week in
+        // getBlockHeight
         for (int i = 0; i < times.size(); i++) {
             getBlockHeight(times.get(i));
         }
 
-        // for each wallet, get wallet balance at each block height in the past week in getBlockHeight
     }
 
     private void getEthPrices(String start, String end) {
-        Call<List<DateToBlock>> call = (Call<List<DateToBlock>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start, end);
-        call.enqueue(new Callback<List<DateToBlock>>() {
+        Call<List<EthPrice>> call = (Call<List<EthPrice>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start, end);
+        call.enqueue(new Callback<List<EthPrice>>() {
             @Override
-            public void onResponse(Call<List<DateToBlock>> call, Response<List<DateToBlock>> response) {
-                Toast.makeText(ProfileActivity.this, "Successfully got historical eth prices", Toast.LENGTH_SHORT).show();
+            public void onResponse(Call<List<EthPrice>> call, Response<List<EthPrice>> response) {
+                for (int i = 0; i < response.body().size(); i++) {
+                    ethPrices.set(i, Double.valueOf(response.body().get(i).getWeightedAverage()));
+                }
             }
 
             @Override
-            public void onFailure(Call<List<DateToBlock>> call, Throwable t) {
+            public void onFailure(Call<List<EthPrice>> call, Throwable t) {
                 Toast.makeText(ProfileActivity.this, "Failed to get historical eth prices", Toast.LENGTH_SHORT).show();
             }
         });
@@ -275,9 +285,8 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
                 blockBalances.set(index, Double.valueOf(response.body().getBalance()));
                 if (index == 6) {
-                    for (int i = 0; i < blockBalances.size(); i++) {
-                        // need to account for the value of eth at the time of the block
-
+                    for (int i = 0; i < ethPrices.size(); i++) {
+                        blockBalances.set(i, blockBalances.get(i) * ethPrices.get(i));
                     }
                 }
             }
