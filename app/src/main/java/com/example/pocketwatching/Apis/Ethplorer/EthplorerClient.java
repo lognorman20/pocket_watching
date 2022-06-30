@@ -1,4 +1,4 @@
-package com.example.pocketwatching.Clients.Ethplorer;
+package com.example.pocketwatching.Apis.Ethplorer;
 
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
 import com.google.gson.Gson;

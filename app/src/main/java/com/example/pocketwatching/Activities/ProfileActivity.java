@@ -17,8 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Adapters.TransactionAdapter;
-import com.example.pocketwatching.Clients.Ethplorer.EthplorerClient;
-import com.example.pocketwatching.Clients.Moralis.MoralisClient;
+import com.example.pocketwatching.Apis.Ethplorer.EthplorerClient;
+import com.example.pocketwatching.Apis.Moralis.MoralisClient;
+import com.example.pocketwatching.Apis.Poloniex.PoloniexClient;
 import com.example.pocketwatching.Etc.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
@@ -38,6 +39,7 @@ import com.parse.ParseUser;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -70,8 +72,9 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Wallet> userWallets;
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
-    private ArrayList<Token> topTokensByAmount;
-    private List<Integer> blockIntervals;
+    private List<Token> topTokensByAmount;
+    private List<Integer> blockHeights;
+    private List<Double> blockBalances;
 
     private RecyclerView rvTransactions;
     private TransactionAdapter adapter;
@@ -118,7 +121,8 @@ public class ProfileActivity extends AppCompatActivity {
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
         topTokensByAmount = new ArrayList<>();
-        blockIntervals = new ArrayList<>();
+        blockHeights = new ArrayList<>();
+        blockBalances = new ArrayList<Double>(Collections.nCopies(7, 0.0));
 
         startLoading();
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
@@ -176,8 +180,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<EthWallet> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "Failed to get user eth wallet. ", Toast.LENGTH_SHORT).show();
-                Log.e("getEthWallet", t.toString());
+                Toast.makeText(ProfileActivity.this, "Failed to get user eth wallet.", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -207,24 +210,81 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getHistoricalBalance() {
-        /*
-        1) Get the current block height from moralis
-        2) Get the block height from last week from moralis
-        3) Break block heights into intervals to get wallet balances from
-        4) Query an API for wallet balance at each interval
-        5) Add balance and time pair to another list
-        */
-        String timestamp = String.valueOf((System.currentTimeMillis() / 1000L));
-        Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().getDateToBlock(timestamp);
+        // get timestamps from each day of the past week
+        List<String> times = new ArrayList<>();
+        long currTime = System.currentTimeMillis() / 1000L;
+        long tempTime = currTime;
+        while (tempTime > (currTime - 604800)) {
+            times.add(String.valueOf(tempTime));
+            tempTime -= 86400;
+        }
+        Collections.sort(times);
+
+        // get eth value for each day in the last week
+//        getEthPrices(times.get(0), times.get(6));
+        // get block height at each timestamp in the past week
+        for (int i = 0; i < times.size(); i++) {
+            Log.i("timestamps", times.get(i));
+            getBlockHeight(times.get(i));
+        }
+
+        // for each wallet, get wallet balance at each block height in the past week in getBlockHeight
+    }
+
+    private void getEthPrices(String start, String end) {
+        Call<List<DateToBlock>> call = (Call<List<DateToBlock>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start, end);
+        call.enqueue(new Callback<List<DateToBlock>>() {
+            @Override
+            public void onResponse(Call<List<DateToBlock>> call, Response<List<DateToBlock>> response) {
+                Toast.makeText(ProfileActivity.this, "Successfully got historical eth prices", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<List<DateToBlock>> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "Failed to get historical eth prices", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getBlockHeight(String timestamp) {
+        Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().timeToBlock(timestamp);
         call.enqueue(new Callback<DateToBlock>() {
             @Override
             public void onResponse(Call<DateToBlock> call, Response<DateToBlock> response) {
-                getLastWeekBlock(timestamp, response.body().getBlock());
+                blockHeights.add(response.body().getBlock());
+                if (blockHeights.size() == 7) {
+                    for (int i = 0; i < userWallets.size(); i++) {
+                        for (int j = 0; j < 7; j++) {
+                            getBlockBalance(userWallets.get(i).getWalletAddress(), blockHeights.get(j), j);
+                        }
+                    }
+                }
             }
 
             @Override
             public void onFailure(Call<DateToBlock> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "Failed to access the API", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Could not get block from timestamp :(", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getBlockBalance(String address, int blockHeight, int index) {
+        Call<BlockBalance> call = (Call<BlockBalance>) MoralisClient.getInstance().getMoralisApi().getBlockBalance(address, blockHeight);
+        call.enqueue(new Callback<BlockBalance>() {
+            @Override
+            public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
+                blockBalances.set(index, Double.valueOf(response.body().getBalance()));
+                if (index == 6) {
+                    for (int i = 0; i < blockBalances.size(); i++) {
+                        // need to account for the value of eth at the time of the block
+                        Log.i("blockbalances", "Balance = " + String.valueOf(blockBalances.get(i)) + " --- Block height = " + blockHeight);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BlockBalance> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "Failed to get balance at block " + String.valueOf(blockHeight), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -284,15 +344,6 @@ public class ProfileActivity extends AppCompatActivity {
         // gets the top three tokens by investment distribution, add balance based implementation??
         for (int i = 0; i < topThreeTokens.size(); i++) {
             topTokensByAmount.add(topThreeTokens.pollLast());
-        }
-    }
-
-    private void getBlockIntervals(int prevBlock, int currBlock) {
-        int diff = (currBlock - prevBlock) / 7;
-        int tempBlock = prevBlock;
-        while (tempBlock <= currBlock) {
-            blockIntervals.add(tempBlock);
-            tempBlock += diff;
         }
     }
 
@@ -386,51 +437,5 @@ public class ProfileActivity extends AppCompatActivity {
             i++;
         }
         return output;
-    }
-
-    private void getLastWeekBlock(String currTime, int currBlock) {
-        String timestamp = String.valueOf(Long.parseLong(currTime) - 604800);
-        Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient
-                .getInstance()
-                .getMoralisApi()
-                .getDateToBlock(timestamp);
-        call.enqueue(new Callback<DateToBlock>() {
-            @Override
-            public void onResponse(Call<DateToBlock> call, Response<DateToBlock> response) {
-                getBlockIntervals(response.body().getBlock(), currBlock);
-                // for each wallet
-                for (int i = 0; i < userWallets.size(); i++) {
-                    String walletAddress = userWallets.get(i).getWalletAddress();
-                    // for each block height, get the balance and timestamp of the wallet and add to arr to be graphed
-                    for (int j = 0; j < blockIntervals.size(); j++) {
-                        getWalletBlockBalance(walletAddress, blockIntervals.get(j));
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DateToBlock> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "Failed to get last week's block", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void getWalletBlockBalance(String address, Integer blockHeight) {
-        Call<BlockBalance> call = (Call<BlockBalance>) MoralisClient
-                .getInstance()
-                .getMoralisApi()
-                .getBlockBalance(address, blockHeight);
-        call.enqueue(new Callback<BlockBalance>() {
-            @Override
-            public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
-                Toast.makeText(ProfileActivity.this, "Balance at " + blockHeight.toString() + " is " + response.body().getBalance().toString(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Call<BlockBalance> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "Failed to get wallet block balance", Toast.LENGTH_SHORT).show();
-                Log.e("walletblockbalance", t.toString());
-            }
-        });
     }
 }

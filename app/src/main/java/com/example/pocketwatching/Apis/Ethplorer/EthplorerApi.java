@@ -1,4 +1,4 @@
-package com.example.pocketwatching.Clients.Ethplorer;
+package com.example.pocketwatching.Apis.Ethplorer;
 
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.TxHistory;

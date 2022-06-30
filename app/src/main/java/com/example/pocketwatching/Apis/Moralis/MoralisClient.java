@@ -1,7 +1,4 @@
-package com.example.pocketwatching.Clients.Moralis;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+package com.example.pocketwatching.Apis.Moralis;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
