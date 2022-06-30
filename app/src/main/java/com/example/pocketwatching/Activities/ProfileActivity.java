@@ -215,9 +215,7 @@ public class ProfileActivity extends AppCompatActivity {
         call.enqueue(new Callback<DateToBlock>() {
             @Override
             public void onResponse(Call<DateToBlock> call, Response<DateToBlock> response) {
-//                int lastBlock = response.body().getBlock();
-                Toast.makeText(ProfileActivity.this, response.body().getDate(), Toast.LENGTH_SHORT).show();
-                getLastWeekBlock(timestamp);
+                getLastWeekBlock(timestamp, response.body().getBlock());
             }
 
             @Override
@@ -282,6 +280,11 @@ public class ProfileActivity extends AppCompatActivity {
         for (int i = 0; i < topThreeTokens.size(); i++) {
             topTokensByAmount.add(topThreeTokens.pollLast());
         }
+    }
+
+    private void breakBlockIntervals(int prevBlock, int currBlock) {
+        int diff = (currBlock - prevBlock) / 7;
+        Toast.makeText(this, String.valueOf(diff), Toast.LENGTH_SHORT).show();
     }
 
     // shows loading screen
@@ -376,13 +379,13 @@ public class ProfileActivity extends AppCompatActivity {
         return output;
     }
 
-    private void getLastWeekBlock(String currTime) {
+    private void getLastWeekBlock(String currTime, int currBlock) {
         String timestamp = String.valueOf(Long.parseLong(currTime) - 604800);
         Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().getDateToBlock(timestamp);
         call.enqueue(new Callback<DateToBlock>() {
             @Override
             public void onResponse(Call<DateToBlock> call, Response<DateToBlock> response) {
-                Toast.makeText(ProfileActivity.this, "Last week's date: " + response.body().getDate(), Toast.LENGTH_SHORT).show();
+                breakBlockIntervals(response.body().getBlock(), currBlock);
             }
 
             @Override
