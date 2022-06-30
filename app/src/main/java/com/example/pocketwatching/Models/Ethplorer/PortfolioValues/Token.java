@@ -8,9 +8,9 @@ public class Token {
     @SerializedName("tokenInfo")
     @Expose
     private TokenInfo tokenInfo;
-    @SerializedName("balance")
+    @SerializedName("amount")
     @Expose
-    private Double balance;
+    private Double amount;
     @SerializedName("totalIn")
     @Expose
     private Integer totalIn;
@@ -30,11 +30,11 @@ public class Token {
     }
 
     public Double getAmount() {
-        return balance;
+        return amount;
     }
 
-    public void setAmount(Double balance) {
-        this.balance = balance;
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
     public Integer getTotalIn() {
@@ -62,7 +62,7 @@ public class Token {
     }
 
     // gets token balance in $
-    public Double getTokenAmount() {
+    public Double getTokenBalance() {
         Double amount = getAmount() / (Math.pow(10, getTokenInfo().getDecimals()));
         Price price = (Price) getTokenInfo().getPrice(); // problem line
         Double balance = amount * price.getRate();
