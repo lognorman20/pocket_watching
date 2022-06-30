@@ -119,11 +119,8 @@ public class ProfileActivity extends AppCompatActivity {
         notValuableTokens = new ArrayList<>();
         topTokensByAmount = new ArrayList<>();
         blockIntervals = new ArrayList<>();
-//
+
         startLoading();
-
-        tvWelcome.setText(ParseUser.getCurrentUser().getUsername() + "'s Portfolio");
-
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
         query.whereEqualTo("owner", ParseUser.getCurrentUser());
         query.findInBackground(new FindCallback<Wallet>() {
@@ -144,8 +141,10 @@ public class ProfileActivity extends AppCompatActivity {
                     getHistoricalBalance();
                 } else {
                     Toast.makeText(ProfileActivity.this, "Failed to get user wallets", Toast.LENGTH_SHORT).show();
-                    Log.e("WalletQuery", e.toString());
+                    ParseUser.logOut();
                     finish();
+                    goMainActivity();
+                    return;
                 }
             }
         });
@@ -253,6 +252,7 @@ public class ProfileActivity extends AppCompatActivity {
         String totalTokens = String.format("%,d", getTotalTokens());
         String topThreeTokensText = String.valueOf(getTopThreeTokensByAmount());
 
+        tvWelcome.setText(ParseUser.getCurrentUser().getUsername() + "'s Portfolio");
         tvPortfolioValue.setText(portfolioValue);
         tvEthBalance.setText(ethBalance);
         tvCountTx.setText(countTx);

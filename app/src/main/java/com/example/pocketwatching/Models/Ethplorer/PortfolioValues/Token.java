@@ -8,9 +8,9 @@ public class Token {
     @SerializedName("tokenInfo")
     @Expose
     private TokenInfo tokenInfo;
-    @SerializedName("amount")
+    @SerializedName("balance")
     @Expose
-    private Double amount;
+    private Double balance;
     @SerializedName("totalIn")
     @Expose
     private Integer totalIn;
@@ -30,11 +30,11 @@ public class Token {
     }
 
     public Double getAmount() {
-        return amount;
+        return balance;
     }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
+    public void setAmount(Double balance) {
+        this.balance = balance;
     }
 
     public Integer getTotalIn() {
