@@ -25,9 +25,6 @@ public class Price extends Object {
     private Double availableSupply;
     @SerializedName("volume24h")
     @Expose
-    private Double volDiff30;
-    @SerializedName("diff30d")
-    @Expose
     private Double diff30d;
     @SerializedName("currency")
     @Expose

@@ -4,7 +4,6 @@ import static com.example.pocketwatching.Models.Ethplorer.Transaction.fromTxHist
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -13,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Adapters.TransactionAdapter;
@@ -29,10 +27,6 @@ import com.example.pocketwatching.Models.Moralis.DateToBlock;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
 import com.google.common.collect.MinMaxPriorityQueue;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import org.json.JSONException;
 
@@ -284,7 +278,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void breakBlockIntervals(int prevBlock, int currBlock) {
         int diff = (currBlock - prevBlock) / 7;
-        Toast.makeText(this, String.valueOf(diff), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Block interval diff = " + String.valueOf(diff), Toast.LENGTH_SHORT).show();
     }
 
     // shows loading screen
@@ -361,7 +355,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // getting other token balances from each wallet
         for (int i = 0; i < valuableTokens.size(); i++) {
-            balance += valuableTokens.get(i).getTokenAmount();
+            balance += valuableTokens.get(i).getTokenBalance();
         }
         return balance;
     }

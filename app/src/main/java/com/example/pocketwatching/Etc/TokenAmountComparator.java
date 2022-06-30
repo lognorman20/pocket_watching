@@ -7,9 +7,9 @@ import java.util.Comparator;
 public class TokenAmountComparator implements Comparator<Token> {
     @Override
     public int compare(Token one, Token two) {
-        if (one.getTokenAmount() < two.getTokenAmount()){
+        if (one.getTokenBalance() < two.getTokenBalance()){
             return -1;
-        } else if (one.getTokenAmount() > two.getTokenAmount()) {
+        } else if (one.getTokenBalance() > two.getTokenBalance()) {
             return 1;
         }
         return 0;
