@@ -202,6 +202,31 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    private void getHistoricalBalance() {
+        /*
+        1) Get the current block height from moralis
+        2) Get the block height from last week from moralis
+        3) Break block heights into intervals to get wallet balances from
+        4) Query an API for wallet balance at each interval
+        5) Add balance and time pair to another list
+        */
+        String timestamp = String.valueOf((System.currentTimeMillis() / 1000L));
+        Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().getDateToBlock(timestamp);
+        call.enqueue(new Callback<DateToBlock>() {
+            @Override
+            public void onResponse(Call<DateToBlock> call, Response<DateToBlock> response) {
+//                int lastBlock = response.body().getBlock();
+                Toast.makeText(ProfileActivity.this, response.body().getDate(), Toast.LENGTH_SHORT).show();
+                getLastWeekBlock(timestamp);
+            }
+
+            @Override
+            public void onFailure(Call<DateToBlock> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "Failed to access the API", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     /**************************************************/
     /**************** Helper Functions ****************/
     /**************************************************/
@@ -351,25 +376,18 @@ public class ProfileActivity extends AppCompatActivity {
         return output;
     }
 
-    private void getHistoricalBalance() {
-        /*
-        1) Get the current block height from moralis
-        2) Get the block height from last week from moralis
-        3) Break block heights into intervals to get wallet balances from
-        4) Query an API for wallet balance at each interval
-        5) Add balance and time pair to another list
-        */
-        Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().getDateToBlock("1656544019");
+    private void getLastWeekBlock(String currTime) {
+        String timestamp = String.valueOf(Long.parseLong(currTime) - 604800);
+        Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().getDateToBlock(timestamp);
         call.enqueue(new Callback<DateToBlock>() {
             @Override
             public void onResponse(Call<DateToBlock> call, Response<DateToBlock> response) {
-                Toast.makeText(ProfileActivity.this, String.valueOf(response.body().getBlock()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Last week's date: " + response.body().getDate(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<DateToBlock> call, Throwable t) {
                 Toast.makeText(ProfileActivity.this, "Failed to access the API", Toast.LENGTH_SHORT).show();
-                Log.e("MoralisAPI", t.toString());
             }
         });
     }
