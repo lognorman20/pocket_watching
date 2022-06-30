@@ -28,6 +28,7 @@ import com.example.pocketwatching.Models.Ethplorer.Transaction;
 import com.example.pocketwatching.Models.Ethplorer.TxHistory;
 import com.example.pocketwatching.Models.Moralis.BlockBalance;
 import com.example.pocketwatching.Models.Moralis.DateToBlock;
+import com.example.pocketwatching.Models.Poloniex.EthPrice;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
 import com.google.common.collect.MinMaxPriorityQueue;
@@ -231,16 +232,17 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getEthPrices(String start, String end) {
-        Call<List<DateToBlock>> call = (Call<List<DateToBlock>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start, end);
-        Log.i("debugging", call.request().toString());
-        call.enqueue(new Callback<List<DateToBlock>>() {
+        Call<List<EthPrice>> call = (Call<List<EthPrice>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start, end);
+        call.enqueue(new Callback<List<EthPrice>>() {
             @Override
-            public void onResponse(Call<List<DateToBlock>> call, Response<List<DateToBlock>> response) {
-
+            public void onResponse(Call<List<EthPrice>> call, Response<List<EthPrice>> response) {
+                for (int i = 0; i < response.body().size(); i++) {
+                    Toast.makeText(ProfileActivity.this, String.valueOf(response.body().get(i).getWeightedAverage()), Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
-            public void onFailure(Call<List<DateToBlock>> call, Throwable t) {
+            public void onFailure(Call<List<EthPrice>> call, Throwable t) {
                 Toast.makeText(ProfileActivity.this, "Failed to get historical eth prices", Toast.LENGTH_SHORT).show();
             }
         });

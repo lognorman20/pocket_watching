@@ -1,6 +1,7 @@
 package com.example.pocketwatching.Apis.Poloniex;
 
 import com.example.pocketwatching.Models.Moralis.DateToBlock;
+import com.example.pocketwatching.Models.Poloniex.EthPrice;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface PoloniexApi {
     String BASE_URL = "https://poloniex.com/";
 
     @GET("public?command=returnChartData&currencyPair=DAI_ETH&period=86400")
-    Call<List<DateToBlock>> getEthPrices(
+    Call<List<EthPrice>> getEthPrices(
             @Query("start") String start,
             @Query("end") String end);
 }
