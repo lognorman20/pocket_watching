@@ -122,7 +122,7 @@ public class ProfileActivity extends AppCompatActivity {
         notValuableTokens = new ArrayList<>();
         topTokensByAmount = new ArrayList<>();
         blockHeights = new ArrayList<>();
-        blockBalances = new ArrayList<Double>(Collections.nCopies(7, 0.0));
+        blockBalances = new ArrayList<Double>(Collections.nCopies(7, -9.9));
 
         startLoading();
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
@@ -221,10 +221,9 @@ public class ProfileActivity extends AppCompatActivity {
         Collections.sort(times);
 
         // get eth value for each day in the last week
-//        getEthPrices(times.get(0), times.get(6));
+        getEthPrices(times.get(0), times.get(6));
         // get block height at each timestamp in the past week
         for (int i = 0; i < times.size(); i++) {
-            Log.i("timestamps", times.get(i));
             getBlockHeight(times.get(i));
         }
 
@@ -253,6 +252,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<DateToBlock> call, Response<DateToBlock> response) {
                 blockHeights.add(response.body().getBlock());
                 if (blockHeights.size() == 7) {
+                    Collections.sort(blockHeights);
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
                             getBlockBalance(userWallets.get(i).getWalletAddress(), blockHeights.get(j), j);
@@ -277,7 +277,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if (index == 6) {
                     for (int i = 0; i < blockBalances.size(); i++) {
                         // need to account for the value of eth at the time of the block
-                        Log.i("blockbalances", "Balance = " + String.valueOf(blockBalances.get(i)) + " --- Block height = " + blockHeight);
+
                     }
                 }
             }
