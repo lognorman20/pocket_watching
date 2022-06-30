@@ -7,9 +7,9 @@ public class Eth {
     @SerializedName("price")
     @Expose
     private Price price;
-    @SerializedName("amount")
+    @SerializedName("balance")
     @Expose
-    private Double amount;
+    private Double balance;
     @SerializedName("rawAmount")
     @Expose
     private String rawAmount;
@@ -23,11 +23,11 @@ public class Eth {
     }
 
     public Double getAmount() {
-        return amount;
+        return balance;
     }
 
     public void setAmount(Double balance) {
-        this.amount = amount;
+        this.balance = balance;
     }
 
     public String getRawBalance() {

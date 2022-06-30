@@ -46,8 +46,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void done(ParseUser user, ParseException e) {
                 if (e != null) {
-                    Toast.makeText(LoginActivity.this, "Issue with login", Toast.LENGTH_SHORT).show();
-                    Log.e("login debugging", String.valueOf(e));
+                    Toast.makeText(LoginActivity.this, "Could not login user", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 goProfileActivity();

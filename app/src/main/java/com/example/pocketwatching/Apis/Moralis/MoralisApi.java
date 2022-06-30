@@ -1,4 +1,4 @@
-package com.example.pocketwatching.Clients.Moralis;
+package com.example.pocketwatching.Apis.Moralis;
 
 import com.example.pocketwatching.Models.Moralis.BlockBalance;
 import com.example.pocketwatching.Models.Moralis.DateToBlock;
@@ -6,7 +6,6 @@ import com.example.pocketwatching.Models.Moralis.DateToBlock;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface MoralisApi {
@@ -14,8 +13,9 @@ public interface MoralisApi {
 
     @Headers({"accept: application/json", "X-API-Key: ylLNSQYuTOCEKXV7ojV4cejlG0QTaCfzERcFIPvQmVKQmP66lZOS0mdrPTMY5CNG"})
     @GET("dateToBlock?chain=eth")
-    Call<DateToBlock> getDateToBlock(@Query("date") String date);
+    Call<DateToBlock> timeToBlock(@Query("date") String date);
 
-    @GET("{address}/balance?chain=eth&to_block={block}")
-    Call<BlockBalance> getBlockBalance(@Path("address") String address, @Path("block") int block);
+    @Headers({"accept: application/json", "X-API-Key: ylLNSQYuTOCEKXV7ojV4cejlG0QTaCfzERcFIPvQmVKQmP66lZOS0mdrPTMY5CNG"})
+    @GET("{address}/balance?chain=eth")
+    Call<BlockBalance> getBlockBalance(@Query("address") String address, @Query("to_block") int block);
 }

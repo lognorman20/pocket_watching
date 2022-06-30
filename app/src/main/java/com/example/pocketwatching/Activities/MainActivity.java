@@ -49,10 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private void goLoginActivity() {
         Intent i;
         if (ParseUser.getCurrentUser() != null) {
-            Log.i("debugging", "User already logged in");
             i = new Intent(this, ProfileActivity.class);
         } else {
-            Log.i("debugging", "User not logged in");
             i = new Intent(this, LoginActivity.class);
         }
         startActivity(i);
