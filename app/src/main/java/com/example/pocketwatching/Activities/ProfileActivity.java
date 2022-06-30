@@ -232,10 +232,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void getEthPrices(String start, String end) {
         Call<List<DateToBlock>> call = (Call<List<DateToBlock>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start, end);
+        Log.i("debugging", call.request().toString());
         call.enqueue(new Callback<List<DateToBlock>>() {
             @Override
             public void onResponse(Call<List<DateToBlock>> call, Response<List<DateToBlock>> response) {
-                Toast.makeText(ProfileActivity.this, "Successfully got historical eth prices", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -276,7 +277,8 @@ public class ProfileActivity extends AppCompatActivity {
                 blockBalances.set(index, Double.valueOf(response.body().getBalance()));
                 if (index == 6) {
                     for (int i = 0; i < blockBalances.size(); i++) {
-                        // need to account for the value of eth at the time of the block
+                        // account for the value of eth at the time of the block by updating w/
+                        // poloniex api response
 
                     }
                 }

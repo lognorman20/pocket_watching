@@ -10,8 +10,10 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface PoloniexApi {
-    String BASE_URL = "https://poloniex.com/public/";
+    String BASE_URL = "https://poloniex.com/";
 
-    @GET("command=returnChartData&currencyPair=DAI_ETH&start={start}&end={end}&period=86400")
-    Call<List<DateToBlock>> getEthPrices(@Query("start") String start, @Query("end") String end);
+    @GET("public?command=returnChartData&currencyPair=DAI_ETH&period=86400")
+    Call<List<DateToBlock>> getEthPrices(
+            @Query("start") String start,
+            @Query("end") String end);
 }

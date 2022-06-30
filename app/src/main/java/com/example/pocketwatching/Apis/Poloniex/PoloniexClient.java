@@ -11,7 +11,7 @@ public class PoloniexClient {
     private PoloniexApi myPoloniexApi;
 
     private PoloniexClient() {
-        String BASE_URL = "https://poloniex.com/public/";
+        String BASE_URL = "https://poloniex.com/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
