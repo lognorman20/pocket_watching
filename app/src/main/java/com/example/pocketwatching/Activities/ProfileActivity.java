@@ -76,6 +76,7 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Token> topTokensByAmount;
     private List<Integer> blockHeights;
     private List<Double> blockBalances;
+    private List<Double> ethPrices;
 
     private RecyclerView rvTransactions;
     private TransactionAdapter adapter;
@@ -124,6 +125,7 @@ public class ProfileActivity extends AppCompatActivity {
         topTokensByAmount = new ArrayList<>();
         blockHeights = new ArrayList<>();
         blockBalances = new ArrayList<Double>(Collections.nCopies(7, -9.9));
+        ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
 
         startLoading();
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
@@ -224,11 +226,12 @@ public class ProfileActivity extends AppCompatActivity {
         // get eth value for each day in the last week
         getEthPrices(times.get(0), times.get(6));
         // get block height at each timestamp in the past week
+        // then for each wallet, get wallet balance at each block height in the past week in
+        // getBlockHeight
         for (int i = 0; i < times.size(); i++) {
             getBlockHeight(times.get(i));
         }
 
-        // for each wallet, get wallet balance at each block height in the past week in getBlockHeight
     }
 
     private void getEthPrices(String start, String end) {
@@ -237,7 +240,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<EthPrice>> call, Response<List<EthPrice>> response) {
                 for (int i = 0; i < response.body().size(); i++) {
-                    Toast.makeText(ProfileActivity.this, String.valueOf(response.body().get(i).getWeightedAverage()), Toast.LENGTH_SHORT).show();
+                    ethPrices.set(i, Double.valueOf(response.body().get(i).getWeightedAverage()));
                 }
             }
 
@@ -278,10 +281,8 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
                 blockBalances.set(index, Double.valueOf(response.body().getBalance()));
                 if (index == 6) {
-                    for (int i = 0; i < blockBalances.size(); i++) {
-                        // account for the value of eth at the time of the block by updating w/
-                        // poloniex api response
-
+                    for (int i = 0; i < ethPrices.size(); i++) {
+                        blockBalances.set(i, blockBalances.get(i) * ethPrices.get(i));
                     }
                 }
             }
