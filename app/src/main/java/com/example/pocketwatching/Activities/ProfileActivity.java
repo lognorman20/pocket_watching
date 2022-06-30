@@ -49,7 +49,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity {
-    private Button btnLogout;
+    private static List<EthWallet> userEthWallets;
+
+    // text views that change
     private TextView tvEthBalance;
     private TextView tvPortfolioValue;
     private TextView tvTopThreeTokens;
@@ -68,8 +70,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView ethPrice;
     private TextView transactionHistory;
 
-
-    private static List<EthWallet> userEthWallets;
+    // variables for helper functions
     private List<Wallet> userWallets;
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
@@ -77,12 +78,15 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Integer> blockHeights;
     private List<Double> blockBalances;
     private List<Double> ethPrices;
-
-    private RecyclerView rvTransactions;
-    private TransactionAdapter adapter;
     private List<Transaction> txs;
 
+    // screen elements
+    private RecyclerView rvTransactions;
+    private TransactionAdapter adapter;
+
+    // widgets and buttons
     private ProgressBar pbApi;
+    private Button btnLogout;
 
     public ProfileActivity() {}
 
