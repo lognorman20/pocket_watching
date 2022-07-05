@@ -181,8 +181,6 @@ public class ProfileActivity extends AppCompatActivity {
         rvTransactions.setAdapter(adapter);
     }
 
-
-
     // gets EthWallet object from given address
     private synchronized void getEthWallet(String address) {
         Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getEthWallet(address);
@@ -246,10 +244,9 @@ public class ProfileActivity extends AppCompatActivity {
         for (int i = 0; i < times.size(); i++) {
             Date date = new Date();
             date.setTime(Long.valueOf(times.get(i)) * 1000);
-            Log.i("times" + i, date.toString());
             getBlockHeight(times.get(i));
         }
-
+        Log.i("unix timestamps", times.toString());
     }
 
     private void getEthPrices(String start, String end) {
