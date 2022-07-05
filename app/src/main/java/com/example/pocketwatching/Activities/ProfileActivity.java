@@ -42,6 +42,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -87,7 +88,7 @@ public class ProfileActivity extends AppCompatActivity {
     // widgets and buttons
     private ProgressBar pbApi;
     private Button btnLogout;
-
+    private Button btnViewHistoricalBalance;
     public ProfileActivity() {}
 
     /**************************************************/
@@ -98,7 +99,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        btnLogout = findViewById(R.id.btnLogout);
         tvEthBalance = findViewById(R.id.tvEthAmount);
         tvPortfolioValue = findViewById(R.id.tvPortfolioValue);
         tvTopThreeTokens = findViewById(R.id.tvTopThreeTokens);
@@ -118,7 +118,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         pbApi = findViewById(R.id.pbApi);
         pbApi.setVisibility(View.INVISIBLE);
-
+        btnLogout = findViewById(R.id.btnLogout);
+        btnViewHistoricalBalance = findViewById(R.id.btnViewHistoricalBalance);
+        
         rvTransactions = findViewById(R.id.rvTransactions);
         txs = new ArrayList<>();
         adapter = new TransactionAdapter(this, txs);
@@ -167,10 +169,19 @@ public class ProfileActivity extends AppCompatActivity {
                 goMainActivity();
             }
         });
+        
+        btnViewHistoricalBalance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goGraphActivity();
+            }
+        });
 
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvTransactions.setAdapter(adapter);
     }
+
+
 
     // gets EthWallet object from given address
     private synchronized void getEthWallet(String address) {
@@ -233,6 +244,8 @@ public class ProfileActivity extends AppCompatActivity {
         // then for each wallet, get wallet balance at each block height in the past week in
         // getBlockHeight
         for (int i = 0; i < times.size(); i++) {
+            Date date = new Date();
+            date.setTime(Long.valueOf(times.get(i)) * 1000);
             getBlockHeight(times.get(i));
         }
 
@@ -290,6 +303,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }
             }
+            
 
             @Override
             public void onFailure(Call<BlockBalance> call, Throwable t) {
@@ -310,6 +324,11 @@ public class ProfileActivity extends AppCompatActivity {
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // same as above
         startActivity(i);
         finish();
+    }
+
+    private void goGraphActivity() {
+        Intent i = new Intent(this, BalanceActivity.class);
+        startActivity(i);
     }
 
     // binds values onto the display
@@ -359,6 +378,7 @@ public class ProfileActivity extends AppCompatActivity {
     // shows loading screen
     private void startLoading() {
         tvWelcome.setVisibility(View.INVISIBLE);
+        btnViewHistoricalBalance.setVisibility(View.INVISIBLE);
         btnLogout.setVisibility(View.INVISIBLE);
         rvTransactions.setVisibility(View.INVISIBLE);
         portfolioInformation.setVisibility(View.INVISIBLE);
@@ -375,6 +395,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // hides loading screen
     private void stopLoading() {
+        btnViewHistoricalBalance.setVisibility(View.VISIBLE);
         tvWelcome.setVisibility(View.VISIBLE);
         btnLogout.setVisibility(View.VISIBLE);
         rvTransactions.setVisibility(View.VISIBLE);

@@ -13,12 +13,25 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="128dp"
-        android:layout_marginEnd="133dp"
+        android:layout_marginStart="53dp"
         android:onClick="onLogoutButton"
         android:text="Log Out"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btnViewHistoricalBalance"
+        app:layout_constraintStart_toEndOf="@+id/btnViewHistoricalBalance"
+        app:layout_constraintTop_toTopOf="@+id/btnViewHistoricalBalance" />
+
+    <Button
+        android:id="@+id/btnViewHistoricalBalance"
+        android:layout_width="157dp"
+        android:layout_height="63dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="12dp"
+        android:onClick="onLogoutButton"
+        android:text="View Balance History"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvTransactions" />
 
