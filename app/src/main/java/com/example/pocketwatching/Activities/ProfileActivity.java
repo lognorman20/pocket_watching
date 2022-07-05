@@ -246,6 +246,7 @@ public class ProfileActivity extends AppCompatActivity {
         for (int i = 0; i < times.size(); i++) {
             Date date = new Date();
             date.setTime(Long.valueOf(times.get(i)) * 1000);
+            Log.i("times" + i, date.toString());
             getBlockHeight(times.get(i));
         }
 
@@ -301,6 +302,7 @@ public class ProfileActivity extends AppCompatActivity {
                     for (int i = 0; i < ethPrices.size(); i++) {
                         blockBalances.set(i, blockBalances.get(i) * ethPrices.get(i));
                     }
+                    Log.i("block balances", blockBalances.toString());
                 }
             }
             

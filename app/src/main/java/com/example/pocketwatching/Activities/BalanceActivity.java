@@ -2,6 +2,7 @@ package com.example.pocketwatching.Activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -44,25 +45,27 @@ public class BalanceActivity extends AppCompatActivity {
     private List<Entry> generateData() {
         ArrayList<Entry> fakeData = new ArrayList<>();
         fakeData.add(new Entry(1, 10));
-        fakeData.add(new Entry(2, 20));
-        fakeData.add(new Entry(3, 30));
+//        fakeData.add(new Entry(16568960253F, 30));
+//        fakeData.add(new Entry(1657068825F, 20));
         return fakeData;
     }
 
     private void configureLineChart() {
         Description desc = new Description();
-        desc.setText("Stock Price History");
-        desc.setTextSize(28);
+        desc.setText("");
         mChart.setDescription(desc);
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setValueFormatter(new ValueFormatter() {
-            private final SimpleDateFormat mFormat = new SimpleDateFormat("dd MMM", Locale.ENGLISH);
+            private final SimpleDateFormat mFormat = new SimpleDateFormat("MMM dd", Locale.ENGLISH);
 
             @Override
             public String getFormattedValue(float value) {
-                long millis = (long) value * 1000L;
-                return mFormat.format(new Date(millis));
+                Date date = new Date();
+                Log.i("current value", String.valueOf(value));
+                date.setTime((long) value);
+                mFormat.format(date);
+                return String.valueOf(date);
             }
         });
     }
