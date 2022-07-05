@@ -51,6 +51,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
    // Graph library
-   implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
