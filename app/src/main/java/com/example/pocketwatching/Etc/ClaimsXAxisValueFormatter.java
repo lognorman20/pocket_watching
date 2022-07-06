@@ -27,6 +27,7 @@ public class ClaimsXAxisValueFormatter extends ValueFormatter {
     public static String toDate(long unixTime) {
         Date date = new Date();
         date.setTime(unixTime * 1000);
+        Log.i("checking time", date.toString());
         SimpleDateFormat sdf = new java.text.SimpleDateFormat("MMM dd");
         TimeZone tz = TimeZone.getDefault();
         sdf.setTimeZone(java.util.TimeZone.getTimeZone(String.valueOf(tz)));

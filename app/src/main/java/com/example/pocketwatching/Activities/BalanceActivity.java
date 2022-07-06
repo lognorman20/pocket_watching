@@ -2,6 +2,7 @@ package com.example.pocketwatching.Activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,23 +38,20 @@ public class BalanceActivity extends AppCompatActivity {
     private void setupChart() {
         XAxis xAxis = volumeReportChart.getXAxis();
         YAxis leftAxis = volumeReportChart.getAxisLeft();
+        volumeReportChart.getAxisRight().setEnabled(false);
 
-        volumeReportChart.animateX(1200, Easing.EaseInSine);
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
         xAxis.setPosition(position);
 
+        volumeReportChart.getDescription().setEnabled(false);
+        volumeReportChart.setTouchEnabled(false); // TODO: Change to make scrollable
         List<Float> floats = getX();
         xAxis.setValueFormatter(new ClaimsXAxisValueFormatter(floats));
         leftAxis.setValueFormatter(new ClaimsYAxisValueFormatter());
 
         LineDataSet set1;
         List<Entry> values = makeEntries(floats);
-        set1 = new LineDataSet(values, "Dataset 1");
-
-        set1.setDrawIcons(false);
-
-        // draw dashed line
-        set1.enableDashedLine(10f, 5f, 0f);
+        set1 = new LineDataSet(values, "Portfolio Value");
 
         // black lines and points
         set1.setColor(Color.BLACK);
@@ -66,12 +64,8 @@ public class BalanceActivity extends AppCompatActivity {
         // draw points as solid circles
         set1.setDrawCircleHole(false);
 
-        // customize legend entry
-        set1.setFormLineWidth(1f);
-        set1.setFormSize(15.f);
-
-        // text size of values
-        set1.setValueTextSize(9f);
+        // text size of values, set to zero to hide
+        set1.setValueTextSize(0f);
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
@@ -94,7 +88,6 @@ public class BalanceActivity extends AppCompatActivity {
             float seconds = (float) (dataList.get(i) / 1000);
             floats.add(seconds);
         }
-
         return floats;
     }
 
@@ -103,7 +96,6 @@ public class BalanceActivity extends AppCompatActivity {
         for (int i = 0; i < 5; i++) {
             values.add(new Entry(floats.get(i), i * 5));
         }
-
         return values;
     }
 }
