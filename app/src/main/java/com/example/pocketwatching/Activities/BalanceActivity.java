@@ -5,39 +5,105 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pocketwatching.Etc.ClaimsXAxisValueFormatter;
+import com.example.pocketwatching.Etc.ClaimsYAxisValueFormatter;
 import com.example.pocketwatching.R;
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
-
-import im.dacer.androidcharts.LineView;
-
+import java.util.Arrays;
+import java.util.List;
 
 public class BalanceActivity extends AppCompatActivity {
+    private LineChart volumeReportChart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.historical_balance_graph);
 
-        LineView lineView = (LineView)findViewById(R.id.line_view);
+        volumeReportChart = findViewById(R.id.reportingChart);
+        setupChart();
+        volumeReportChart.invalidate();
+    }
 
-        // init x axis labels
-        ArrayList<String> labels = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            labels.add(String.valueOf(i));
+    private void setupChart() {
+        XAxis xAxis = volumeReportChart.getXAxis();
+        YAxis leftAxis = volumeReportChart.getAxisLeft();
+
+        volumeReportChart.animateX(1200, Easing.EaseInSine);
+        XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
+        xAxis.setPosition(position);
+
+        List<Float> floats = getX();
+        xAxis.setValueFormatter(new ClaimsXAxisValueFormatter(floats));
+        leftAxis.setValueFormatter(new ClaimsYAxisValueFormatter());
+
+        LineDataSet set1;
+        List<Entry> values = makeEntries(floats);
+        set1 = new LineDataSet(values, "Dataset 1");
+
+        set1.setDrawIcons(false);
+
+        // draw dashed line
+        set1.enableDashedLine(10f, 5f, 0f);
+
+        // black lines and points
+        set1.setColor(Color.BLACK);
+        set1.setCircleColor(Color.BLACK);
+
+        // line thickness and point size
+        set1.setLineWidth(1f);
+        set1.setCircleRadius(3f);
+
+        // draw points as solid circles
+        set1.setDrawCircleHole(false);
+
+        // customize legend entry
+        set1.setFormLineWidth(1f);
+        set1.setFormSize(15.f);
+
+        // text size of values
+        set1.setValueTextSize(9f);
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set1);
+        LineData data = new LineData(dataSets);
+        volumeReportChart.setData(data);
+    }
+
+    private List<Float> getX() {
+        List<Long> dataList = new ArrayList<Long>() {{
+            add(Long.valueOf(1656820787));
+            add(Long.valueOf(1656907187));
+            add(Long.valueOf(1656993587));
+            add(Long.valueOf(1656820787));
+            add(Long.valueOf(1657079987));
+        }};
+
+        // convert values to a float
+        List<Float> floats = new ArrayList<>();
+        for (int i = 0; i < dataList.size(); i++) {
+            float seconds = (float) (dataList.get(i) / 1000);
+            floats.add(seconds);
         }
 
-        lineView.setBottomTextList(labels);
-        lineView.setColorArray(new int[]{
-                Color.BLACK,Color.GREEN,Color.GRAY,Color.CYAN});
+        return floats;
+    }
 
-       ArrayList<Integer> data = new ArrayList<>();
-       for (int i = 0; i < 5; i++) {
-           data.add(i * 5);
-       }
+    private List<Entry> makeEntries(List<Float> floats) {
+        ArrayList<Entry> values = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            values.add(new Entry(floats.get(i), i * 5));
+        }
 
-       ArrayList<ArrayList<Integer>> dataList = new ArrayList<>();
-       dataList.add(data);
-
-        lineView.setDataList(dataList); //or lineView.setFloatDataList(floatDataLists)
+        return values;
     }
 }
