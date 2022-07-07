@@ -87,7 +87,8 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
     private List<Token> topTokensByAmount;
-    private List<Float> times;
+    private List<Float> floatTimes;
+    private List<Long> longTimes;
     private List<Integer> blockHeights;
     private List<Float> blockBalances;
     private List<Double> ethPrices;
@@ -129,7 +130,9 @@ public class ProfileActivity extends AppCompatActivity {
         transactionHistory = findViewById(R.id.transactionHistory);
 
         txs = new ArrayList<>();
-        times = new ArrayList<>();
+        floatTimes = new ArrayList<>();
+        longTimes = new ArrayList<>();
+
         userEthWallets = new ArrayList<>();
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
@@ -231,28 +234,31 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getHistoricalBalance() {
+        // make a list of longs to pass to the API
         long currTime = System.currentTimeMillis() / 1000L;
-        float tempTime = currTime;
+        long tempTime = currTime;
         while (tempTime > (currTime - 604800)) {
-            times.add(tempTime);
+            longTimes.add(tempTime);
             tempTime -= 86400;
         }
+        Collections.sort(longTimes);
+        Log.i("longTimes = ", longTimes.toString());
 
+        // make a list of floats for the graph
         for (int i = 0; i < 7; i++) {
-            float seconds = (float) (times.get(i) / 1000);
-            times.add(seconds);
+            floatTimes.add(Float.valueOf(longTimes.get(i) / 1000));
         }
-        Collections.sort(times);
 
-        getEthPrices(times.get(0), times.get(6));
-        for (int i = 0; i < times.size(); i++) {
+
+        getEthPrices(longTimes.get(0), longTimes.get(6));
+        for (int i = 0; i < 7; i++) {
             Date date = new Date();
-            date.setTime((long) (Float.valueOf(times.get(i)) * 1000));
-            getBlockHeight(times.get(i));
+            date.setTime(longTimes.get(i));
+            getBlockHeight(longTimes.get(i));
         }
     }
 
-    private void getEthPrices(Float start, Float end) {
+    private void getEthPrices(Long start, Long end) {
         Call<List<EthPrice>> call = (Call<List<EthPrice>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start.toString(), end.toString());
         call.enqueue(new Callback<List<EthPrice>>() {
             @Override
@@ -269,7 +275,8 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void getBlockHeight(Float timestamp) {
+    private void getBlockHeight(Long timestamp) {
+        Log.i("blockHeight timestamp", timestamp.toString());
         Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().timeToBlock(timestamp.toString());
         call.enqueue(new Callback<DateToBlock>() {
             @Override
@@ -298,12 +305,12 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
                 blockBalances.set(index, Float.valueOf(response.body().getBalance()));
+                Log.i("blockBalance = ", response.body().getBalance());
                 if (index == 6) {
                     for (int i = 0; i < ethPrices.size(); i++) {
                         blockBalances.set(i, (float) (blockBalances.get(i) * ethPrices.get(i)));
                     }
-                    // run setupChart()
-                    setupChart(times, blockBalances);
+                    setupChart(floatTimes, blockBalances);
                 }
             }
             
