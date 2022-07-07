@@ -1,266 +1,259 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="53dp"
-        android:onClick="onLogoutButton"
-        android:text="Log Out"
-        app:layout_constraintBottom_toBottomOf="@+id/btnViewHistoricalBalance"
-        app:layout_constraintStart_toEndOf="@+id/btnViewHistoricalBalance"
-        app:layout_constraintTop_toTopOf="@+id/btnViewHistoricalBalance" />
-
-    <Button
-        android:id="@+id/btnViewHistoricalBalance"
-        android:layout_width="157dp"
-        android:layout_height="63dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="12dp"
-        android:onClick="onLogoutButton"
-        android:text="View Balance History"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rvTransactions" />
-
-    <TextView
-        android:id="@+id/tvTopThreeTokens"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
-        android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/topThreeTokens"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/topThreeTokens" />
-
-    <TextView
-        android:id="@+id/portfolioBalance"
-        android:layout_width="98dp"
-        android:layout_height="16dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:text="Portfolio Balance"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/portfolioInformation" />
-
-    <TextView
-        android:id="@+id/tvPortfolioValue"
-        android:layout_width="278dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="8dp"
-        android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/portfolioBalance"
-        app:layout_constraintStart_toEndOf="@+id/portfolioBalance" />
-
-    <TextView
-        android:id="@+id/tvEthAmount"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
-        android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/ethAmount"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ethAmount" />
-
-    <TextView
-        android:id="@+id/ethAmount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="ETH Amount"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/totalTokens" />
-
-    <TextView
-        android:id="@+id/numTx"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="# of Txs"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ethAmount" />
-
-    <TextView
-        android:id="@+id/tvCountTx"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
-        android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/numTx"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/numTx" />
-
-    <TextView
-        android:id="@+id/tvEthPrice"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/ethPrice"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ethPrice" />
-
-    <TextView
-        android:id="@+id/ethPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:text="ETH Price"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCountTx" />
-
-    <TextView
-        android:id="@+id/totalTokens"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Total Tokens"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/portfolioBalance" />
-
-    <TextView
-        android:id="@+id/tvTotalTokens"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="8dp"
-        android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/totalTokens"
-        app:layout_constraintStart_toEndOf="@+id/totalTokens" />
-
-    <TextView
-        android:id="@+id/topThreeTokens"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Top 3 Tokens"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/numTx" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTransactions"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/border"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/transactionHistory" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/transactionHistory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="8dp"
-        android:text="Transaction History"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ethPrice" />
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/reportingChart"
+            android:layout_width="375dp"
+            android:layout_height="230dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:background="@color/white"
+            android:elevation="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.488"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvWelcome" />
 
-    <TextView
-        android:id="@+id/portfolioInformation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="16dp"
-        android:text="Portfolio Information"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvWelcome" />
+        <TextView
+            android:id="@+id/tvCountTx"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/numTx"
+            app:layout_constraintStart_toEndOf="@+id/numTx" />
 
-    <TextView
-        android:id="@+id/tvWelcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textSize="28sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.48"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Joe Biden's Portfolio" />
+        <TextView
+            android:id="@+id/ethAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="8dp"
+            android:text="ETH Amount"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/numTx"
+            app:layout_constraintTop_toBottomOf="@+id/totalTokens" />
 
-    <ProgressBar
-        android:id="@+id/pbApi"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/numTx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="8dp"
+            android:text="# of Txs"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/ethPrice"
+            app:layout_constraintTop_toBottomOf="@+id/ethAmount" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/topThreeTokens"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="8dp"
+            android:text="Top 3 Tokens"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ethPrice" />
+
+        <TextView
+            android:id="@+id/tvTopThreeTokens"
+            android:layout_width="239dp"
+            android:layout_height="16dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/topThreeTokens"
+            app:layout_constraintStart_toEndOf="@+id/topThreeTokens" />
+
+        <TextView
+            android:id="@+id/ethPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="8dp"
+            android:text="ETH Price"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/topThreeTokens"
+            app:layout_constraintTop_toBottomOf="@+id/numTx" />
+
+        <TextView
+            android:id="@+id/tvEthAmount"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/ethAmount"
+            app:layout_constraintStart_toEndOf="@+id/ethAmount" />
+
+        <TextView
+            android:id="@+id/tvTotalTokens"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/totalTokens"
+            app:layout_constraintStart_toEndOf="@+id/totalTokens" />
+
+        <TextView
+            android:id="@+id/portfolioInformation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="16dp"
+            android:text="Portfolio Details"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.521"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reportingChart" />
+
+        <TextView
+            android:id="@+id/tvPortfolioValue"
+            android:layout_width="278dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/portfolioBalance"
+            app:layout_constraintStart_toEndOf="@+id/portfolioBalance" />
+
+        <TextView
+            android:id="@+id/totalTokens"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="11dp"
+            android:text="Total Tokens"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/ethAmount"
+            app:layout_constraintTop_toBottomOf="@+id/portfolioBalance" />
+
+        <TextView
+            android:id="@+id/portfolioBalance"
+            android:layout_width="98dp"
+            android:layout_height="16dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="16dp"
+            android:text="Portfolio Balance"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/totalTokens"
+            app:layout_constraintTop_toBottomOf="@+id/portfolioInformation" />
+
+        <TextView
+            android:id="@+id/tvEthPrice"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/ethPrice"
+            app:layout_constraintStart_toEndOf="@+id/ethPrice" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvTransactions"
+            android:layout_width="375dp"
+            android:layout_height="200dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.488"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/transactionHistory" />
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="114dp"
+            android:layout_height="49dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="28dp"
+            android:onClick="onLogoutButton"
+            android:text="Log Out"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvTransactions" />
+
+        <TextView
+            android:id="@+id/transactionHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="16dp"
+            android:text="Transaction History"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.489"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTopThreeTokens" />
+
+        <TextView
+            android:id="@+id/tvWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:text="Joe Biden's Portfolio"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.48"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/pbApi"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="249dp"
+            android:layout_height="148dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
