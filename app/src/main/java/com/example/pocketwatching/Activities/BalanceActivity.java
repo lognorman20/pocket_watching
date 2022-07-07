@@ -100,9 +100,9 @@ public class BalanceActivity extends AppCompatActivity {
 //            float seconds = (float) (dataList.get(i) / 1000);
 //            floats.add(seconds);
 //        }
-//        return floats;
-//    }
-//
+////        return floats;
+////    }
+////
 //    // makes y values, reduce all y values by a factor of 1000 to get relative values
 //    private List<Entry> makeEntries(List<Float> floats) {
 //        ArrayList<Entry> values = new ArrayList<>();

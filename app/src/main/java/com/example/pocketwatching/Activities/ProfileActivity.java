@@ -3,6 +3,7 @@ package com.example.pocketwatching.Activities;
 import static com.example.pocketwatching.Models.Ethplorer.Transaction.fromTxHistoryList;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Apis.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Apis.Moralis.MoralisClient;
 import com.example.pocketwatching.Apis.Poloniex.PoloniexClient;
+import com.example.pocketwatching.Etc.ClaimsXAxisValueFormatter;
 import com.example.pocketwatching.Etc.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
@@ -31,7 +33,15 @@ import com.example.pocketwatching.Models.Moralis.DateToBlock;
 import com.example.pocketwatching.Models.Poloniex.EthPrice;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -77,9 +87,9 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
     private List<Token> topTokensByAmount;
-    private List<Long> times;
+    private List<Float> times;
     private List<Integer> blockHeights;
-    private List<Double> blockBalances;
+    private List<Float> blockBalances;
     private List<Double> ethPrices;
     private List<Transaction> txs;
 
@@ -125,7 +135,7 @@ public class ProfileActivity extends AppCompatActivity {
         notValuableTokens = new ArrayList<>();
         topTokensByAmount = new ArrayList<>();
         blockHeights = new ArrayList<>();
-        blockBalances = new ArrayList<Double>(Collections.nCopies(7, -9.9));
+        blockBalances = new ArrayList<Float>(Collections.nCopies(7, (float)-9.9));
         ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
 
         pbApi = findViewById(R.id.pbApi);
@@ -134,7 +144,6 @@ public class ProfileActivity extends AppCompatActivity {
         volumeReportChart = findViewById(R.id.reportingChart);
         rvTransactions = findViewById(R.id.rvTransactions);
         adapter = new TransactionAdapter(this, txs);
-
 
         startLoading();
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
@@ -222,29 +231,28 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getHistoricalBalance() {
-        // get timestamps from each day of the past week
         long currTime = System.currentTimeMillis() / 1000L;
-        long tempTime = currTime;
+        float tempTime = currTime;
         while (tempTime > (currTime - 604800)) {
             times.add(tempTime);
             tempTime -= 86400;
         }
+
+        for (int i = 0; i < 7; i++) {
+            float seconds = (float) (times.get(i) / 1000);
+            times.add(seconds);
+        }
         Collections.sort(times);
 
-        // get eth value for each day in the last week
         getEthPrices(times.get(0), times.get(6));
-        // get block height at each timestamp in the past week
-        // then for each wallet, get wallet balance at each block height in the past week in
-        // getBlockHeight
         for (int i = 0; i < times.size(); i++) {
             Date date = new Date();
-            date.setTime(Long.valueOf(times.get(i)) * 1000);
+            date.setTime((long) (Float.valueOf(times.get(i)) * 1000));
             getBlockHeight(times.get(i));
         }
-        Log.i("unix timestamps", times.toString());
     }
 
-    private void getEthPrices(Long start, Long end) {
+    private void getEthPrices(Float start, Float end) {
         Call<List<EthPrice>> call = (Call<List<EthPrice>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start.toString(), end.toString());
         call.enqueue(new Callback<List<EthPrice>>() {
             @Override
@@ -261,7 +269,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void getBlockHeight(Long timestamp) {
+    private void getBlockHeight(Float timestamp) {
         Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().timeToBlock(timestamp.toString());
         call.enqueue(new Callback<DateToBlock>() {
             @Override
@@ -289,14 +297,13 @@ public class ProfileActivity extends AppCompatActivity {
         call.enqueue(new Callback<BlockBalance>() {
             @Override
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
-                blockBalances.set(index, Double.valueOf(response.body().getBalance()));
+                blockBalances.set(index, Float.valueOf(response.body().getBalance()));
                 if (index == 6) {
                     for (int i = 0; i < ethPrices.size(); i++) {
-                        blockBalances.set(i, blockBalances.get(i) * ethPrices.get(i));
+                        blockBalances.set(i, (float) (blockBalances.get(i) * ethPrices.get(i)));
                     }
-                    // get timestamps in the right format -- need a list of longs
-                    // get block balances in the right format
                     // run setupChart()
+                    setupChart(times, blockBalances);
                 }
             }
             
@@ -308,6 +315,64 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    private void setupChart(List<Float> xValues, List<Float> yValues) {
+        XAxis xAxis = volumeReportChart.getXAxis();
+
+        volumeReportChart.getAxisLeft().setEnabled(false);
+        volumeReportChart.getAxisRight().setEnabled(false);
+        volumeReportChart.getAxisRight().setAxisMaximum(10);
+        volumeReportChart.getDescription().setEnabled(false);
+        volumeReportChart.setTouchEnabled(true);
+        volumeReportChart.setDragEnabled(true);
+        volumeReportChart.animateY(500, Easing.EaseInCubic);
+
+        XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
+        xAxis.setPosition(position);
+
+        xAxis.setValueFormatter(new ClaimsXAxisValueFormatter(xValues));
+
+        LineDataSet set1;
+        List<Entry> values = makeEntries(xValues, blockBalances);
+        set1 = new LineDataSet(values, "Portfolio Value");
+
+        // black lines and points
+        set1.setColor(Color.BLACK);
+        set1.setCircleColor(Color.BLACK);
+
+        // line thickness and point size
+        set1.setLineWidth(1f);
+        set1.setCircleRadius(0f);
+
+        // draw points as solid circles
+        set1.setDrawCircleHole(false);
+
+        // hide values about plotted points
+        set1.setValueTextSize(0);
+
+        // set the filled area
+        set1.setDrawFilled(true);
+        set1.setFillFormatter(new IFillFormatter() {
+            @Override
+            public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
+                return volumeReportChart.getAxisLeft().getAxisMinimum();
+            }
+        });
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set1);
+        LineData data = new LineData(dataSets);
+        volumeReportChart.setData(data);
+    }
+
+
+    // makes y values, reduce all y values by a factor of 1000 to get relative values
+    private List<Entry> makeEntries(List<Float> xValues, List<Float> yValues) {
+        ArrayList<Entry> values = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            values.add(new Entry(xValues.get(i), yValues.get(i)));
+        }
+        return values;
+    }
     /**************************************************/
     /**************** Helper Functions ****************/
     /**************************************************/
@@ -320,11 +385,6 @@ public class ProfileActivity extends AppCompatActivity {
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // same as above
         startActivity(i);
         finish();
-    }
-
-    private void goGraphActivity() {
-        Intent i = new Intent(this, BalanceActivity.class);
-        startActivity(i);
     }
 
     // binds values onto the display
@@ -373,6 +433,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // shows loading screen
     private void startLoading() {
+        volumeReportChart.setVisibility(View.INVISIBLE);
         tvWelcome.setVisibility(View.INVISIBLE);
         btnLogout.setVisibility(View.INVISIBLE);
         rvTransactions.setVisibility(View.INVISIBLE);
@@ -391,6 +452,7 @@ public class ProfileActivity extends AppCompatActivity {
     // hides loading screen
     private void stopLoading() {
         tvWelcome.setVisibility(View.VISIBLE);
+        volumeReportChart.setVisibility(View.VISIBLE);
         btnLogout.setVisibility(View.VISIBLE);
         rvTransactions.setVisibility(View.VISIBLE);
         portfolioInformation.setVisibility(View.VISIBLE);
