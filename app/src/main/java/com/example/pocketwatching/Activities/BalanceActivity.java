@@ -40,6 +40,7 @@ public class BalanceActivity extends AppCompatActivity {
         XAxis xAxis = volumeReportChart.getXAxis();
         YAxis leftAxis = volumeReportChart.getAxisLeft();
         volumeReportChart.getAxisRight().setEnabled(false);
+        volumeReportChart.getAxisRight().setAxisMaximum(10);
 
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
         xAxis.setPosition(position);
@@ -68,6 +69,7 @@ public class BalanceActivity extends AppCompatActivity {
         // text size of values, set to zero to hide
         set1.setValueTextSize(0f);
 
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
         LineData data = new LineData(dataSets);
@@ -83,22 +85,20 @@ public class BalanceActivity extends AppCompatActivity {
             add(Long.valueOf(1656807035));
         }};
         Collections.sort(dataList);
-        Log.i("longs", dataList.toString());
-        // convert values to a float
         List<Float> floats = new ArrayList<>();
         for (int i = 0; i < dataList.size(); i++) {
             float seconds = (float) (dataList.get(i) / 1000);
             floats.add(seconds);
         }
-        Log.i("floats", floats.toString());
         return floats;
     }
 
     private List<Entry> makeEntries(List<Float> floats) {
         ArrayList<Entry> values = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            values.add(new Entry(floats.get(i), i * 5));
+            values.add(new Entry(floats.get(i), 10000000));
         }
+        Log.i("entries", values.toString());
         return values;
     }
 }

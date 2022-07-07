@@ -25,7 +25,6 @@ public class ClaimsXAxisValueFormatter extends ValueFormatter {
     }
 
     public static String toDate(long unixTime) {
-        Log.i("unixTimes", String.valueOf(unixTime));
         Date date = new Date();
         date.setTime(unixTime * 1000);
         SimpleDateFormat sdf = new java.text.SimpleDateFormat("MMM dd");
