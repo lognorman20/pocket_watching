@@ -10,14 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.Transaction;
 import com.example.pocketwatching.R;
 
 import java.util.List;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
-    Context context;
-    List<Transaction> txs;
+    private Context context;
+    private List<Transaction> txs;
 
     public TransactionAdapter(Context context, List<Transaction> transactions) {
         this.context = context;
@@ -73,7 +74,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }
 
         public void bind(Transaction tx) {
-            String value = String.format("%,.2f", tx.value);
+            String value = String.format("%,.4f", tx.value);
             String usdPrice = "$" + String.format("%,.2f", tx.usdPrice);
             String usdValue = "$" + String.format("%,.2f", tx.usdValue);
 
@@ -83,7 +84,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             tvValue.setText(value);
             tvUsdPrice.setText(usdPrice);
             tvUsdValue.setText(usdValue);
-            // add ability to change the arrow based on sending or receiving
+            // TODO: add ability to change the arrow based on sending or receiving
         }
     }
 }

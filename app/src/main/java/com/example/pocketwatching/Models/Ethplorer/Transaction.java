@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-// might be obsolete, txHistory handles these issues
 public class Transaction {
     public String timestamp;
     public String from;

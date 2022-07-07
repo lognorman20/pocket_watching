@@ -40,8 +40,10 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -242,7 +244,6 @@ public class ProfileActivity extends AppCompatActivity {
             tempTime -= 86400;
         }
         Collections.sort(longTimes);
-        Log.i("longTimes = ", longTimes.toString());
 
         // make a list of floats for the graph
         for (int i = 0; i < 7; i++) {
@@ -276,7 +277,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getBlockHeight(Long timestamp) {
-        Log.i("blockHeight timestamp", timestamp.toString());
         Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().timeToBlock(timestamp.toString());
         call.enqueue(new Callback<DateToBlock>() {
             @Override
@@ -305,7 +305,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
                 blockBalances.set(index, Float.valueOf(response.body().getBalance()));
-                Log.i("blockBalance = ", response.body().getBalance());
                 if (index == 6) {
                     for (int i = 0; i < ethPrices.size(); i++) {
                         blockBalances.set(i, (float) (blockBalances.get(i) * ethPrices.get(i)));
@@ -314,7 +313,6 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
             
-
             @Override
             public void onFailure(Call<BlockBalance> call, Throwable t) {
                 Toast.makeText(ProfileActivity.this, "Failed to get balance at block " + String.valueOf(blockHeight), Toast.LENGTH_SHORT).show();
@@ -331,7 +329,7 @@ public class ProfileActivity extends AppCompatActivity {
         volumeReportChart.getDescription().setEnabled(false);
         volumeReportChart.setTouchEnabled(true);
         volumeReportChart.setDragEnabled(true);
-        volumeReportChart.animateY(500, Easing.EaseInCubic);
+        volumeReportChart.animateY(1000, Easing.EaseInCubic);
 
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
         xAxis.setPosition(position);
@@ -410,6 +408,13 @@ public class ProfileActivity extends AppCompatActivity {
         tvEthPrice.setText(ethPrice);
         tvTotalTokens.setText(totalTokens);
         tvTopThreeTokens.setText(topThreeTokensText);
+
+        try {
+            Thread.sleep(500); // optimize with observables?
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         stopLoading();
     }
 
