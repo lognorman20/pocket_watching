@@ -31,15 +31,14 @@ public class BalanceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.historical_balance_graph);
+//        setContentView(R.layout.historical_balance_graph);
 
-        volumeReportChart = findViewById(R.id.reportingChart);
-        setupChart();
+//        volumeReportChart = findViewById(R.id.reportingChart);
+//        setupChart();
     }
 
     private void setupChart() {
         XAxis xAxis = volumeReportChart.getXAxis();
-        YAxis yAxis = volumeReportChart.getAxisLeft();
 
         volumeReportChart.getAxisLeft().setEnabled(false);
         volumeReportChart.getAxisRight().setEnabled(false);

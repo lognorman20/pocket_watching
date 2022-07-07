@@ -119,8 +119,7 @@ public class ProfileActivity extends AppCompatActivity {
         pbApi = findViewById(R.id.pbApi);
         pbApi.setVisibility(View.INVISIBLE);
         btnLogout = findViewById(R.id.btnLogout);
-        btnViewHistoricalBalance = findViewById(R.id.btnViewHistoricalBalance);
-        
+
         rvTransactions = findViewById(R.id.rvTransactions);
         txs = new ArrayList<>();
         adapter = new TransactionAdapter(this, txs);
@@ -170,13 +169,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
         
-        btnViewHistoricalBalance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goGraphActivity();
-            }
-        });
-
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvTransactions.setAdapter(adapter);
     }
@@ -377,7 +369,6 @@ public class ProfileActivity extends AppCompatActivity {
     // shows loading screen
     private void startLoading() {
         tvWelcome.setVisibility(View.INVISIBLE);
-        btnViewHistoricalBalance.setVisibility(View.INVISIBLE);
         btnLogout.setVisibility(View.INVISIBLE);
         rvTransactions.setVisibility(View.INVISIBLE);
         portfolioInformation.setVisibility(View.INVISIBLE);
@@ -394,7 +385,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     // hides loading screen
     private void stopLoading() {
-        btnViewHistoricalBalance.setVisibility(View.VISIBLE);
         tvWelcome.setVisibility(View.VISIBLE);
         btnLogout.setVisibility(View.VISIBLE);
         rvTransactions.setVisibility(View.VISIBLE);
