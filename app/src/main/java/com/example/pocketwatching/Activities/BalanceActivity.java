@@ -17,6 +17,8 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
@@ -33,23 +35,25 @@ public class BalanceActivity extends AppCompatActivity {
 
         volumeReportChart = findViewById(R.id.reportingChart);
         setupChart();
-        volumeReportChart.invalidate();
     }
 
     private void setupChart() {
         XAxis xAxis = volumeReportChart.getXAxis();
-        YAxis leftAxis = volumeReportChart.getAxisLeft();
+        YAxis yAxis = volumeReportChart.getAxisLeft();
+
+        volumeReportChart.getAxisLeft().setEnabled(false);
         volumeReportChart.getAxisRight().setEnabled(false);
         volumeReportChart.getAxisRight().setAxisMaximum(10);
+        volumeReportChart.getDescription().setEnabled(false);
+        volumeReportChart.setTouchEnabled(true);
+        volumeReportChart.setDragEnabled(true);
+        volumeReportChart.animateY(500, Easing.EaseInCubic);
 
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
         xAxis.setPosition(position);
 
-        volumeReportChart.getDescription().setEnabled(false);
-        volumeReportChart.setTouchEnabled(false); // TODO: Change to make scrollable
         List<Float> floats = getX();
         xAxis.setValueFormatter(new ClaimsXAxisValueFormatter(floats));
-        leftAxis.setValueFormatter(new ClaimsYAxisValueFormatter());
 
         LineDataSet set1;
         List<Entry> values = makeEntries(floats);
@@ -61,15 +65,23 @@ public class BalanceActivity extends AppCompatActivity {
 
         // line thickness and point size
         set1.setLineWidth(1f);
-        set1.setCircleRadius(3f);
+        set1.setCircleRadius(0f);
 
         // draw points as solid circles
         set1.setDrawCircleHole(false);
 
-        // text size of values, set to zero to hide
-        set1.setValueTextSize(0f);
+        // hide values about plotted points
+        set1.setValueTextSize(0);
 
-        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+        // set the filled area
+        set1.setDrawFilled(true);
+        set1.setFillFormatter(new IFillFormatter() {
+            @Override
+            public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
+                return volumeReportChart.getAxisLeft().getAxisMinimum();
+            }
+        });
+
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
         LineData data = new LineData(dataSets);
@@ -93,10 +105,11 @@ public class BalanceActivity extends AppCompatActivity {
         return floats;
     }
 
+    // makes y values, reduce all y values by a factor of 1000 to get relative values
     private List<Entry> makeEntries(List<Float> floats) {
         ArrayList<Entry> values = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            values.add(new Entry(floats.get(i), 10000000));
+            values.add(new Entry(floats.get(i), (float) (Math.random()*i)));
         }
         Log.i("entries", values.toString());
         return values;
