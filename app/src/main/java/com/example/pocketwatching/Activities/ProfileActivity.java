@@ -31,6 +31,7 @@ import com.example.pocketwatching.Models.Moralis.DateToBlock;
 import com.example.pocketwatching.Models.Poloniex.EthPrice;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
+import com.github.mikephil.charting.charts.LineChart;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -76,6 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
     private List<Token> topTokensByAmount;
+    private List<Long> times;
     private List<Integer> blockHeights;
     private List<Double> blockBalances;
     private List<Double> ethPrices;
@@ -88,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
     // widgets and buttons
     private ProgressBar pbApi;
     private Button btnLogout;
-    private Button btnViewHistoricalBalance;
+    private LineChart volumeReportChart;
     public ProfileActivity() {}
 
     /**************************************************/
@@ -116,14 +118,8 @@ public class ProfileActivity extends AppCompatActivity {
         ethPrice = findViewById(R.id.ethPrice);
         transactionHistory = findViewById(R.id.transactionHistory);
 
-        pbApi = findViewById(R.id.pbApi);
-        pbApi.setVisibility(View.INVISIBLE);
-        btnLogout = findViewById(R.id.btnLogout);
-
-        rvTransactions = findViewById(R.id.rvTransactions);
         txs = new ArrayList<>();
-        adapter = new TransactionAdapter(this, txs);
-
+        times = new ArrayList<>();
         userEthWallets = new ArrayList<>();
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
@@ -131,6 +127,14 @@ public class ProfileActivity extends AppCompatActivity {
         blockHeights = new ArrayList<>();
         blockBalances = new ArrayList<Double>(Collections.nCopies(7, -9.9));
         ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
+
+        pbApi = findViewById(R.id.pbApi);
+        pbApi.setVisibility(View.INVISIBLE);
+        btnLogout = findViewById(R.id.btnLogout);
+        volumeReportChart = findViewById(R.id.reportingChart);
+        rvTransactions = findViewById(R.id.rvTransactions);
+        adapter = new TransactionAdapter(this, txs);
+
 
         startLoading();
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
@@ -219,11 +223,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void getHistoricalBalance() {
         // get timestamps from each day of the past week
-        List<String> times = new ArrayList<>();
         long currTime = System.currentTimeMillis() / 1000L;
         long tempTime = currTime;
         while (tempTime > (currTime - 604800)) {
-            times.add(String.valueOf(tempTime));
+            times.add(tempTime);
             tempTime -= 86400;
         }
         Collections.sort(times);
@@ -241,8 +244,8 @@ public class ProfileActivity extends AppCompatActivity {
         Log.i("unix timestamps", times.toString());
     }
 
-    private void getEthPrices(String start, String end) {
-        Call<List<EthPrice>> call = (Call<List<EthPrice>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start, end);
+    private void getEthPrices(Long start, Long end) {
+        Call<List<EthPrice>> call = (Call<List<EthPrice>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start.toString(), end.toString());
         call.enqueue(new Callback<List<EthPrice>>() {
             @Override
             public void onResponse(Call<List<EthPrice>> call, Response<List<EthPrice>> response) {
@@ -258,8 +261,8 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void getBlockHeight(String timestamp) {
-        Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().timeToBlock(timestamp);
+    private void getBlockHeight(Long timestamp) {
+        Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().timeToBlock(timestamp.toString());
         call.enqueue(new Callback<DateToBlock>() {
             @Override
             public void onResponse(Call<DateToBlock> call, Response<DateToBlock> response) {
@@ -291,7 +294,9 @@ public class ProfileActivity extends AppCompatActivity {
                     for (int i = 0; i < ethPrices.size(); i++) {
                         blockBalances.set(i, blockBalances.get(i) * ethPrices.get(i));
                     }
-                    Log.i("block balances", blockBalances.toString());
+                    // get timestamps in the right format -- need a list of longs
+                    // get block balances in the right format
+                    // run setupChart()
                 }
             }
             
