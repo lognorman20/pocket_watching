@@ -21,6 +21,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class BalanceActivity extends AppCompatActivity {
@@ -75,19 +76,21 @@ public class BalanceActivity extends AppCompatActivity {
 
     private List<Float> getX() {
         List<Long> dataList = new ArrayList<Long>() {{
-            add(Long.valueOf(1656820787));
-            add(Long.valueOf(1656907187));
-            add(Long.valueOf(1656993587));
-            add(Long.valueOf(1656820787));
-            add(Long.valueOf(1657079987));
+            add(Long.valueOf(1657152635));
+            add(Long.valueOf(1657066235));
+            add(Long.valueOf(1656979835));
+            add(Long.valueOf(1656893435));
+            add(Long.valueOf(1656807035));
         }};
-
+        Collections.sort(dataList);
+        Log.i("longs", dataList.toString());
         // convert values to a float
         List<Float> floats = new ArrayList<>();
         for (int i = 0; i < dataList.size(); i++) {
             float seconds = (float) (dataList.get(i) / 1000);
             floats.add(seconds);
         }
+        Log.i("floats", floats.toString());
         return floats;
     }
 
