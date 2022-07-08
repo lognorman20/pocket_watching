@@ -251,6 +251,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         getEthPrices(longTimes.get(0), longTimes.get(6));
+
         for (int i = 0; i < 7; i++) {
             Date date = new Date();
             date.setTime(longTimes.get(i));
@@ -267,6 +268,7 @@ public class ProfileActivity extends AppCompatActivity {
                 for (int i = 0; i < response.body().size(); i++) {
                     ethPrices.set(i, Double.valueOf(response.body().get(i).getWeightedAverage()));
                 }
+                Log.i("ethPrices = ", ethPrices.toString());
             }
 
             @Override
@@ -300,18 +302,20 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void getBlockBalance(String address, int blockHeight, int index) {
+    private void getBlockBalance(String address, long blockHeight, int index) {
         Call<BlockBalance> call = (Call<BlockBalance>) MoralisClient.getInstance().getMoralisApi().getBlockBalance(address, blockHeight);
         call.enqueue(new Callback<BlockBalance>() {
             @Override
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
                 blockBalances.set(index, Float.valueOf(response.body().getBalance()));
                 if (index == 6) {
+                    Log.i("Block balances = ", blockBalances.toString());
                     for (int i = 0; i < blockBalances.size(); i++) {
                         double weiAmount = blockBalances.get(i);
                         double ethAmount = weiAmount / (Math.pow(10, 18));
+                        Log.i("wei * eth", String.valueOf(weiAmount) + " * " + ethAmount);
                         double usdAmount = ethAmount * ethPrices.get(i);
-                        Log.i("ethPrice", ethPrices.get(i).toString());
+                        // need to get the price of each token in the wallet at the given time
                         blockBalances.set(i, (float) (usdAmount));
                     }
                     setupChart(floatTimes, blockBalances);
@@ -368,8 +372,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         // hide values about plotted points
         set1.setValueTextSize(0);
-
-
 
         // set the filled area
         set1.setDrawFilled(true);
