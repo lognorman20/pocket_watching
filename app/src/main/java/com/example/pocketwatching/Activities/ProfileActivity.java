@@ -239,7 +239,7 @@ public class ProfileActivity extends AppCompatActivity {
         // make a list of longs to pass to the API
         long currTime = System.currentTimeMillis() / 1000L;
         long tempTime = currTime;
-        while (tempTime > (currTime - 604800)) {
+        while (tempTime >= (currTime - 604800)) {
             longTimes.add(tempTime);
             tempTime -= 86400;
         }
@@ -249,7 +249,6 @@ public class ProfileActivity extends AppCompatActivity {
         for (int i = 0; i < 7; i++) {
             floatTimes.add(Float.valueOf(longTimes.get(i) / 1000));
         }
-
 
         getEthPrices(longTimes.get(0), longTimes.get(6));
         for (int i = 0; i < 7; i++) {
@@ -264,6 +263,7 @@ public class ProfileActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<EthPrice>>() {
             @Override
             public void onResponse(Call<List<EthPrice>> call, Response<List<EthPrice>> response) {
+                Log.i("ethPrices response size", String.valueOf(response.body().size()));
                 for (int i = 0; i < response.body().size(); i++) {
                     ethPrices.set(i, Double.valueOf(response.body().get(i).getWeightedAverage()));
                 }
@@ -284,6 +284,7 @@ public class ProfileActivity extends AppCompatActivity {
                 blockHeights.add(response.body().getBlock());
                 if (blockHeights.size() == 7) {
                     Collections.sort(blockHeights);
+                    Log.i("blockHeights = ", blockHeights.toString());
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
                             getBlockBalance(userWallets.get(i).getWalletAddress(), blockHeights.get(j), j);
@@ -306,8 +307,12 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
                 blockBalances.set(index, Float.valueOf(response.body().getBalance()));
                 if (index == 6) {
-                    for (int i = 0; i < ethPrices.size(); i++) {
-                        blockBalances.set(i, (float) (blockBalances.get(i) * ethPrices.get(i)));
+                    for (int i = 0; i < blockBalances.size(); i++) {
+                        double weiAmount = blockBalances.get(i);
+                        double ethAmount = weiAmount / (Math.pow(10, 18));
+                        double usdAmount = ethAmount * ethPrices.get(i);
+                        Log.i("ethPrice", ethPrices.get(i).toString());
+                        blockBalances.set(i, (float) (usdAmount));
                     }
                     setupChart(floatTimes, blockBalances);
                 }
@@ -330,7 +335,17 @@ public class ProfileActivity extends AppCompatActivity {
         volumeReportChart.setTouchEnabled(true);
         volumeReportChart.setDragEnabled(true);
         volumeReportChart.animateY(1000, Easing.EaseInCubic);
+        volumeReportChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Log.i("value = ", String.valueOf(e.getY()));
+            }
 
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
         xAxis.setPosition(position);
 
@@ -354,6 +369,8 @@ public class ProfileActivity extends AppCompatActivity {
         // hide values about plotted points
         set1.setValueTextSize(0);
 
+
+
         // set the filled area
         set1.setDrawFilled(true);
         set1.setFillFormatter(new IFillFormatter() {
@@ -369,9 +386,9 @@ public class ProfileActivity extends AppCompatActivity {
         volumeReportChart.setData(data);
     }
 
-
     // makes y values, reduce all y values by a factor of 1000 to get relative values
     private List<Entry> makeEntries(List<Float> xValues, List<Float> yValues) {
+        Log.i("check yValues", yValues.toString());
         ArrayList<Entry> values = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             values.add(new Entry(xValues.get(i), yValues.get(i)));
@@ -410,7 +427,7 @@ public class ProfileActivity extends AppCompatActivity {
         tvTopThreeTokens.setText(topThreeTokensText);
 
         try {
-            Thread.sleep(500); // optimize with observables?
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
