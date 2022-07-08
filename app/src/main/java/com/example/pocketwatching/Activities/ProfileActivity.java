@@ -22,6 +22,7 @@ import com.example.pocketwatching.Apis.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Apis.Moralis.MoralisClient;
 import com.example.pocketwatching.Apis.Poloniex.PoloniexClient;
 import com.example.pocketwatching.Etc.ClaimsXAxisValueFormatter;
+import com.example.pocketwatching.Etc.CustomMarkerView;
 import com.example.pocketwatching.Etc.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
@@ -35,6 +36,7 @@ import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -339,10 +341,14 @@ public class ProfileActivity extends AppCompatActivity {
         volumeReportChart.setTouchEnabled(true);
         volumeReportChart.setDragEnabled(true);
         volumeReportChart.animateY(1000, Easing.EaseInCubic);
+
+        IMarker marker = new CustomMarkerView(ProfileActivity.this, R.layout.custom_marker_view);
+        volumeReportChart.setMarker(marker);
+
         volumeReportChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-                Log.i("value = ", String.valueOf(e.getY()));
+                volumeReportChart.highlightValue(h);
             }
 
             @Override
