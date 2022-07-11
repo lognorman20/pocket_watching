@@ -201,6 +201,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
                 userEthWallets.add(response.body());
                 if (userEthWallets.size() == userWallets.size()) {
+                    Log.i("debugging", String.valueOf(userEthWallets.size()) + " " + userWallets.size());
                     initValuableTokens();
                     addPortfolioData();
                 }
@@ -420,11 +421,15 @@ public class ProfileActivity extends AppCompatActivity {
     // binds values onto the display
     private void addPortfolioData() {
         String portfolioValue = "$" + String.format("%,.2f", getPortfolioBalance());
-        String ethBalance = String.format("%,.2f", getTotalEthAmount()) + " ETH";
+        String ethBalance = String.format("%,.5f", getTotalEthAmount()) + " ETH";
         String countTx = String.format("%,d", getTxCount()) + " total transactions";
         String ethPrice = "$" + String.format("%,.2f", getEthPrice());
         String totalTokens = String.format("%,d", getTotalTokens());
         String topThreeTokensText = String.valueOf(getTopThreeTokensByAmount());
+        // setting top three tokens
+        if (getTopThreeTokensByAmount().size() == 0) {
+            topThreeTokensText = "N/A";
+        }
 
         tvWelcome.setText(ParseUser.getCurrentUser().getUsername() + "'s Portfolio");
         tvPortfolioValue.setText(portfolioValue);
@@ -450,14 +455,16 @@ public class ProfileActivity extends AppCompatActivity {
         MinMaxPriorityQueue<Token> topThreeTokens = MinMaxPriorityQueue.orderedBy(comparator).create();
 
         for (int i = 0; i < userEthWallets.size(); i++) {
-            for (int j = 0; j < userEthWallets.get(i).getTokens().size(); j++) {
-                Token token = userEthWallets.get(i).getTokens().get(j);
-                TokenInfo tokenInfo = token.getTokenInfo();
-                if (tokenInfo.getPrice().equals(false)) {
-                    notValuableTokens.add(token);
-                } else {
-                    topThreeTokens.add(token);
-                    valuableTokens.add(token);
+            if (userEthWallets.get(i).getTokens() != null) {
+                for (int j = 0; j < userEthWallets.get(i).getTokens().size(); j++) {
+                    Token token = userEthWallets.get(i).getTokens().get(j);
+                    TokenInfo tokenInfo = token.getTokenInfo();
+                    if (tokenInfo.getPrice().equals(false)) {
+                        notValuableTokens.add(token);
+                    } else {
+                        topThreeTokens.add(token);
+                        valuableTokens.add(token);
+                    }
                 }
             }
         }

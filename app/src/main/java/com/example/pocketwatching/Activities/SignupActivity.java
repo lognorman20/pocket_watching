@@ -21,7 +21,6 @@ import com.parse.SignUpCallback;
 public class SignupActivity extends AppCompatActivity {
     private EditText etUsername;
     private EditText etPassword;
-    private EditText etWallet;
     private EditText etEmail;
     private Button btnSignup;
 
@@ -33,7 +32,6 @@ public class SignupActivity extends AppCompatActivity {
 
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
-        etWallet = findViewById(R.id.etWallet);
         etEmail = findViewById(R.id.etEmail);
         btnSignup = findViewById(R.id.btnLoginLogin);
 
@@ -42,17 +40,15 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
-                String wallet = etWallet.getText().toString();
                 String email = etEmail.getText().toString();
-                signupUser(username, password, wallet, email);
+                signupUser(username, password, email);
             }
         });
     }
 
-    private void signupUser(String username, String password, String wallet, String email) {
+    private void signupUser(String username, String password, String email) {
         // adding information to user table
         ParseUser user = new ParseUser();
-        Wallet walletObject = new Wallet();
 
         user.setUsername(username);
         user.setPassword(password);
@@ -61,33 +57,18 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void done(ParseException e) {
                 if (e == null) {
-                    // adding information to wallet table
-                    walletObject.setOwner(user);
-                    walletObject.setWalletAddress(wallet);
-                    walletObject.setSymbol("eth");
-                    walletObject.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null){
-                                Toast.makeText(SignupActivity.this, "Successfully signed up " + username, Toast.LENGTH_SHORT).show();
-                                goProfileActivity();
-                            } else {
-                                Toast.makeText(SignupActivity.this, "Failed to save wallet for " + username, Toast.LENGTH_SHORT).show();
-                                Log.e("debugging", "Failed to save wallet for " + username + ". " + e);
-                                user.deleteInBackground();
-                            }
-                        }
-                    });
+                    Toast.makeText(SignupActivity.this, "Successfully signed up " + username, Toast.LENGTH_SHORT).show();
+                    goAddWalletActivity();
                 } else {
-                    Toast.makeText(SignupActivity.this, "Failed to sign up " + username, Toast.LENGTH_SHORT).show();
-                    Log.e("debugging", "Could not sign up user " + username + ". " + e);
+                    Toast.makeText(SignupActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    Log.e("signup", e.toString());
                 }
             }
         });
     }
 
-    private void goProfileActivity() {
-        Intent i = new Intent(this, ProfileActivity.class);
+    private void goAddWalletActivity() {
+        Intent i = new Intent(this, AddWalletActivity.class);
         startActivity(i);
         finish();
     }
