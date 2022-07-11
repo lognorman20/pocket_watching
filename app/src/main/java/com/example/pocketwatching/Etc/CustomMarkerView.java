@@ -23,8 +23,8 @@ public class CustomMarkerView extends MarkerView {
 // content (user-interface)
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
-
-        tvContent.setText("" + e.getY());
+        String pointValue = "$" + String.format("%,.2f", e.getY());
+        tvContent.setText(pointValue);
 
         // this will perform necessary layouting
         super.refreshContent(e, highlight);

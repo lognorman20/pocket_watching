@@ -317,7 +317,7 @@ public class ProfileActivity extends AppCompatActivity {
                         double ethAmount = weiAmount / (Math.pow(10, 18));
                         Log.i("wei * eth", String.valueOf(weiAmount) + " * " + ethAmount);
                         double usdAmount = ethAmount * ethPrices.get(i);
-                        // need to get the price of each token in the wallet at the given time
+                        // TODO: get the price of each token in the wallet at the given time
                         blockBalances.set(i, (float) (usdAmount));
                     }
                     setupChart(floatTimes, blockBalances);
@@ -326,7 +326,7 @@ public class ProfileActivity extends AppCompatActivity {
             
             @Override
             public void onFailure(Call<BlockBalance> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "Failed to get balance at block " + String.valueOf(blockHeight), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Failed to get balance at block " + (blockHeight), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -363,7 +363,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         LineDataSet set1;
         List<Entry> values = makeEntries(xValues, blockBalances);
-        set1 = new LineDataSet(values, "Portfolio Value");
+        set1 = new LineDataSet(values, "Eth Balance");
 
         // black lines and points
         set1.setColor(Color.BLACK);

@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+// make sure to get the right values for the given token
+// try to get the actual token name when getting transactions
 public class Transaction {
     public String timestamp;
     public String from;
