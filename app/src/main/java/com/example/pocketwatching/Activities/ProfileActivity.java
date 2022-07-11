@@ -261,7 +261,6 @@ public class ProfileActivity extends AppCompatActivity {
             getBlockHeight(longTimes.get(i));
         }
 
-        stopLoading();
     }
 
     private void getEthPrices(Long start, Long end) {
@@ -293,6 +292,11 @@ public class ProfileActivity extends AppCompatActivity {
                     Collections.sort(blockHeights);
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
+                            try {
+                                Thread.sleep(200);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             getBlockBalance(userWallets.get(i).getWalletAddress(), blockHeights.get(j), j);
                         }
                     }
@@ -311,14 +315,11 @@ public class ProfileActivity extends AppCompatActivity {
         call.enqueue(new Callback<BlockBalance>() {
             @Override
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
-                Log.i("blockBalance = ", response.body().getBalance());
                 blockBalances.set(index, Float.valueOf(response.body().getBalance()));
                 if (index == 6) {
-                    Log.i("Block balances = ", blockBalances.toString());
                     for (int i = 0; i < blockBalances.size(); i++) {
                         double weiAmount = blockBalances.get(i);
                         double ethAmount = weiAmount / (Math.pow(10, 18));
-                        Log.i("wei * eth", String.valueOf(weiAmount) + " * " + ethAmount);
                         double usdAmount = ethAmount * ethPrices.get(i);
                         // TODO: get the price of each token in the wallet at the given time
                         blockBalances.set(i, (float) (usdAmount));
@@ -396,6 +397,7 @@ public class ProfileActivity extends AppCompatActivity {
         LineData data = new LineData(dataSets);
         volumeReportChart.setData(data);
 
+        stopLoading();
     }
 
     // makes y values, reduce all y values by a factor of 1000 to get relative values
