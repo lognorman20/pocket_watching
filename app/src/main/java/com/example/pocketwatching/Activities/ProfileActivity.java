@@ -78,7 +78,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // text views that don't change
     private TextView portfolioInformation;
-    private TextView portfolioBalance;
+    private TextView currentBalance;
     private TextView totalTokens;
     private TextView ethAmount;
     private TextView numTx;
@@ -124,9 +124,9 @@ public class ProfileActivity extends AppCompatActivity {
         tvEthPrice = findViewById(R.id.tvEthPrice);
         tvWelcome = findViewById(R.id.tvWelcome);
 
-        portfolioInformation = findViewById(R.id.portfolioInformation);
-        portfolioBalance = findViewById(R.id.portfolioBalance);
+        portfolioInformation = findViewById(R.id.tvPortfolioValue);
         totalTokens = findViewById(R.id.totalTokens);
+        currentBalance = findViewById(R.id.currentBalance);
         ethAmount = findViewById(R.id.ethAmount);
         numTx = findViewById(R.id.numTx);
         topThreeTokens = findViewById(R.id.topThreeTokens);
@@ -204,6 +204,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Log.i("debugging", String.valueOf(userEthWallets.size()) + " " + userWallets.size());
                     initValuableTokens();
                     addPortfolioData();
+                    stopLoading();
                 }
             }
 
@@ -397,7 +398,6 @@ public class ProfileActivity extends AppCompatActivity {
         LineData data = new LineData(dataSets);
         volumeReportChart.setData(data);
 
-        stopLoading();
     }
 
     // makes y values, reduce all y values by a factor of 1000 to get relative values
@@ -482,10 +482,10 @@ public class ProfileActivity extends AppCompatActivity {
     private void startLoading() {
         volumeReportChart.setVisibility(View.INVISIBLE);
         tvWelcome.setVisibility(View.INVISIBLE);
+        currentBalance.setVisibility(View.INVISIBLE);
         btnLogout.setVisibility(View.INVISIBLE);
         rvTransactions.setVisibility(View.INVISIBLE);
         portfolioInformation.setVisibility(View.INVISIBLE);
-        portfolioBalance.setVisibility(View.INVISIBLE);
         totalTokens.setVisibility(View.INVISIBLE);
         ethAmount.setVisibility(View.INVISIBLE);
         numTx.setVisibility(View.INVISIBLE);
@@ -500,10 +500,10 @@ public class ProfileActivity extends AppCompatActivity {
     private void stopLoading() {
         tvWelcome.setVisibility(View.VISIBLE);
         volumeReportChart.setVisibility(View.VISIBLE);
+        currentBalance.setVisibility(View.VISIBLE);
         btnLogout.setVisibility(View.VISIBLE);
         rvTransactions.setVisibility(View.VISIBLE);
         portfolioInformation.setVisibility(View.VISIBLE);
-        portfolioBalance.setVisibility(View.VISIBLE);
         totalTokens.setVisibility(View.VISIBLE);
         ethAmount.setVisibility(View.VISIBLE);
         numTx.setVisibility(View.VISIBLE);
