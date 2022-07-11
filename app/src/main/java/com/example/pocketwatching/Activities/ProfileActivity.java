@@ -78,7 +78,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     // text views that don't change
     private TextView portfolioInformation;
-    private TextView portfolioBalance;
+    private TextView currentBalance;
     private TextView totalTokens;
     private TextView ethAmount;
     private TextView numTx;
@@ -105,6 +105,7 @@ public class ProfileActivity extends AppCompatActivity {
     // widgets and buttons
     private ProgressBar pbApi;
     private Button btnLogout;
+    private Button btnAddWallet;
     private LineChart volumeReportChart;
     public ProfileActivity() {}
 
@@ -124,9 +125,9 @@ public class ProfileActivity extends AppCompatActivity {
         tvEthPrice = findViewById(R.id.tvEthPrice);
         tvWelcome = findViewById(R.id.tvWelcome);
 
-        portfolioInformation = findViewById(R.id.portfolioInformation);
-        portfolioBalance = findViewById(R.id.portfolioBalance);
+        portfolioInformation = findViewById(R.id.tvPortfolioValue);
         totalTokens = findViewById(R.id.totalTokens);
+        currentBalance = findViewById(R.id.currentBalance);
         ethAmount = findViewById(R.id.ethAmount);
         numTx = findViewById(R.id.numTx);
         topThreeTokens = findViewById(R.id.topThreeTokens);
@@ -146,8 +147,8 @@ public class ProfileActivity extends AppCompatActivity {
         ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
 
         pbApi = findViewById(R.id.pbApi);
-        pbApi.setVisibility(View.INVISIBLE);
         btnLogout = findViewById(R.id.btnLogout);
+        btnAddWallet = findViewById(R.id.btnAddWallet2);
         volumeReportChart = findViewById(R.id.reportingChart);
         rvTransactions = findViewById(R.id.rvTransactions);
         adapter = new TransactionAdapter(this, txs);
@@ -188,9 +189,23 @@ public class ProfileActivity extends AppCompatActivity {
                 goMainActivity();
             }
         });
-        
+
+        btnAddWallet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goAddWalletActivity();
+            }
+        });
+
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvTransactions.setAdapter(adapter);
+    }
+
+
+    private void goAddWalletActivity() {
+        Intent i = new Intent(this, AddWalletActivity.class);
+        startActivity(i);
+        finish();
     }
 
     // gets EthWallet object from given address
@@ -201,8 +216,10 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
                 userEthWallets.add(response.body());
                 if (userEthWallets.size() == userWallets.size()) {
+                    Log.i("debugging", String.valueOf(userEthWallets.size()) + " " + userWallets.size());
                     initValuableTokens();
                     addPortfolioData();
+                    stopLoading();
                 }
             }
 
@@ -259,6 +276,7 @@ public class ProfileActivity extends AppCompatActivity {
             date.setTime(longTimes.get(i));
             getBlockHeight(longTimes.get(i));
         }
+
     }
 
     private void getEthPrices(Long start, Long end) {
@@ -288,9 +306,13 @@ public class ProfileActivity extends AppCompatActivity {
                 blockHeights.add(response.body().getBlock());
                 if (blockHeights.size() == 7) {
                     Collections.sort(blockHeights);
-                    Log.i("blockHeights = ", blockHeights.toString());
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
+                            try {
+                                Thread.sleep(200);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             getBlockBalance(userWallets.get(i).getWalletAddress(), blockHeights.get(j), j);
                         }
                     }
@@ -311,11 +333,9 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
                 blockBalances.set(index, Float.valueOf(response.body().getBalance()));
                 if (index == 6) {
-                    Log.i("Block balances = ", blockBalances.toString());
                     for (int i = 0; i < blockBalances.size(); i++) {
                         double weiAmount = blockBalances.get(i);
                         double ethAmount = weiAmount / (Math.pow(10, 18));
-                        Log.i("wei * eth", String.valueOf(weiAmount) + " * " + ethAmount);
                         double usdAmount = ethAmount * ethPrices.get(i);
                         // TODO: get the price of each token in the wallet at the given time
                         blockBalances.set(i, (float) (usdAmount));
@@ -340,7 +360,7 @@ public class ProfileActivity extends AppCompatActivity {
         volumeReportChart.getDescription().setEnabled(false);
         volumeReportChart.setTouchEnabled(true);
         volumeReportChart.setDragEnabled(true);
-        volumeReportChart.animateY(1000, Easing.EaseInCubic);
+        volumeReportChart.animateY(1250, Easing.EaseInCubic);
 
         IMarker marker = new CustomMarkerView(ProfileActivity.this, R.layout.custom_marker_view);
         volumeReportChart.setMarker(marker);
@@ -392,11 +412,11 @@ public class ProfileActivity extends AppCompatActivity {
         dataSets.add(set1);
         LineData data = new LineData(dataSets);
         volumeReportChart.setData(data);
+
     }
 
     // makes y values, reduce all y values by a factor of 1000 to get relative values
     private List<Entry> makeEntries(List<Float> xValues, List<Float> yValues) {
-        Log.i("check yValues", yValues.toString());
         ArrayList<Entry> values = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             values.add(new Entry(xValues.get(i), yValues.get(i)));
@@ -420,11 +440,15 @@ public class ProfileActivity extends AppCompatActivity {
     // binds values onto the display
     private void addPortfolioData() {
         String portfolioValue = "$" + String.format("%,.2f", getPortfolioBalance());
-        String ethBalance = String.format("%,.2f", getTotalEthAmount()) + " ETH";
+        String ethBalance = String.format("%,.5f", getTotalEthAmount()) + " ETH";
         String countTx = String.format("%,d", getTxCount()) + " total transactions";
         String ethPrice = "$" + String.format("%,.2f", getEthPrice());
         String totalTokens = String.format("%,d", getTotalTokens());
         String topThreeTokensText = String.valueOf(getTopThreeTokensByAmount());
+        // setting top three tokens
+        if (getTopThreeTokensByAmount().size() == 0) {
+            topThreeTokensText = "N/A";
+        }
 
         tvWelcome.setText(ParseUser.getCurrentUser().getUsername() + "'s Portfolio");
         tvPortfolioValue.setText(portfolioValue);
@@ -440,7 +464,6 @@ public class ProfileActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        stopLoading();
     }
 
     /***** Initialization functions *****/
@@ -450,14 +473,16 @@ public class ProfileActivity extends AppCompatActivity {
         MinMaxPriorityQueue<Token> topThreeTokens = MinMaxPriorityQueue.orderedBy(comparator).create();
 
         for (int i = 0; i < userEthWallets.size(); i++) {
-            for (int j = 0; j < userEthWallets.get(i).getTokens().size(); j++) {
-                Token token = userEthWallets.get(i).getTokens().get(j);
-                TokenInfo tokenInfo = token.getTokenInfo();
-                if (tokenInfo.getPrice().equals(false)) {
-                    notValuableTokens.add(token);
-                } else {
-                    topThreeTokens.add(token);
-                    valuableTokens.add(token);
+            if (userEthWallets.get(i).getTokens() != null) {
+                for (int j = 0; j < userEthWallets.get(i).getTokens().size(); j++) {
+                    Token token = userEthWallets.get(i).getTokens().get(j);
+                    TokenInfo tokenInfo = token.getTokenInfo();
+                    if (tokenInfo.getPrice().equals(false)) {
+                        notValuableTokens.add(token);
+                    } else {
+                        topThreeTokens.add(token);
+                        valuableTokens.add(token);
+                    }
                 }
             }
         }
@@ -471,11 +496,12 @@ public class ProfileActivity extends AppCompatActivity {
     // shows loading screen
     private void startLoading() {
         volumeReportChart.setVisibility(View.INVISIBLE);
+        btnLogout = findViewById(R.id.btnLogout);
         tvWelcome.setVisibility(View.INVISIBLE);
+        currentBalance.setVisibility(View.INVISIBLE);
         btnLogout.setVisibility(View.INVISIBLE);
         rvTransactions.setVisibility(View.INVISIBLE);
         portfolioInformation.setVisibility(View.INVISIBLE);
-        portfolioBalance.setVisibility(View.INVISIBLE);
         totalTokens.setVisibility(View.INVISIBLE);
         ethAmount.setVisibility(View.INVISIBLE);
         numTx.setVisibility(View.INVISIBLE);
@@ -490,10 +516,10 @@ public class ProfileActivity extends AppCompatActivity {
     private void stopLoading() {
         tvWelcome.setVisibility(View.VISIBLE);
         volumeReportChart.setVisibility(View.VISIBLE);
+        currentBalance.setVisibility(View.VISIBLE);
         btnLogout.setVisibility(View.VISIBLE);
         rvTransactions.setVisibility(View.VISIBLE);
         portfolioInformation.setVisibility(View.VISIBLE);
-        portfolioBalance.setVisibility(View.VISIBLE);
         totalTokens.setVisibility(View.VISIBLE);
         ethAmount.setVisibility(View.VISIBLE);
         numTx.setVisibility(View.VISIBLE);
