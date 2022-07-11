@@ -17,5 +17,5 @@ public interface MoralisApi {
 
     @Headers({"accept: application/json", "X-API-Key: ylLNSQYuTOCEKXV7ojV4cejlG0QTaCfzERcFIPvQmVKQmP66lZOS0mdrPTMY5CNG"})
     @GET("{address}/balance?chain=eth")
-    Call<BlockBalance> getBlockBalance(@Query("address") String address, @Query("to_block") int block);
+    Call<BlockBalance> getBlockBalance(@Query("address") String address, @Query("to_block") long block);
 }

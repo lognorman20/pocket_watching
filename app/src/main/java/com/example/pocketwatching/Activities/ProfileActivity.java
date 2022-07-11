@@ -22,6 +22,7 @@ import com.example.pocketwatching.Apis.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Apis.Moralis.MoralisClient;
 import com.example.pocketwatching.Apis.Poloniex.PoloniexClient;
 import com.example.pocketwatching.Etc.ClaimsXAxisValueFormatter;
+import com.example.pocketwatching.Etc.CustomMarkerView;
 import com.example.pocketwatching.Etc.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
@@ -35,6 +36,7 @@ import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -239,7 +241,7 @@ public class ProfileActivity extends AppCompatActivity {
         // make a list of longs to pass to the API
         long currTime = System.currentTimeMillis() / 1000L;
         long tempTime = currTime;
-        while (tempTime > (currTime - 604800)) {
+        while (tempTime >= (currTime - 604800)) {
             longTimes.add(tempTime);
             tempTime -= 86400;
         }
@@ -250,8 +252,8 @@ public class ProfileActivity extends AppCompatActivity {
             floatTimes.add(Float.valueOf(longTimes.get(i) / 1000));
         }
 
-
         getEthPrices(longTimes.get(0), longTimes.get(6));
+
         for (int i = 0; i < 7; i++) {
             Date date = new Date();
             date.setTime(longTimes.get(i));
@@ -264,9 +266,11 @@ public class ProfileActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<EthPrice>>() {
             @Override
             public void onResponse(Call<List<EthPrice>> call, Response<List<EthPrice>> response) {
+                Log.i("ethPrices response size", String.valueOf(response.body().size()));
                 for (int i = 0; i < response.body().size(); i++) {
                     ethPrices.set(i, Double.valueOf(response.body().get(i).getWeightedAverage()));
                 }
+                Log.i("ethPrices = ", ethPrices.toString());
             }
 
             @Override
@@ -284,6 +288,7 @@ public class ProfileActivity extends AppCompatActivity {
                 blockHeights.add(response.body().getBlock());
                 if (blockHeights.size() == 7) {
                     Collections.sort(blockHeights);
+                    Log.i("blockHeights = ", blockHeights.toString());
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
                             getBlockBalance(userWallets.get(i).getWalletAddress(), blockHeights.get(j), j);
@@ -299,15 +304,21 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void getBlockBalance(String address, int blockHeight, int index) {
+    private void getBlockBalance(String address, long blockHeight, int index) {
         Call<BlockBalance> call = (Call<BlockBalance>) MoralisClient.getInstance().getMoralisApi().getBlockBalance(address, blockHeight);
         call.enqueue(new Callback<BlockBalance>() {
             @Override
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
                 blockBalances.set(index, Float.valueOf(response.body().getBalance()));
                 if (index == 6) {
-                    for (int i = 0; i < ethPrices.size(); i++) {
-                        blockBalances.set(i, (float) (blockBalances.get(i) * ethPrices.get(i)));
+                    Log.i("Block balances = ", blockBalances.toString());
+                    for (int i = 0; i < blockBalances.size(); i++) {
+                        double weiAmount = blockBalances.get(i);
+                        double ethAmount = weiAmount / (Math.pow(10, 18));
+                        Log.i("wei * eth", String.valueOf(weiAmount) + " * " + ethAmount);
+                        double usdAmount = ethAmount * ethPrices.get(i);
+                        // TODO: get the price of each token in the wallet at the given time
+                        blockBalances.set(i, (float) (usdAmount));
                     }
                     setupChart(floatTimes, blockBalances);
                 }
@@ -315,7 +326,7 @@ public class ProfileActivity extends AppCompatActivity {
             
             @Override
             public void onFailure(Call<BlockBalance> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "Failed to get balance at block " + String.valueOf(blockHeight), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Failed to get balance at block " + (blockHeight), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -331,6 +342,20 @@ public class ProfileActivity extends AppCompatActivity {
         volumeReportChart.setDragEnabled(true);
         volumeReportChart.animateY(1000, Easing.EaseInCubic);
 
+        IMarker marker = new CustomMarkerView(ProfileActivity.this, R.layout.custom_marker_view);
+        volumeReportChart.setMarker(marker);
+
+        volumeReportChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                volumeReportChart.highlightValue(h);
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
         xAxis.setPosition(position);
 
@@ -338,7 +363,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         LineDataSet set1;
         List<Entry> values = makeEntries(xValues, blockBalances);
-        set1 = new LineDataSet(values, "Portfolio Value");
+        set1 = new LineDataSet(values, "Eth Balance");
 
         // black lines and points
         set1.setColor(Color.BLACK);
@@ -369,9 +394,9 @@ public class ProfileActivity extends AppCompatActivity {
         volumeReportChart.setData(data);
     }
 
-
     // makes y values, reduce all y values by a factor of 1000 to get relative values
     private List<Entry> makeEntries(List<Float> xValues, List<Float> yValues) {
+        Log.i("check yValues", yValues.toString());
         ArrayList<Entry> values = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             values.add(new Entry(xValues.get(i), yValues.get(i)));
@@ -410,7 +435,7 @@ public class ProfileActivity extends AppCompatActivity {
         tvTopThreeTokens.setText(topThreeTokensText);
 
         try {
-            Thread.sleep(500); // optimize with observables?
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
