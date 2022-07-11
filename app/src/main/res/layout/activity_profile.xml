@@ -155,8 +155,8 @@
             android:textColor="#000000"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.035"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/totalTokens"
             app:layout_constraintTop_toBottomOf="@+id/currentBalance" />
 
         <TextView
@@ -212,11 +212,26 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="64dp"
             android:onClick="onLogoutButton"
             android:text="Log Out"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/btnAddWallet2"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnAddWallet2" />
+
+        <Button
+            android:id="@+id/btnAddWallet2"
+            android:layout_width="wrap_content"
+            android:layout_height="49dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="41dp"
+            android:layout_marginTop="16dp"
+            android:onClick="onLogoutButton"
+            android:text="Add Wallet(s)"
+            app:layout_constraintStart_toEndOf="@+id/btnLogout"
             app:layout_constraintTop_toBottomOf="@+id/rvTransactions" />
 
         <TextView
@@ -264,8 +279,8 @@
             android:id="@+id/currentBalance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
             android:text="Current Balance"
             android:textSize="10sp"
             app:layout_constraintStart_toStartOf="parent"

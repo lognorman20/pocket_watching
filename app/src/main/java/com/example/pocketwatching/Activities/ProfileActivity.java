@@ -105,6 +105,7 @@ public class ProfileActivity extends AppCompatActivity {
     // widgets and buttons
     private ProgressBar pbApi;
     private Button btnLogout;
+    private Button btnAddWallet;
     private LineChart volumeReportChart;
     public ProfileActivity() {}
 
@@ -146,8 +147,8 @@ public class ProfileActivity extends AppCompatActivity {
         ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
 
         pbApi = findViewById(R.id.pbApi);
-        pbApi.setVisibility(View.INVISIBLE);
         btnLogout = findViewById(R.id.btnLogout);
+        btnAddWallet = findViewById(R.id.btnAddWallet2);
         volumeReportChart = findViewById(R.id.reportingChart);
         rvTransactions = findViewById(R.id.rvTransactions);
         adapter = new TransactionAdapter(this, txs);
@@ -188,9 +189,23 @@ public class ProfileActivity extends AppCompatActivity {
                 goMainActivity();
             }
         });
-        
+
+        btnAddWallet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goAddWalletActivity();
+            }
+        });
+
         rvTransactions.setLayoutManager(new LinearLayoutManager(this));
         rvTransactions.setAdapter(adapter);
+    }
+
+
+    private void goAddWalletActivity() {
+        Intent i = new Intent(this, AddWalletActivity.class);
+        startActivity(i);
+        finish();
     }
 
     // gets EthWallet object from given address
@@ -481,6 +496,7 @@ public class ProfileActivity extends AppCompatActivity {
     // shows loading screen
     private void startLoading() {
         volumeReportChart.setVisibility(View.INVISIBLE);
+        btnLogout = findViewById(R.id.btnLogout);
         tvWelcome.setVisibility(View.INVISIBLE);
         currentBalance.setVisibility(View.INVISIBLE);
         btnLogout.setVisibility(View.INVISIBLE);
