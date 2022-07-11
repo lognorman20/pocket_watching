@@ -260,6 +260,8 @@ public class ProfileActivity extends AppCompatActivity {
             date.setTime(longTimes.get(i));
             getBlockHeight(longTimes.get(i));
         }
+
+        stopLoading();
     }
 
     private void getEthPrices(Long start, Long end) {
@@ -289,7 +291,6 @@ public class ProfileActivity extends AppCompatActivity {
                 blockHeights.add(response.body().getBlock());
                 if (blockHeights.size() == 7) {
                     Collections.sort(blockHeights);
-                    Log.i("blockHeights = ", blockHeights.toString());
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
                             getBlockBalance(userWallets.get(i).getWalletAddress(), blockHeights.get(j), j);
@@ -310,6 +311,7 @@ public class ProfileActivity extends AppCompatActivity {
         call.enqueue(new Callback<BlockBalance>() {
             @Override
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
+                Log.i("blockBalance = ", response.body().getBalance());
                 blockBalances.set(index, Float.valueOf(response.body().getBalance()));
                 if (index == 6) {
                     Log.i("Block balances = ", blockBalances.toString());
@@ -341,7 +343,7 @@ public class ProfileActivity extends AppCompatActivity {
         volumeReportChart.getDescription().setEnabled(false);
         volumeReportChart.setTouchEnabled(true);
         volumeReportChart.setDragEnabled(true);
-        volumeReportChart.animateY(1000, Easing.EaseInCubic);
+        volumeReportChart.animateY(1250, Easing.EaseInCubic);
 
         IMarker marker = new CustomMarkerView(ProfileActivity.this, R.layout.custom_marker_view);
         volumeReportChart.setMarker(marker);
@@ -393,11 +395,11 @@ public class ProfileActivity extends AppCompatActivity {
         dataSets.add(set1);
         LineData data = new LineData(dataSets);
         volumeReportChart.setData(data);
+
     }
 
     // makes y values, reduce all y values by a factor of 1000 to get relative values
     private List<Entry> makeEntries(List<Float> xValues, List<Float> yValues) {
-        Log.i("check yValues", yValues.toString());
         ArrayList<Entry> values = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             values.add(new Entry(xValues.get(i), yValues.get(i)));
@@ -445,7 +447,6 @@ public class ProfileActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        stopLoading();
     }
 
     /***** Initialization functions *****/
