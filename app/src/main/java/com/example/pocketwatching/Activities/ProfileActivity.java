@@ -29,6 +29,7 @@ import com.example.pocketwatching.Etc.ClaimsXAxisValueFormatter;
 import com.example.pocketwatching.Etc.CustomMarkerView;
 import com.example.pocketwatching.Etc.TokenAmountComparator;
 import com.example.pocketwatching.Fragments.ProfileFragment;
+import com.example.pocketwatching.Fragments.SearchFragment;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
@@ -91,12 +92,11 @@ public class ProfileActivity extends AppCompatActivity {
                 Fragment fragment;
                 switch (item.getItemId()) {
                     case R.id.action_profile:
-                        Toast.makeText(ProfileActivity.this, "Selected profile tab", Toast.LENGTH_SHORT).show();
                         fragment = new ProfileFragment();
                         break;
                     case R.id.action_search:
-                        Toast.makeText(ProfileActivity.this, "Selected search tab", Toast.LENGTH_SHORT).show();
-                        return true;
+                        fragment = new SearchFragment();
+                        break;
                     default:
                         fragment = new ProfileFragment();
                         break;
