@@ -160,6 +160,10 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void done(List<Wallet> objects, ParseException e) {
                 if (e == null) {
+                    if (objects.isEmpty()) {
+                        Toast.makeText(ProfileActivity.this, "User has no wallets, please add some...", Toast.LENGTH_SHORT).show();
+                        goAddWalletActivity();
+                    }
                     userWallets = objects;
                     for (int i = 0; i < userWallets.size(); i++) {
                         String walletAddress = userWallets.get(i).getWalletAddress();
