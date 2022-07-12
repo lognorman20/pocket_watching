@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Activities.AddWalletActivity;
@@ -164,6 +165,8 @@ public class ProfileFragment extends Fragment {
 
         rvTransactions = view.findViewById(R.id.rvTransactions);
         adapter = new TransactionAdapter(getContext(), txs);
+        rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvTransactions.setAdapter(adapter);
 
         startLoading();
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
@@ -247,6 +250,7 @@ public class ProfileFragment extends Fragment {
         call.enqueue(new Callback<List<TxHistory>>() {
             @Override
             public void onResponse(Call<List<TxHistory>> call, Response<List<TxHistory>> response) {
+                Log.i("debugging", "yea we running it rn");
                 try {
                     List<TxHistory> txHistory = response.body();
                     List<Transaction> cheese = fromTxHistoryList(txHistory);
