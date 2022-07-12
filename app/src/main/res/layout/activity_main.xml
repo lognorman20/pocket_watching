@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_margin="16dp"
     android:orientation="vertical"
     tools:context=".Activities.LoginActivity">
@@ -11,7 +11,6 @@
         android:id="@+id/btnLoginLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="350dp"
         android:layout_weight="1"
         android:text="Sign Up"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
@@ -33,9 +32,9 @@
         app:backgroundTint="@color/design_default_color_error"
         app:layout_constraintBottom_toTopOf="@+id/btnLoginLogin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.931" />
+        app:layout_constraintVertical_bias="0.873" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

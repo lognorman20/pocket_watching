@@ -48,8 +48,11 @@ public class SignupActivity extends AppCompatActivity {
 
     private void signupUser(String username, String password, String email) {
         // adding information to user table
+        // refactor such that the transaction history does not show, only visualize the bare minimum
+        // if the user has a certain amount of wallets, do those parallel, fetch the first few in
+        // parallel, add a load more button, reduce the number of calls necessary for each wallet
         ParseUser user = new ParseUser();
-
+        // add bottle neck to the number of wallets
         user.setUsername(username);
         user.setPassword(password);
         user.setEmail(email);
@@ -60,6 +63,7 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(SignupActivity.this, "Successfully signed up " + username, Toast.LENGTH_SHORT).show();
                     goAddWalletActivity();
                 } else {
+                    user.deleteInBackground();
                     Toast.makeText(SignupActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                     Log.e("signup", e.toString());
                 }

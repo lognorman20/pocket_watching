@@ -1,6 +1,7 @@
 package com.example.pocketwatching.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull TransactionAdapter.ViewHolder holder, int position) {
+        Log.i("debugging", "binding tx values rn");
         Transaction tx = txs.get(position);
         holder.bind(tx);
     }
