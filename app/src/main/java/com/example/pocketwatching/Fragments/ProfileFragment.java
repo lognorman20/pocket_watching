@@ -108,6 +108,7 @@ public class ProfileFragment extends Fragment {
     private List<Double> ethPrices;
     private List<Transaction> txs;
     private ParseUser currUser;
+
     // screen elements
     private RecyclerView rvTransactions;
     private TransactionAdapter adapter;

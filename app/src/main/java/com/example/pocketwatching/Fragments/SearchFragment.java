@@ -16,7 +16,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pocketwatching.Adapters.TransactionAdapter;
+import com.example.pocketwatching.Adapters.UserAdapter;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
 import com.google.firebase.firestore.auth.User;
@@ -25,14 +29,18 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class SearchFragment extends Fragment {
     private SearchView searchView;
     private SearchView.OnQueryTextListener queryTextListener;
-    private String mQuery; // i have two vars named query. is this how i should denote the var with
-                           // class scope?
+    private RecyclerView rvUsers;
+    private List<ParseUser> users;
+    private UserAdapter adapter;
+    private String mQuery; // correct usage of m prefix on a variable?
+
 
     public SearchFragment() {}
 
@@ -45,6 +53,12 @@ public class SearchFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        users = new ArrayList<>();
+
+        rvUsers = view.findViewById(R.id.rvUsers);
+        adapter = new UserAdapter(getContext(), users);
+        rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvUsers.setAdapter(adapter);
     }
 
     @Override
@@ -91,6 +105,9 @@ public class SearchFragment extends Fragment {
                 if (e == null) {
                     if (!objects.isEmpty()) {
                         Toast.makeText(getContext(), "Found users!", Toast.LENGTH_SHORT).show();
+                        users.clear();
+                        users.addAll(objects);
+                        adapter.notifyDataSetChanged();
                     } else {
                         Toast.makeText(getContext(), "Could not find users :(", Toast.LENGTH_SHORT).show();
                     }
