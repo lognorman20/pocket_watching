@@ -18,6 +18,8 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
+import java.util.Locale;
+
 public class SignupActivity extends AppCompatActivity {
     private EditText etUsername;
     private EditText etPassword;
@@ -53,7 +55,7 @@ public class SignupActivity extends AppCompatActivity {
         // parallel, add a load more button, reduce the number of calls necessary for each wallet
         ParseUser user = new ParseUser();
         // add bottle neck to the number of wallets
-        user.setUsername(username);
+        user.setUsername(username.toLowerCase(Locale.ROOT));
         user.setPassword(password);
         user.setEmail(email);
         user.signUpInBackground(new SignUpCallback() {
@@ -64,8 +66,7 @@ public class SignupActivity extends AppCompatActivity {
                     goAddWalletActivity();
                 } else {
                     user.deleteInBackground();
-                    Toast.makeText(SignupActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-                    Log.e("signup", e.toString());
+                    Toast.makeText(SignupActivity.this, "Failed to sign up user", Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -54,6 +54,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
 import com.parse.Parse;
@@ -116,7 +117,6 @@ public class ProfileFragment extends Fragment {
     private Button btnLogout;
     private Button btnAddWallet;
     private LineChart volumeReportChart;
-
     public ProfileFragment() {}
 
     // Inflate the layout for this fragment

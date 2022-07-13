@@ -26,6 +26,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.List;
+import java.util.Locale;
 
 public class SearchFragment extends Fragment {
     private SearchView searchView;
@@ -83,18 +84,16 @@ public class SearchFragment extends Fragment {
 
     private void processQuery() {
         ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
-        query.whereEqualTo("username", mQuery);
+        query.whereContains("username", mQuery.toLowerCase(Locale.ROOT));
         query.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(List<ParseUser> objects, ParseException e) {
                 if (e == null) {
-                    if (objects.isEmpty()) {
-                        Toast.makeText(getContext(), "Could not find any users matching query.", Toast.LENGTH_SHORT).show();
-                        Log.i("found users = ", objects.toString());
+                    if (!objects.isEmpty()) {
+                        Toast.makeText(getContext(), "Found users!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "Could not find users :(", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(getContext(), "Failed to find any users...", Toast.LENGTH_SHORT).show();
-                    return;
                 }
             }
         });
