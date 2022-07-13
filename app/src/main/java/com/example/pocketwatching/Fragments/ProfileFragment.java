@@ -259,7 +259,6 @@ public class ProfileFragment extends Fragment {
         call.enqueue(new Callback<List<TxHistory>>() {
             @Override
             public void onResponse(Call<List<TxHistory>> call, Response<List<TxHistory>> response) {
-                Log.i("debugging", "yea we running it rn");
                 try {
                     List<TxHistory> txHistory = response.body();
                     List<Transaction> cheese = fromTxHistoryList(txHistory);
