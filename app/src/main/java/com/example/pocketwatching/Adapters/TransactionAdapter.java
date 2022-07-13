@@ -35,7 +35,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull TransactionAdapter.ViewHolder holder, int position) {
-        Log.i("debugging", "binding tx values rn");
         Transaction tx = txs.get(position);
         holder.bind(tx);
     }

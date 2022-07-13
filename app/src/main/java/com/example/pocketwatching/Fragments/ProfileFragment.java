@@ -2,7 +2,9 @@ package com.example.pocketwatching.Fragments;
 
 import static com.example.pocketwatching.Models.Ethplorer.Transaction.fromTxHistoryList;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,9 +54,9 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -104,7 +106,7 @@ public class ProfileFragment extends Fragment {
     private List<Float> blockBalances;
     private List<Double> ethPrices;
     private List<Transaction> txs;
-
+    private ParseUser currUser;
     // screen elements
     private RecyclerView rvTransactions;
     private TransactionAdapter adapter;
@@ -114,7 +116,6 @@ public class ProfileFragment extends Fragment {
     private Button btnLogout;
     private Button btnAddWallet;
     private LineChart volumeReportChart;
-    private BottomNavigationView bottomNavigationView;
 
     public ProfileFragment() {}
 
@@ -136,6 +137,7 @@ public class ProfileFragment extends Fragment {
         tvEthPrice = view.findViewById(R.id.tvEthPrice);
         tvWelcome = view.findViewById(R.id.tvWelcome);
 
+//        getArguments().getString("username")
         portfolioInformation = view.findViewById(R.id.tvPortfolioValue);
         totalTokens = view.findViewById(R.id.totalTokens);
         currentBalance = view.findViewById(R.id.currentBalance);
@@ -156,21 +158,43 @@ public class ProfileFragment extends Fragment {
         blockHeights = new ArrayList<>();
         blockBalances = new ArrayList<Float>(Collections.nCopies(7, (float)-9.9));
         ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
+        setCurrUser(ParseUser.getCurrentUser());
 
         pbApi = view.findViewById(R.id.pbApi);
         btnLogout = view.findViewById(R.id.btnLogout);
         btnAddWallet = view.findViewById(R.id.btnAddWallet2);
         volumeReportChart = view.findViewById(R.id.reportingChart);
-        bottomNavigationView = view.findViewById(R.id.bottom_navigation);
 
         rvTransactions = view.findViewById(R.id.rvTransactions);
         adapter = new TransactionAdapter(getContext(), txs);
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
         rvTransactions.setAdapter(adapter);
 
+        Log.i("currUser = ", currUser.getUsername());
+
         startLoading();
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseUser.logOut();
+                goMainActivity();
+            }
+        });
+
+        btnAddWallet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goAddWalletActivity();
+            }
+        });
+
+        initView();
+    }
+
+    private void initView() {
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
-        query.whereEqualTo("owner", ParseUser.getCurrentUser());
+        query.whereEqualTo("owner", currUser);
         query.findInBackground(new FindCallback<Wallet>() {
             @Override
             public void done(List<Wallet> objects, ParseException e) {
@@ -198,21 +222,6 @@ public class ProfileFragment extends Fragment {
                     goMainActivity();
                     return;
                 }
-            }
-        });
-
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ParseUser.logOut();
-                goMainActivity();
-            }
-        });
-
-        btnAddWallet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goAddWalletActivity();
             }
         });
     }
@@ -441,6 +450,9 @@ public class ProfileFragment extends Fragment {
     /**************************************************/
 
     /***** General helper functions *****/
+    protected void setCurrUser(ParseUser newUser) {
+        this.currUser = newUser;
+    }
     // takes the user to the main activity
     private void goMainActivity() {
         Intent i = new Intent(getContext(), MainActivity.class);
