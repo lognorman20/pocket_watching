@@ -35,7 +35,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull TransactionAdapter.ViewHolder holder, int position) {
-        Log.i("debugging", "binding tx values rn");
         Transaction tx = txs.get(position);
         holder.bind(tx);
     }
@@ -56,13 +55,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTo;
-        TextView tvFrom;
-        TextView tvTimestamp;
-        TextView tvValue;
-        TextView tvUsdPrice;
-        TextView tvUsdValue;
-        ImageView ivArrow;
+        private TextView tvTo;
+        private TextView tvFrom;
+        private TextView tvTimestamp;
+        private TextView tvValue;
+        private TextView tvUsdPrice;
+        private TextView tvUsdValue;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -72,7 +70,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             tvValue = itemView.findViewById(R.id.tvValue);
             tvUsdPrice = itemView.findViewById(R.id.tvUsdPrice);
             tvUsdValue = itemView.findViewById(R.id.tvUsdValue);
-            ivArrow = itemView.findViewById(R.id.ivArrow);
         }
 
         public void bind(Transaction tx) {

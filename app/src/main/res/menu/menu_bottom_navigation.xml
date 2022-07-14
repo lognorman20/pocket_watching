@@ -4,13 +4,13 @@
     <item
         android:id="@+id/action_profile"
         android:enabled="true"
-        android:icon="@drawable/common_full_open_on_phone"
+        android:icon="@drawable/ic_baseline_person_24"
         android:title="Profile"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_search"
         android:enabled="true"
-        android:icon="@drawable/ic_baseline_close_24"
+        android:icon="@drawable/ic_baseline_search_24"
         android:title="Search"
         app:showAsAction="ifRoom" />
 </menu>

@@ -95,6 +95,7 @@ public class ProfileActivity extends AppCompatActivity {
                         fragment = new ProfileFragment();
                         break;
                     case R.id.action_search:
+                        // fragment.setarguments ...
                         fragment = new SearchFragment();
                         break;
                     default:

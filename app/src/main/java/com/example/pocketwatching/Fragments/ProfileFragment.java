@@ -2,7 +2,9 @@ package com.example.pocketwatching.Fragments;
 
 import static com.example.pocketwatching.Models.Ethplorer.Transaction.fromTxHistoryList;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +57,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -104,6 +107,7 @@ public class ProfileFragment extends Fragment {
     private List<Float> blockBalances;
     private List<Double> ethPrices;
     private List<Transaction> txs;
+    private ParseUser currUser;
 
     // screen elements
     private RecyclerView rvTransactions;
@@ -114,8 +118,6 @@ public class ProfileFragment extends Fragment {
     private Button btnLogout;
     private Button btnAddWallet;
     private LineChart volumeReportChart;
-    private BottomNavigationView bottomNavigationView;
-
     public ProfileFragment() {}
 
     // Inflate the layout for this fragment
@@ -145,6 +147,12 @@ public class ProfileFragment extends Fragment {
         ethPrice = view.findViewById(R.id.ethPrice);
         transactionHistory = view.findViewById(R.id.transactionHistory);
 
+        if (getArguments() == null) {
+            currUser = ParseUser.getCurrentUser();
+        } else {
+            currUser = getArguments().getParcelable("user");
+        }
+
         txs = new ArrayList<>();
         floatTimes = new ArrayList<>();
         longTimes = new ArrayList<>();
@@ -161,7 +169,6 @@ public class ProfileFragment extends Fragment {
         btnLogout = view.findViewById(R.id.btnLogout);
         btnAddWallet = view.findViewById(R.id.btnAddWallet2);
         volumeReportChart = view.findViewById(R.id.reportingChart);
-        bottomNavigationView = view.findViewById(R.id.bottom_navigation);
 
         rvTransactions = view.findViewById(R.id.rvTransactions);
         adapter = new TransactionAdapter(getContext(), txs);
@@ -169,8 +176,28 @@ public class ProfileFragment extends Fragment {
         rvTransactions.setAdapter(adapter);
 
         startLoading();
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseUser.logOut();
+                goMainActivity();
+            }
+        });
+
+        btnAddWallet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goAddWalletActivity();
+            }
+        });
+
+        initView();
+    }
+
+    private void initView() {
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
-        query.whereEqualTo("owner", ParseUser.getCurrentUser());
+        query.whereEqualTo("owner", currUser);
         query.findInBackground(new FindCallback<Wallet>() {
             @Override
             public void done(List<Wallet> objects, ParseException e) {
@@ -198,21 +225,6 @@ public class ProfileFragment extends Fragment {
                     goMainActivity();
                     return;
                 }
-            }
-        });
-
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ParseUser.logOut();
-                goMainActivity();
-            }
-        });
-
-        btnAddWallet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goAddWalletActivity();
             }
         });
     }
@@ -250,7 +262,6 @@ public class ProfileFragment extends Fragment {
         call.enqueue(new Callback<List<TxHistory>>() {
             @Override
             public void onResponse(Call<List<TxHistory>> call, Response<List<TxHistory>> response) {
-                Log.i("debugging", "yea we running it rn");
                 try {
                     List<TxHistory> txHistory = response.body();
                     List<Transaction> cheese = fromTxHistoryList(txHistory);
@@ -463,7 +474,7 @@ public class ProfileFragment extends Fragment {
             topThreeTokensText = "N/A";
         }
 
-        tvWelcome.setText(ParseUser.getCurrentUser().getUsername() + "'s Portfolio");
+        tvWelcome.setText(currUser.getUsername() + "'s Portfolio");
         tvPortfolioValue.setText(portfolioValue);
         tvEthBalance.setText(ethBalance);
         tvCountTx.setText(countTx);
