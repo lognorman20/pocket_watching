@@ -30,6 +30,7 @@ import com.example.pocketwatching.Etc.CustomMarkerView;
 import com.example.pocketwatching.Etc.TokenAmountComparator;
 import com.example.pocketwatching.Fragments.ProfileFragment;
 import com.example.pocketwatching.Fragments.SearchFragment;
+import com.example.pocketwatching.Fragments.SortingFragment;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
@@ -91,11 +92,10 @@ public class ProfileActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment fragment;
                 switch (item.getItemId()) {
-                    case R.id.action_profile:
-                        fragment = new ProfileFragment();
+                    case R.id.action_sorting:
+                        fragment = new SortingFragment();
                         break;
                     case R.id.action_search:
-                        // fragment.setarguments ...
                         fragment = new SearchFragment();
                         break;
                     default:
