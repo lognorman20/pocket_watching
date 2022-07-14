@@ -13,4 +13,10 @@
         android:icon="@drawable/ic_baseline_search_24"
         android:title="Search"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_sorting"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_sort_24"
+        android:title="Tokens"
+        app:showAsAction="ifRoom" />
 </menu>
