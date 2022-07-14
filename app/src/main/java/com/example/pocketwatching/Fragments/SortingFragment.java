@@ -13,7 +13,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pocketwatching.Adapters.TokenAdapter;
+import com.example.pocketwatching.Adapters.UserAdapter;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.R;
 
@@ -22,8 +26,12 @@ import java.util.List;
 
 public class SortingFragment extends Fragment {
     private Spinner spinner_sort_types;
+    private RecyclerView rvTokens;
     private String sort;
     private ArrayList<Token> tokens;
+
+    private TokenAdapter adapter;
+
     public SortingFragment() {
     }
 
@@ -37,12 +45,17 @@ public class SortingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        rvTokens = view.findViewById(R.id.rvTokens);
         spinner_sort_types = (Spinner) view.findViewById(R.id.spinner_sort_types);
         tokens = (ArrayList<Token>) getArguments().getSerializable("tokens");
 
-        ArrayAdapter<CharSequence>adapter= ArrayAdapter.createFromResource(getContext(), R.array.sorts, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        spinner_sort_types.setAdapter(adapter);
+        adapter = new TokenAdapter(getContext(), tokens);
+        rvTokens.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvTokens.setAdapter(adapter);
+
+        ArrayAdapter<CharSequence> arrayAdapter= ArrayAdapter.createFromResource(getContext(), R.array.sorts, android.R.layout.simple_spinner_item);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        spinner_sort_types.setAdapter(arrayAdapter);
 
         if ((tokens == null) || (tokens.size() == 0)) {
             Toast.makeText(getContext(), "No tokens available to view.", Toast.LENGTH_SHORT).show();
@@ -64,7 +77,7 @@ public class SortingFragment extends Fragment {
     }
 
     private void processSort() {
-
+        adapter.notifyDataSetChanged();
     }
 
     /*

@@ -560,7 +560,6 @@ public class ProfileFragment extends Fragment {
         topThreeTokens.setVisibility(View.VISIBLE);
         ethPrice.setVisibility(View.VISIBLE);
         transactionHistory.setVisibility(View.VISIBLE);
-
         pbApi.setVisibility(View.INVISIBLE);
     }
 
