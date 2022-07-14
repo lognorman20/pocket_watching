@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">PocketWatching</string>
+    <string-array name="sorts" >
+        <item>Cheese</item>
+        <item>Butter</item>
+        <item>Queso</item>
+    </string-array>
 </resources>
