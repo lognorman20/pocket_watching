@@ -9,8 +9,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pocketwatching.Fragments.ProfileFragment;
 import com.example.pocketwatching.R;
 import com.parse.Parse;
 import com.parse.ParseUser;
@@ -41,7 +46,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.username.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "cheese", Toast.LENGTH_SHORT).show();
+                AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                Fragment myFragment = new ProfileFragment();
+                activity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.flContainer, myFragment).commit();
             }
         });
     }
