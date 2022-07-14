@@ -1,6 +1,7 @@
 package com.example.pocketwatching.Adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,9 +48,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 AppCompatActivity activity = (AppCompatActivity) v.getContext();
-                Fragment myFragment = new ProfileFragment();
+                ProfileFragment fragment = new ProfileFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("user", user);
+                fragment.setArguments(bundle);
+
                 activity.getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.flContainer, myFragment).commit();
+                        .replace(R.id.flContainer, fragment).commit();
             }
         });
     }

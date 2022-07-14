@@ -138,7 +138,6 @@ public class ProfileFragment extends Fragment {
         tvEthPrice = view.findViewById(R.id.tvEthPrice);
         tvWelcome = view.findViewById(R.id.tvWelcome);
 
-//        getArguments().getString("username")
         portfolioInformation = view.findViewById(R.id.tvPortfolioValue);
         totalTokens = view.findViewById(R.id.totalTokens);
         currentBalance = view.findViewById(R.id.currentBalance);
@@ -147,6 +146,12 @@ public class ProfileFragment extends Fragment {
         topThreeTokens = view.findViewById(R.id.topThreeTokens);
         ethPrice = view.findViewById(R.id.ethPrice);
         transactionHistory = view.findViewById(R.id.transactionHistory);
+
+        if (getArguments() == null) {
+            currUser = ParseUser.getCurrentUser();
+        } else {
+            currUser = getArguments().getParcelable("user");
+        }
 
         txs = new ArrayList<>();
         floatTimes = new ArrayList<>();
@@ -159,7 +164,6 @@ public class ProfileFragment extends Fragment {
         blockHeights = new ArrayList<>();
         blockBalances = new ArrayList<Float>(Collections.nCopies(7, (float)-9.9));
         ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
-        setCurrUser(ParseUser.getCurrentUser());
 
         pbApi = view.findViewById(R.id.pbApi);
         btnLogout = view.findViewById(R.id.btnLogout);
@@ -170,8 +174,6 @@ public class ProfileFragment extends Fragment {
         adapter = new TransactionAdapter(getContext(), txs);
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
         rvTransactions.setAdapter(adapter);
-
-        Log.i("currUser = ", currUser.getUsername());
 
         startLoading();
 
@@ -450,9 +452,6 @@ public class ProfileFragment extends Fragment {
     /**************************************************/
 
     /***** General helper functions *****/
-    protected void setCurrUser(ParseUser newUser) {
-        this.currUser = newUser;
-    }
     // takes the user to the main activity
     private void goMainActivity() {
         Intent i = new Intent(getContext(), MainActivity.class);
@@ -475,7 +474,7 @@ public class ProfileFragment extends Fragment {
             topThreeTokensText = "N/A";
         }
 
-        tvWelcome.setText(ParseUser.getCurrentUser().getUsername() + "'s Portfolio");
+        tvWelcome.setText(currUser.getUsername() + "'s Portfolio");
         tvPortfolioValue.setText(portfolioValue);
         tvEthBalance.setText(ethBalance);
         tvCountTx.setText(countTx);
