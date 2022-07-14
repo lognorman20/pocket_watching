@@ -69,7 +69,7 @@ public class SortingFragment extends Fragment {
 
     /*
     Things to sort tokens by:
-    1) USD Price
+    1) Market Price
     2) User amount of token
     3) User $ value of token
     4) Name

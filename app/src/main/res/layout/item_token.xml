@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_token"
+    app:cardCornerRadius="4dp"
+    android:layout_margin="8dp"
+    android:layout_height="100dp" >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/MarketPrice"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="16dp"
+            android:text="Market Price"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvMarketPrice"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="3dp"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintTop_toBottomOf="@+id/MarketPrice"
+            tools:text="42.94" />
+
+        <TextView
+            android:id="@+id/tvMarketCap"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintTop_toBottomOf="@+id/MarketCap"
+            tools:text="42.94" />
+
+        <TextView
+            android:id="@+id/MarketCap"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="4dp"
+            android:text="Market Cap"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintTop_toBottomOf="@+id/tvMarketPrice" />
+
+        <TextView
+            android:id="@+id/Balance"
+            android:layout_width="101dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Balance"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/AmountHeld"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/Volume24h"
+            android:layout_width="101dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Volume (24h)"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/CirculatingSupply"
+            app:layout_constraintTop_toBottomOf="@+id/tvBalance" />
+
+        <TextView
+            android:id="@+id/tvBalance"
+            android:layout_width="101dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            app:layout_constraintStart_toEndOf="@+id/tvAmountHeld"
+            app:layout_constraintTop_toBottomOf="@+id/Balance"
+            tools:text="42.94" />
+
+        <TextView
+            android:id="@+id/tvVolume"
+            android:layout_width="101dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            app:layout_constraintStart_toEndOf="@+id/tvCirculatingSupply"
+            app:layout_constraintTop_toBottomOf="@+id/Volume24h"
+            tools:text="42.94" />
+
+        <TextView
+            android:id="@+id/AmountHeld"
+            android:layout_width="101dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="16dp"
+            android:text="Amount Held"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/MarketPrice"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/CirculatingSupply"
+            android:layout_width="101dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="4dp"
+            android:text="% Change (24h)"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/MarketCap"
+            app:layout_constraintTop_toBottomOf="@+id/tvAmountHeld" />
+
+        <TextView
+            android:id="@+id/tvCirculatingSupply"
+            android:layout_width="101dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            app:layout_constraintStart_toEndOf="@+id/tvMarketCap"
+            app:layout_constraintTop_toBottomOf="@+id/CirculatingSupply"
+            tools:text="42.94" />
+
+        <TextView
+            android:id="@+id/tvPctChange"
+            android:layout_width="86dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="1dp"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSymbol"
+            tools:text="42.94" />
+
+        <TextView
+            android:id="@+id/tvAmountHeld"
+            android:layout_width="101dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="3dp"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="11sp"
+            app:layout_constraintStart_toEndOf="@+id/tvMarketPrice"
+            app:layout_constraintTop_toBottomOf="@+id/AmountHeld"
+            tools:text="42.94" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="26dp"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Ethereum" />
+
+        <TextView
+            android:id="@+id/tvSymbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            app:layout_constraintEnd_toEndOf="@+id/tvName"
+            app:layout_constraintStart_toStartOf="@+id/tvName"
+            app:layout_constraintTop_toBottomOf="@+id/tvName"
+            tools:text="ETH" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#FF0000FF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvName"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
+
