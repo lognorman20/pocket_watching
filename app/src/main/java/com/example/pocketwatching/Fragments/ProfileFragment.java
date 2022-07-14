@@ -244,8 +244,6 @@ public class ProfileFragment extends Fragment {
                 userEthWallets.add(response.body());
                 if (userEthWallets.size() == userWallets.size()) {
                     initValuableTokens();
-                    addPortfolioData();
-                    stopLoading();
                 }
             }
 
@@ -437,6 +435,7 @@ public class ProfileFragment extends Fragment {
         LineData data = new LineData(dataSets);
         volumeReportChart.setData(data);
 
+        stopLoading();
     }
 
     // makes y values, reduce all y values by a factor of 1000 to get relative values
@@ -536,6 +535,7 @@ public class ProfileFragment extends Fragment {
 
     // hides loading screen
     private void stopLoading() {
+        addPortfolioData();
         tvWelcome.setVisibility(View.VISIBLE);
         volumeReportChart.setVisibility(View.VISIBLE);
         currentBalance.setVisibility(View.VISIBLE);

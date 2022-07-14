@@ -17,6 +17,7 @@ import com.example.pocketwatching.R;
 
 public class SortingFragment extends Fragment {
     private Spinner spinner_sort_types;
+    private String sort;
     public SortingFragment() {
     }
 
@@ -38,7 +39,8 @@ public class SortingFragment extends Fragment {
         spinner_sort_types.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), parent.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                sort = parent.getSelectedItem().toString();
+                processSort();
             }
 
             @Override
@@ -46,6 +48,10 @@ public class SortingFragment extends Fragment {
 
             }
         });
+    }
+
+    private void processSort() {
+        Toast.makeText(getContext(), "Sorting by " + sort, Toast.LENGTH_SHORT).show();
     }
 
     /*
