@@ -1,6 +1,7 @@
 package com.example.pocketwatching.Fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SortingFragment extends Fragment {
     private Spinner spinner_sort_types;
     private String sort;
+    private ArrayList<Token> tokens;
     public SortingFragment() {
     }
 
@@ -32,9 +38,16 @@ public class SortingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         spinner_sort_types = (Spinner) view.findViewById(R.id.spinner_sort_types);
+        tokens = (ArrayList<Token>) getArguments().getSerializable("tokens");
+
         ArrayAdapter<CharSequence>adapter= ArrayAdapter.createFromResource(getContext(), R.array.sorts, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
         spinner_sort_types.setAdapter(adapter);
+
+        if ((tokens == null) || (tokens.size() == 0)) {
+            Toast.makeText(getContext(), "No tokens available to view.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         spinner_sort_types.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -51,7 +64,7 @@ public class SortingFragment extends Fragment {
     }
 
     private void processSort() {
-        Toast.makeText(getContext(), "Sorting by " + sort, Toast.LENGTH_SHORT).show();
+
     }
 
     /*

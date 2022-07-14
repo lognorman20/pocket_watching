@@ -62,6 +62,7 @@ import com.parse.ParseUser;
 
 import org.json.JSONException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -94,6 +95,13 @@ public class ProfileActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.action_sorting:
                         fragment = new SortingFragment();
+
+                        ArrayList<Token> tokens = (ArrayList<Token>) ProfileFragment.getInstance().getValuableTokens();
+
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("tokens", (Serializable) tokens);
+                        fragment.setArguments(bundle);
+
                         break;
                     case R.id.action_search:
                         fragment = new SearchFragment();

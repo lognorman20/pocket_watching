@@ -76,6 +76,7 @@ import retrofit2.Response;
 
 public class ProfileFragment extends Fragment {
     private static List<EthWallet> userEthWallets;
+    private static ProfileFragment instance = null;
 
     // text views that change
     private TextView tvEthBalance;
@@ -118,7 +119,18 @@ public class ProfileFragment extends Fragment {
     private Button btnLogout;
     private Button btnAddWallet;
     private LineChart volumeReportChart;
+
     public ProfileFragment() {}
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        instance = this;
+    }
+
+    public static ProfileFragment getInstance() {
+        return instance;
+    }
 
     // Inflate the layout for this fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -608,5 +620,9 @@ public class ProfileFragment extends Fragment {
             i++;
         }
         return output;
+    }
+
+    public List<Token> getValuableTokens() {
+        return valuableTokens;
     }
 }
