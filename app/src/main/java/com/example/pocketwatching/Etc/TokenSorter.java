@@ -49,6 +49,9 @@ public class TokenSorter {
                 case "Percent Change (24h)":
                     pctSort(start, mid, end);
                     break;
+                case "Market Price":
+                    priceSort(start, mid, end);
+                    break;
                 default:
                     balanceSort(start, mid, end);
             }
@@ -71,6 +74,55 @@ public class TokenSorter {
 
             Double left = leftPrice.getDiff();
             Double right = rightPrice.getDiff();
+
+            if (left <= right) {
+                sortedArr.add(leftToken);
+                l++;
+            } else {
+                sortedArr.add(rightToken);
+                r++;
+            }
+        }
+
+        while (l <= mid) {
+            leftToken = tokens.get(l);
+            sortedArr.add(leftToken);
+            l++;
+        }
+
+        while (r <= end) {
+            rightToken = tokens.get(r);
+            sortedArr.add(rightToken);
+            r++;
+        }
+
+        int i = 0;
+        int j = start;
+
+        while (i < sortedArr.size()) {
+            tokens.set(j, sortedArr.get(i));
+            i++;
+            j++;
+        }
+    }
+
+
+    private void priceSort(int start, int mid, int end) {
+        List<Token> sortedArr = new ArrayList<>();
+        int l = start;
+        int r = mid + 1;
+
+        Token leftToken;
+        Token rightToken;
+        while ((l <= mid) && (r <= end)) {
+            leftToken = tokens.get(l);
+            rightToken = tokens.get(r);
+
+            Price leftPrice = (Price) leftToken.getTokenInfo().getPrice();
+            Price rightPrice = (Price) rightToken.getTokenInfo().getPrice();
+
+            Double left = leftPrice.getRate();
+            Double right = rightPrice.getRate();
 
             if (left <= right) {
                 sortedArr.add(leftToken);
