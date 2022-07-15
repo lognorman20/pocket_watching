@@ -69,9 +69,59 @@ public class TokenSorter {
                 case "Name":
                     nameSort(start, mid, end);
                     break;
+                case "Symbol":
+                    symbolSort(start, mid, end);
+                    break;
                 default:
                     balanceSort(start, mid, end);
             }
+        }
+    }
+
+    private void symbolSort(int start, int mid, int end) {
+        List<Token> sortedArr = new ArrayList<>();
+        int l = start;
+        int r = mid + 1;
+
+        Token leftToken;
+        Token rightToken;
+        while ((l <= mid) && (r <= end)) {
+            leftToken = tokens.get(l);
+            rightToken = tokens.get(r);
+
+            String leftString = leftToken.getTokenInfo().getSymbol().toLowerCase(Locale.ROOT);
+            String rightString = rightToken.getTokenInfo().getSymbol().toLowerCase(Locale.ROOT);
+
+            int cmp = strcmp(leftString, rightString);
+
+            if (cmp < 0) {
+                sortedArr.add(leftToken);
+                l++;
+            } else {
+                sortedArr.add(rightToken);
+                r++;
+            }
+        }
+
+        while (l <= mid) {
+            leftToken = tokens.get(l);
+            sortedArr.add(leftToken);
+            l++;
+        }
+
+        while (r <= end) {
+            rightToken = tokens.get(r);
+            sortedArr.add(rightToken);
+            r++;
+        }
+
+        int i = 0;
+        int j = start;
+
+        while (i < sortedArr.size()) {
+            tokens.set(j, sortedArr.get(i));
+            i++;
+            j++;
         }
     }
 
