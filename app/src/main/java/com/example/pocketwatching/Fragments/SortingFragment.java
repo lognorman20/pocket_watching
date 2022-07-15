@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Adapters.TokenAdapter;
+import com.example.pocketwatching.Etc.TokenSort;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.R;
 
@@ -78,94 +79,9 @@ public class SortingFragment extends Fragment {
     }
 
     private void processSort() {
-        if (sort.toLowerCase(Locale.ROOT).equals("name")
-                || sort.toLowerCase(Locale.ROOT).equals("symbol")) {
-            Toast.makeText(getContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
-        } else {
-            mergeSort(0, tokens.size() - 1);
-            reverseList(tokens);
-        }
+        TokenSort sorter = new TokenSort(tokens, sort, true);
+        sorter.sort();
 
         adapter.notifyDataSetChanged();
-    }
-
-    /*
-    UI Ideas
-    2) Make sizing more uniform, apply to headings, sub headings, subtexts, body
-    3) Txhistory shows less tx w/ a see more screen that shows more tx cuz rn the current view does
-       not show very much anyways, show more information on the next screen in detail (tx hash,
-       values, inputs & outputs, etc..)
-
-    // focus on these
-    1) Y axis w/ scaling
-    4) Token distribution pie chart that is clickable and shows a more detailed breakdown w/ %s of
-       each token. Further, it shows the token values for each token
-    5) Users can add a profile picture or have a default set icon
-    */
-
-    private void mergeSort(int start, int end) {
-        if ((start < end) && ((end - start) >= 1)) {
-            int mid = (end + start) / 2;
-            mergeSort(start, mid);
-            mergeSort(mid + 1, end);
-
-            merge(start, mid, end);
-        }
-    }
-
-    private void merge(int start, int mid, int end) {
-        List<Token> sortedArr = new ArrayList<>();
-        int left = start;
-        int right = mid + 1;
-
-        Token leftToken;
-        Token rightToken;
-        while ((left <= mid) && (right <= end)) {
-            leftToken = tokens.get(left);
-            rightToken = tokens.get(right);
-
-            Double leftBalance = leftToken.getTokenBalance();
-            Double rightBalance = rightToken.getTokenBalance();
-
-            if (leftBalance <= rightBalance) {
-                sortedArr.add(leftToken);
-                left++;
-            } else {
-                sortedArr.add(rightToken);
-                right++;
-            }
-        }
-
-        while (left <= mid) {
-            leftToken = tokens.get(left);
-            sortedArr.add(leftToken);
-            left++;
-        }
-
-        while (right <= end) {
-            rightToken = tokens.get(right);
-            sortedArr.add(rightToken);
-            right++;
-        }
-
-        int i = 0;
-        int j = start;
-
-        while (i < sortedArr.size()) {
-            tokens.set(j, sortedArr.get(i));
-            i++;
-            j++;
-        }
-    }
-
-    private void reverseList(List<Token> input) {
-        int start = 0;
-        int end = input.size() - 1;
-
-        while (start < end) {
-            Collections.swap(input, start, end);
-            start += 1;
-            end -= 1;
-        }
     }
 }
