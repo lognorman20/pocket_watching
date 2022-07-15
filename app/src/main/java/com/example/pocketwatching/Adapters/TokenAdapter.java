@@ -1,6 +1,7 @@
 package com.example.pocketwatching.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,25 +85,50 @@ public class TokenAdapter extends RecyclerView.Adapter<TokenAdapter.ViewHolder> 
 
             String name = token.getTokenInfo().getName();
             String symbol = token.getTokenInfo().getSymbol();
-            String amountHeld = String.format("%, .4f", token.getAmount());
+            String amountHeld = getString(token.getAmount());
             String pctChange = String.format("%,.2f", price.getDiff());
-            String circulatingSupply = String.format("%, .2f", price.getAvailableSupply());
-            String volume = String.format("%, .4f", price.getVolume24h());
-            String balance = String.format("%, .2f", token.getTokenBalance());
-            String marketCap = String.format("%, .2f", price.getMarketCapUsd());
-            String marketPrice = String.format("%, .2f", price.getRate());
-
-            Toast.makeText(context, price.getMarketCapUsd().toString() + " " + name, Toast.LENGTH_SHORT).show();
+            String circulatingSupply = getString(price.getAvailableSupply());
+            String volume = getString(price.getVolume24h());
+            String balance = getString(token.getTokenBalance());
+            String marketCap = getString(price.getMarketCapUsd());
+            String marketPrice = String.format("%,.6f", price.getRate());
 
             tvName.setText(name);
             tvSymbol.setText(symbol);
             tvAmountHeld.setText(amountHeld + " " + symbol);
             tvPctChange.setText(pctChange + "%");
             tvCirculatingSupply.setText(circulatingSupply);
-            tvVolume.setText(volume);
+            tvVolume.setText("$" + volume);
             tvBalance.setText("$" + balance);
             tvMarketCap.setText("$" + marketCap);
             tvMarketPrice.setText("$" + marketPrice);
         }
+    }
+
+    public static String getString(double input){
+
+        Long number = (long) input;
+
+        if(number >= 1000000000000L){
+            return String.format("%.2fT", number/ (float) 1000000000000L);
+        }
+
+        if(number >= 1000000000){
+            return String.format("%.2fB", number/ 1000000000.0);
+        }
+
+        if(number >= 1000000){
+            return String.format("%.2fM", number/ 1000000.0);
+        }
+
+        if(number >= 100000){
+            return String.format("%.2fL", number/ 100000.0);
+        }
+
+        if(number >=1000){
+            return String.format("%.2fK", number/ 1000.0);
+        }
+
+        return String.format("%,.2f", input);
     }
 }

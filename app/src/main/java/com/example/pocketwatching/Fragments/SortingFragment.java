@@ -1,10 +1,6 @@
 package com.example.pocketwatching.Fragments;
 
-import static java.util.Collections.swap;
-
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Adapters.TokenAdapter;
-import com.example.pocketwatching.Adapters.UserAdapter;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Price;
+import com.example.pocketwatching.Etc.TokenSorter;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class SortingFragment extends Fragment {
     private Spinner spinner_sort_types;
@@ -82,21 +75,8 @@ public class SortingFragment extends Fragment {
     }
 
     private void processSort() {
-
+        TokenSorter sorter = new TokenSorter(tokens, sort, true);
+        sorter.sort();
+        adapter.notifyDataSetChanged();
     }
-
-    /*
-    Things to sort tokens by:
-    1) Market Price
-    2) User amount of token
-    3) User $ value of token
-    4) Name
-    5) Total supply
-    6) Market cap
-    7) holdersCount
-    8) Issuances Count
-    9) diff, diff7d, diff30d
-    10) Available supply
-    11) volume24h
-     */
 }
