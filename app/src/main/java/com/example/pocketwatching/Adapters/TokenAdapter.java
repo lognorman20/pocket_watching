@@ -93,11 +93,6 @@ public class TokenAdapter extends RecyclerView.Adapter<TokenAdapter.ViewHolder> 
             String marketCap = getString(price.getMarketCapUsd());
             String marketPrice = String.format("%,.6f", price.getRate());
 
-            if (symbol.equals("ROX")) {
-                Log.i("debugging", "token amount" + token.getAmount().toString());
-                Log.i("debugging", "token balance = " + token.getTokenBalance().toString());
-                Log.i("debugging", "price = " + price.getRate().toString());
-            }
             tvName.setText(name);
             tvSymbol.setText(symbol);
             tvAmountHeld.setText(amountHeld + " " + symbol);

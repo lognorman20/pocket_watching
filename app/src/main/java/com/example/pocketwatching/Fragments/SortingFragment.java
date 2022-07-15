@@ -1,10 +1,6 @@
 package com.example.pocketwatching.Fragments;
 
-import static java.util.Collections.swap;
-
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Adapters.TokenAdapter;
-import com.example.pocketwatching.Adapters.UserAdapter;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Price;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class SortingFragment extends Fragment {
     private Spinner spinner_sort_types;
@@ -82,21 +77,72 @@ public class SortingFragment extends Fragment {
     }
 
     private void processSort() {
+        if (sort.toLowerCase(Locale.ROOT).equals("name")
+                || sort.toLowerCase(Locale.ROOT).equals("symbol")) {
+            Toast.makeText(getContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "Sorting!", Toast.LENGTH_SHORT).show();
+            balanceSort(tokens);
+        }
 
+        // to get tokens in decreasing order
+        reverseList(tokens);
+        adapter.notifyDataSetChanged();
     }
 
-    /*
-    Things to sort tokens by:
-    1) Market Price
-    2) User amount of token
-    3) User $ value of token
-    4) Name
-    5) Total supply
-    6) Market cap
-    7) holdersCount
-    8) Issuances Count
-    9) diff, diff7d, diff30d
-    10) Available supply
-    11) volume24h
-     */
+    private void balanceSort(List<Token> input) {
+        if (input.size() > 1) {
+            int mid = input.size() / 2;
+            List<Token> left = input.subList(0, mid);
+            List<Token> right = input.subList(mid, input.size());
+
+            balanceSort(left);
+            balanceSort(right);
+
+            int i = 0;
+            int j = 0;
+            int k = 0;
+
+            Token leftToken = left.get(i);
+            Token rightToken = right.get(j);
+
+            while ((i < left.size()) && (j < right.size())) {
+                Double leftBalance = leftToken.getTokenBalance();
+                Double rightBalance = rightToken.getTokenBalance();
+
+                if (leftBalance < rightBalance) {
+                    input.set(k, leftToken);
+                    i += 1;
+                } else {
+                    input.set(k, rightToken);
+                    j += 1;
+                }
+
+                k += 1;
+            }
+
+            while (i < left.size()) {
+                input.set(k, leftToken);
+                i += 1;
+                k += 1;
+            }
+
+            while (j < right.size()) {
+                input.set(k, rightToken);
+                j += 1;
+                k += 1;
+            }
+        }
+    }
+
+    private void reverseList(List<Token> input) {
+        int start = 0;
+        int end = input.size() - 1;
+
+        while (start < end) {
+            Collections.swap(input, start, end);
+            start += 1;
+            end -= 1;
+        }
+    }
 }
