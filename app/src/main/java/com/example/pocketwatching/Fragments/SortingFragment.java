@@ -1,7 +1,6 @@
 package com.example.pocketwatching.Fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Adapters.TokenAdapter;
-import com.example.pocketwatching.Etc.TokenSort;
+import com.example.pocketwatching.Etc.TokenSorter;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 public class SortingFragment extends Fragment {
     private Spinner spinner_sort_types;
@@ -79,7 +75,7 @@ public class SortingFragment extends Fragment {
     }
 
     private void processSort() {
-        TokenSort sorter = new TokenSort(tokens, sort, true);
+        TokenSorter sorter = new TokenSorter(tokens, sort, true);
         sorter.sort();
 
         adapter.notifyDataSetChanged();

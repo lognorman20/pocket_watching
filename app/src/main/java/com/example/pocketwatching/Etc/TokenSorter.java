@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TokenSort {
+public class TokenSorter {
     private String type;
     private Boolean descending;
     private List<Token> tokens;
 
-    public TokenSort(List<Token> tokens, String type, Boolean descending) {
+    public TokenSorter(List<Token> tokens, String type, Boolean descending) {
         this.tokens = tokens;
         this.type = type;
         this.descending = descending;
@@ -35,11 +35,11 @@ public class TokenSort {
             numSort(start, mid);
             numSort(mid + 1, end);
 
-            merge(start, mid, end);
+            balanceSort(start, mid, end);
         }
     }
 
-    private void merge(int start, int mid, int end) {
+    private void balanceSort(int start, int mid, int end) {
         List<Token> sortedArr = new ArrayList<>();
         int left = start;
         int right = mid + 1;
