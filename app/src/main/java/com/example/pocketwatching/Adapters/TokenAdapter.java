@@ -1,6 +1,7 @@
 package com.example.pocketwatching.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,8 +91,13 @@ public class TokenAdapter extends RecyclerView.Adapter<TokenAdapter.ViewHolder> 
             String volume = getString(price.getVolume24h());
             String balance = getString(token.getTokenBalance());
             String marketCap = getString(price.getMarketCapUsd());
-            String marketPrice = String.format("%, .4f", price.getRate());
+            String marketPrice = String.format("%,.6f", price.getRate());
 
+            if (symbol.equals("ROX")) {
+                Log.i("debugging", "token amount" + token.getAmount().toString());
+                Log.i("debugging", "token balance = " + token.getTokenBalance().toString());
+                Log.i("debugging", "price = " + price.getRate().toString());
+            }
             tvName.setText(name);
             tvSymbol.setText(symbol);
             tvAmountHeld.setText(amountHeld + " " + symbol);
@@ -107,6 +113,11 @@ public class TokenAdapter extends RecyclerView.Adapter<TokenAdapter.ViewHolder> 
     public static String getString(double input){
 
         Long number = (long) input;
+
+        if(number >= 1000000000000L){
+            return String.format("%.2fT", number/ (float) 1000000000000L);
+        }
+
         if(number >= 1000000000){
             return String.format("%.2fB", number/ 1000000000.0);
         }
@@ -123,7 +134,6 @@ public class TokenAdapter extends RecyclerView.Adapter<TokenAdapter.ViewHolder> 
             return String.format("%.2fK", number/ 1000.0);
         }
 
-        return String.valueOf(number);
-
+        return String.format("%,.2f", input);
     }
 }
