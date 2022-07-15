@@ -1,11 +1,13 @@
 package com.example.pocketwatching.Fragments;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -25,7 +27,11 @@ import java.util.ArrayList;
 public class SortingFragment extends Fragment {
     private Spinner spinner_sort_types;
     private RecyclerView rvTokens;
+    private ImageButton ibDescending;
+
+    private TokenSorter sorter;
     private String sort;
+    private Boolean descending = true;
     private ArrayList<Token> tokens;
 
     private TokenAdapter adapter;
@@ -44,8 +50,10 @@ public class SortingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rvTokens = view.findViewById(R.id.rvTokens);
+        ibDescending = view.findViewById(R.id.ibDescending);
         spinner_sort_types = (Spinner) view.findViewById(R.id.spinner_sort_types);
         tokens = (ArrayList<Token>) getArguments().getSerializable("tokens");
+        sorter = new TokenSorter(tokens, descending);
 
         adapter = new TokenAdapter(getContext(), tokens);
         rvTokens.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -72,11 +80,18 @@ public class SortingFragment extends Fragment {
 
             }
         });
+
+        ibDescending.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                descending = !descending;
+                processSort();
+            }
+        });
     }
 
     private void processSort() {
-        TokenSorter sorter = new TokenSorter(tokens, sort, false);
-        sorter.sort();
+        sorter.sort(sort, descending);
         adapter.notifyDataSetChanged();
     }
 }

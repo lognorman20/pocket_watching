@@ -1,7 +1,5 @@
 package com.example.pocketwatching.Etc;
 
-import android.util.Log;
-
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Price;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 
@@ -11,43 +9,36 @@ import java.util.List;
 import java.util.Locale;
 
 public class TokenSorter {
-    private String type;
+    private String sortType;
     private Boolean descending;
     private List<Token> tokens;
 
-    public TokenSorter(List<Token> tokens, String type, Boolean descending) {
+    public TokenSorter(List<Token> tokens, Boolean descending) {
         this.tokens = tokens;
-        this.type = type;
         this.descending = descending;
     }
 
-    public void sort() {
+    public void sort(String sort, Boolean descending) {
         int start = 0;
         int end = tokens.size() - 1;
 
-        // add alpha sort case here
-        if ((type.equalsIgnoreCase("name"))
-                || (type.equalsIgnoreCase("symbol"))) {
+        this.sortType = sort;
+        this.descending = descending;
 
-        }
+        runSort(start, end);
 
-        numSort(start, end);
-
-        if (descending == true) {
+        if (this.descending) {
             reverseList(tokens);
         }
     }
 
-    public void numSort(int start, int end) {
+    public void runSort(int start, int end) {
         if ((start < end) && ((end - start) >= 1)) {
             int mid = (end + start) / 2;
-            numSort(start, mid);
-            numSort(mid + 1, end);
+            runSort(start, mid);
+            runSort(mid + 1, end);
 
-            switch (type) {
-                case "Balance":
-                    balanceSort(start, mid, end);
-                    break;
+            switch (sortType) {
                 case "Percent Change (24h)":
                     pctSort(start, mid, end);
                     break;
