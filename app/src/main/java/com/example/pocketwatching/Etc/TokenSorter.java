@@ -8,6 +8,7 @@ import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class TokenSorter {
     private String type;
@@ -25,6 +26,11 @@ public class TokenSorter {
         int end = tokens.size() - 1;
 
         // add alpha sort case here
+        if ((type.equalsIgnoreCase("name"))
+                || (type.equalsIgnoreCase("symbol"))) {
+
+        }
+
         numSort(start, end);
 
         if (descending == true) {
@@ -41,10 +47,6 @@ public class TokenSorter {
             switch (type) {
                 case "Balance":
                     balanceSort(start, mid, end);
-                    break;
-                case "Name":
-                    break;
-                case "Symbol":
                     break;
                 case "Percent Change (24h)":
                     pctSort(start, mid, end);
@@ -64,9 +66,80 @@ public class TokenSorter {
                 case "Volume (24h)":
                     volumeSort(start, mid, end);
                     break;
+                case "Name":
+                    nameSort(start, mid, end);
+                    break;
                 default:
                     balanceSort(start, mid, end);
             }
+        }
+    }
+
+    private void nameSort(int start, int mid, int end) {
+        List<Token> sortedArr = new ArrayList<>();
+        int l = start;
+        int r = mid + 1;
+
+        Token leftToken;
+        Token rightToken;
+        while ((l <= mid) && (r <= end)) {
+            leftToken = tokens.get(l);
+            rightToken = tokens.get(r);
+
+            String leftString = leftToken.getTokenInfo().getName().toLowerCase(Locale.ROOT);
+            String rightString = rightToken.getTokenInfo().getName().toLowerCase(Locale.ROOT);
+
+            int cmp = strcmp(leftString, rightString);
+
+            if (cmp < 0) {
+                sortedArr.add(leftToken);
+                l++;
+            } else {
+                sortedArr.add(rightToken);
+                r++;
+            }
+        }
+
+        while (l <= mid) {
+            leftToken = tokens.get(l);
+            sortedArr.add(leftToken);
+            l++;
+        }
+
+        while (r <= end) {
+            rightToken = tokens.get(r);
+            sortedArr.add(rightToken);
+            r++;
+        }
+
+        int i = 0;
+        int j = start;
+
+        while (i < sortedArr.size()) {
+            tokens.set(j, sortedArr.get(i));
+            i++;
+            j++;
+        }
+    }
+
+    private int strcmp(String leftString, String rightString) {
+        int leftLen = leftString.length();
+        int rightLen = rightString.length();
+        int minLen = Math.min(leftLen, rightLen);
+
+        for (int i = 0; i < minLen; i++) {
+            int leftChar = (int) leftString.charAt(i);
+            int rightChar = (int) rightString.charAt(i);
+
+            if (leftChar != rightChar) {
+                return leftChar - rightChar;
+            }
+        }
+
+        if (leftLen != rightLen) {
+            return leftLen - rightLen;
+        } else {
+            return 0;
         }
     }
 
