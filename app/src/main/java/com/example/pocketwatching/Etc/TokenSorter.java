@@ -2,6 +2,7 @@ package com.example.pocketwatching.Etc;
 
 import android.util.Log;
 
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Price;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 
 import java.util.ArrayList;
@@ -24,11 +25,7 @@ public class TokenSorter {
         int end = tokens.size() - 1;
 
         // add alpha sort case here
-        printList(tokens);
-        Log.i("tokens.size()", String.valueOf(tokens.size()));
         numSort(start, end);
-        Log.i("debugging", "******* AFTER *********");
-        printList(tokens);
 
         if (descending == true) {
             reverseList(tokens);
@@ -41,12 +38,71 @@ public class TokenSorter {
             numSort(start, mid);
             numSort(mid + 1, end);
 
-            balanceSort(start, mid, end);
+            switch (type) {
+                case "Balance":
+                    balanceSort(start, mid, end);
+                    break;
+                case "Name":
+                    break;
+                case "Symbol":
+                    break;
+                case "Percent Change (24h)":
+                    pctSort(start, mid, end);
+                    break;
+                default:
+                    balanceSort(start, mid, end);
+            }
         }
     }
 
-    // zero tokens: shib, czrx, xot, alink
-    // big token: CEL
+    private void pctSort(int start, int mid, int end) {
+        List<Token> sortedArr = new ArrayList<>();
+        int l = start;
+        int r = mid + 1;
+
+        Token leftToken;
+        Token rightToken;
+        while ((l <= mid) && (r <= end)) {
+            leftToken = tokens.get(l);
+            rightToken = tokens.get(r);
+
+            Price leftPrice = (Price) leftToken.getTokenInfo().getPrice();
+            Price rightPrice = (Price) rightToken.getTokenInfo().getPrice();
+
+            Double left = leftPrice.getDiff();
+            Double right = rightPrice.getDiff();
+
+            if (left <= right) {
+                sortedArr.add(leftToken);
+                l++;
+            } else {
+                sortedArr.add(rightToken);
+                r++;
+            }
+        }
+
+        while (l <= mid) {
+            leftToken = tokens.get(l);
+            sortedArr.add(leftToken);
+            l++;
+        }
+
+        while (r <= end) {
+            rightToken = tokens.get(r);
+            sortedArr.add(rightToken);
+            r++;
+        }
+
+        int i = 0;
+        int j = start;
+
+        while (i < sortedArr.size()) {
+            tokens.set(j, sortedArr.get(i));
+            i++;
+            j++;
+        }
+    }
+
     private void balanceSort(int start, int mid, int end) {
         List<Token> sortedArr = new ArrayList<>();
         int left = start;
@@ -89,12 +145,6 @@ public class TokenSorter {
             tokens.set(j, sortedArr.get(i));
             i++;
             j++;
-        }
-    }
-
-    private void printList(List<Token> list) {
-        for (int i = 0; i < tokens.size(); i++) {
-            Log.i("debugging", String.valueOf(tokens.get(i).getTokenBalance()));
         }
     }
 

@@ -1,10 +1,14 @@
 <resources>
     <string name="app_name">PocketWatching</string>
     <string-array name="sorts" >
+        <item>Balance</item>
+        <item>Name</item>
+        <item>Symbol</item>
+        <item>Percent Change (24h)</item>
         <item>Market Price</item>
         <item>Amount Held</item>
-        <item>Name</item>
-        <item>Total Supply</item>
         <item>Market Cap</item>
+        <item>Circulating Supply</item>
+        <item>Volume (24h)</item>
     </string-array>
 </resources>
