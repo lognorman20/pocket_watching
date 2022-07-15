@@ -65,7 +65,7 @@ public class Token implements Serializable {
 
     // gets token balance in $
     public Double getTokenBalance() {
-        Double amount = getAmount() / (Math.pow(10, getTokenInfo().getDecimals()));
+        Double amount = getAmount() / (Double) (Math.pow(10, getTokenInfo().getDecimals()));
         Price price = (Price) getTokenInfo().getPrice(); // problem line
         Double balance = amount * price.getRate();
         return balance;
