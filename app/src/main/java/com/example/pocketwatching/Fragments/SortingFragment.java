@@ -1,6 +1,7 @@
 package com.example.pocketwatching.Fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,57 +82,79 @@ public class SortingFragment extends Fragment {
                 || sort.toLowerCase(Locale.ROOT).equals("symbol")) {
             Toast.makeText(getContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getContext(), "Sorting!", Toast.LENGTH_SHORT).show();
-            balanceSort(tokens);
+            mergeSort(0, tokens.size() - 1);
+            reverseList(tokens);
         }
 
-        // to get tokens in decreasing order
-        reverseList(tokens);
         adapter.notifyDataSetChanged();
     }
 
-    private void balanceSort(List<Token> input) {
-        if (input.size() > 1) {
-            int mid = input.size() / 2;
-            List<Token> left = input.subList(0, mid);
-            List<Token> right = input.subList(mid, input.size());
+    /*
+    UI Ideas
+    2) Make sizing more uniform, apply to headings, sub headings, subtexts, body
+    3) Txhistory shows less tx w/ a see more screen that shows more tx cuz rn the current view does
+       not show very much anyways, show more information on the next screen in detail (tx hash,
+       values, inputs & outputs, etc..)
 
-            balanceSort(left);
-            balanceSort(right);
+    // focus on these
+    1) Y axis w/ scaling
+    4) Token distribution pie chart that is clickable and shows a more detailed breakdown w/ %s of
+       each token. Further, it shows the token values for each token
+    5) Users can add a profile picture or have a default set icon
+    */
 
-            int i = 0;
-            int j = 0;
-            int k = 0;
+    private void mergeSort(int start, int end) {
+        if ((start < end) && ((end - start) >= 1)) {
+            int mid = (end + start) / 2;
+            mergeSort(start, mid);
+            mergeSort(mid + 1, end);
 
-            Token leftToken = left.get(i);
-            Token rightToken = right.get(j);
+            merge(start, mid, end);
+        }
+    }
 
-            while ((i < left.size()) && (j < right.size())) {
-                Double leftBalance = leftToken.getTokenBalance();
-                Double rightBalance = rightToken.getTokenBalance();
+    private void merge(int start, int mid, int end) {
+        List<Token> sortedArr = new ArrayList<>();
+        int left = start;
+        int right = mid + 1;
 
-                if (leftBalance < rightBalance) {
-                    input.set(k, leftToken);
-                    i += 1;
-                } else {
-                    input.set(k, rightToken);
-                    j += 1;
-                }
+        Token leftToken;
+        Token rightToken;
+        while ((left <= mid) && (right <= end)) {
+            leftToken = tokens.get(left);
+            rightToken = tokens.get(right);
 
-                k += 1;
+            Double leftBalance = leftToken.getTokenBalance();
+            Double rightBalance = rightToken.getTokenBalance();
+
+            if (leftBalance <= rightBalance) {
+                sortedArr.add(leftToken);
+                left++;
+            } else {
+                sortedArr.add(rightToken);
+                right++;
             }
+        }
 
-            while (i < left.size()) {
-                input.set(k, leftToken);
-                i += 1;
-                k += 1;
-            }
+        while (left <= mid) {
+            leftToken = tokens.get(left);
+            sortedArr.add(leftToken);
+            left++;
+        }
 
-            while (j < right.size()) {
-                input.set(k, rightToken);
-                j += 1;
-                k += 1;
-            }
+        while (right <= end) {
+            rightToken = tokens.get(right);
+            sortedArr.add(rightToken);
+            right++;
+        }
+
+        int i = 0;
+        int j = start;
+
+        while (i < sortedArr.size()) {
+            tokens.set(j, sortedArr.get(i));
+            i++;
+            j++;
         }
     }
 
