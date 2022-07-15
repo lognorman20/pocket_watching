@@ -76,6 +76,7 @@ import retrofit2.Response;
 
 public class ProfileFragment extends Fragment {
     private static List<EthWallet> userEthWallets;
+    private static ProfileFragment instance = null;
 
     // text views that change
     private TextView tvEthBalance;
@@ -118,7 +119,18 @@ public class ProfileFragment extends Fragment {
     private Button btnLogout;
     private Button btnAddWallet;
     private LineChart volumeReportChart;
+
     public ProfileFragment() {}
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        instance = this;
+    }
+
+    public static ProfileFragment getInstance() {
+        return instance;
+    }
 
     // Inflate the layout for this fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -244,8 +256,6 @@ public class ProfileFragment extends Fragment {
                 userEthWallets.add(response.body());
                 if (userEthWallets.size() == userWallets.size()) {
                     initValuableTokens();
-                    addPortfolioData();
-                    stopLoading();
                 }
             }
 
@@ -437,6 +447,7 @@ public class ProfileFragment extends Fragment {
         LineData data = new LineData(dataSets);
         volumeReportChart.setData(data);
 
+        stopLoading();
     }
 
     // makes y values, reduce all y values by a factor of 1000 to get relative values
@@ -536,6 +547,7 @@ public class ProfileFragment extends Fragment {
 
     // hides loading screen
     private void stopLoading() {
+        addPortfolioData();
         tvWelcome.setVisibility(View.VISIBLE);
         volumeReportChart.setVisibility(View.VISIBLE);
         currentBalance.setVisibility(View.VISIBLE);
@@ -548,7 +560,6 @@ public class ProfileFragment extends Fragment {
         topThreeTokens.setVisibility(View.VISIBLE);
         ethPrice.setVisibility(View.VISIBLE);
         transactionHistory.setVisibility(View.VISIBLE);
-
         pbApi.setVisibility(View.INVISIBLE);
     }
 
@@ -608,5 +619,9 @@ public class ProfileFragment extends Fragment {
             i++;
         }
         return output;
+    }
+
+    public List<Token> getValuableTokens() {
+        return valuableTokens;
     }
 }

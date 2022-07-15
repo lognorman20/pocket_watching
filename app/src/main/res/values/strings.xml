@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">PocketWatching</string>
+    <string-array name="sorts" >
+        <item>Market Price</item>
+        <item>Amount Held</item>
+        <item>Name</item>
+        <item>Total Supply</item>
+        <item>Market Cap</item>
+    </string-array>
 </resources>

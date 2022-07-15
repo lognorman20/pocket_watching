@@ -105,7 +105,6 @@ public class SearchFragment extends Fragment {
             public void done(List<ParseUser> objects, ParseException e) {
                 if (e == null) {
                     if (!objects.isEmpty()) {
-                        Toast.makeText(getContext(), "Found users!", Toast.LENGTH_SHORT).show();
                         users.clear();
                         users.addAll(objects);
                         adapter.notifyDataSetChanged();
