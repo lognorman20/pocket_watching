@@ -1,7 +1,10 @@
 package com.example.pocketwatching.Fragments;
 
+import static java.util.Collections.swap;
+
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +21,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Adapters.TokenAdapter;
 import com.example.pocketwatching.Adapters.UserAdapter;
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Price;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SortingFragment extends Fragment {
@@ -77,7 +82,7 @@ public class SortingFragment extends Fragment {
     }
 
     private void processSort() {
-        adapter.notifyDataSetChanged();
+
     }
 
     /*

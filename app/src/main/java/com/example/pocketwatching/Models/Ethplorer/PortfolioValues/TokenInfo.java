@@ -197,12 +197,9 @@ public class TokenInfo {
                 price.setDiff(elem.get("diff").getAsDouble());
                 price.setDiff7d(elem.get("diff7d").getAsDouble());
                 price.setTs(elem.get("ts").getAsInt());
+                price.setVolume24h(elem.get("volume24h").getAsDouble());
                 price.setMarketCapUsd(elem.get("marketCapUsd").getAsDouble());
                 price.setAvailableSupply(elem.get("availableSupply").getAsDouble());
-
-                if (elem.has("diff30d")){
-                    price.setDiff30d(elem.get("diff30d").getAsDouble());
-                }
 
                 price.setDiff7d(elem.get("diff7d").getAsDouble());
                 price.setCurrency(elem.get("currency").getAsString());
