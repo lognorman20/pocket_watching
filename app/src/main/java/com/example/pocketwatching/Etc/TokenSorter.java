@@ -1,5 +1,7 @@
 package com.example.pocketwatching.Etc;
 
+import android.util.Log;
+
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 
 import java.util.ArrayList;
@@ -21,8 +23,12 @@ public class TokenSorter {
         int start = 0;
         int end = tokens.size() - 1;
 
-        // add alpha sort case
+        // add alpha sort case here
+        printList(tokens);
+        Log.i("tokens.size()", String.valueOf(tokens.size()));
         numSort(start, end);
+        Log.i("debugging", "******* AFTER *********");
+        printList(tokens);
 
         if (descending == true) {
             reverseList(tokens);
@@ -39,6 +45,8 @@ public class TokenSorter {
         }
     }
 
+    // zero tokens: shib, czrx, xot, alink
+    // big token: CEL
     private void balanceSort(int start, int mid, int end) {
         List<Token> sortedArr = new ArrayList<>();
         int left = start;
@@ -81,6 +89,12 @@ public class TokenSorter {
             tokens.set(j, sortedArr.get(i));
             i++;
             j++;
+        }
+    }
+
+    private void printList(List<Token> list) {
+        for (int i = 0; i < tokens.size(); i++) {
+            Log.i("debugging", String.valueOf(tokens.get(i).getTokenBalance()));
         }
     }
 

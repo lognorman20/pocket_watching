@@ -75,9 +75,8 @@ public class SortingFragment extends Fragment {
     }
 
     private void processSort() {
-        TokenSorter sorter = new TokenSorter(tokens, sort, true);
+        TokenSorter sorter = new TokenSorter(tokens, sort, false);
         sorter.sort();
-
         adapter.notifyDataSetChanged();
     }
 }

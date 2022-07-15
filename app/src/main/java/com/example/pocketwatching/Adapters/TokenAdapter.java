@@ -31,6 +31,7 @@ public class TokenAdapter extends RecyclerView.Adapter<TokenAdapter.ViewHolder> 
     @Override
     public TokenAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_token, parent, false);
+        Log.i("adapter tokens.size()", String.valueOf(tokens.size()));
         return new ViewHolder(view);
     }
 
