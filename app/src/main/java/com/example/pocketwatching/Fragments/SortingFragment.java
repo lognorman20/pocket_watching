@@ -74,7 +74,8 @@ public class SortingFragment extends Fragment {
         svTokenSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(getContext(), query, Toast.LENGTH_SHORT).show();
+                sort = "search";
+                searchSort(query);
                 return false;
             }
 
@@ -104,6 +105,11 @@ public class SortingFragment extends Fragment {
                 processSort();
             }
         });
+    }
+
+    private void searchSort(String query) {
+        sorter.sort(sort, query);
+        adapter.notifyDataSetChanged();
     }
 
     private void processSort() {
