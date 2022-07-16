@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ public class SortingFragment extends Fragment {
     private Spinner spinner_sort_types;
     private RecyclerView rvTokens;
     private ImageButton ibDescending;
+    private SearchView svTokenSearch;
 
     private TokenSorter sorter;
     private String sort;
@@ -42,7 +44,7 @@ public class SortingFragment extends Fragment {
     // Inflate the layout for this fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sorting, container, false);
+        return inflater.inflate(R.layout.fragment_analytics, container, false);
     }
 
     @Override
@@ -50,6 +52,7 @@ public class SortingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rvTokens = view.findViewById(R.id.rvTokens);
+        svTokenSearch = view.findViewById(R.id.svTokenSearch);
         ibDescending = view.findViewById(R.id.ibDescending);
         spinner_sort_types = (Spinner) view.findViewById(R.id.spinner_sort_types);
         tokens = (ArrayList<Token>) getArguments().getSerializable("tokens");
@@ -67,6 +70,19 @@ public class SortingFragment extends Fragment {
             Toast.makeText(getContext(), "No tokens available to view.", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        svTokenSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(getContext(), query, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         spinner_sort_types.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
