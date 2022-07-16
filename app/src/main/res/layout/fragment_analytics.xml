@@ -20,16 +20,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
-        android:id="@+id/spinner_sort_types"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvSpinner"
         android:layout_width="245dp"
-        android:layout_height="47dp"
-        android:layout_marginEnd="16dp"
-        android:spinnerMode="dropdown"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/tvSortBy"
         app:layout_constraintEnd_toStartOf="@+id/ibDescending"
-        app:layout_constraintTop_toTopOf="@+id/tvSortBy"
-        tools:ignore="SpeakableTextPresentCheck" />
+        app:layout_constraintTop_toTopOf="@+id/tvSortBy">
+
+        <Spinner
+            android:id="@+id/spinner_sort_types"
+            android:layout_width="245dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:spinnerMode="dropdown"
+            tools:ignore="SpeakableTextPresentCheck" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/tvSortBy"
@@ -37,11 +43,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="89dp"
-        android:layout_marginEnd="12dp"
         android:text="Sort by:"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/spinner_sort_types"
+        app:layout_constraintEnd_toStartOf="@+id/cvSpinner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,28 +54,39 @@
         android:id="@+id/rvTokens"
         android:layout_width="412dp"
         android:layout_height="532dp"
-        android:layout_marginStart="1dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/svTokenSearch" />
+        app:layout_constraintTop_toBottomOf="@+id/cvSearchBar" />
 
     <ImageButton
         android:id="@+id/ibDescending"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cvSpinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cvSpinner"
+        app:srcCompat="@drawable/ic_baseline_sort_24"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvSearchBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/spinner_sort_types"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/spinner_sort_types"
-        app:srcCompat="@drawable/ic_baseline_sort_24" />
-
-    <SearchView
-        android:id="@+id/svTokenSearch"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
         android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_sort_types" />
+        app:layout_constraintTop_toBottomOf="@id/cvSpinner">
+
+        <SearchView
+            android:id="@+id/svTokenSearch"
+            android:layout_width="400dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:queryHint="Enter token name or symbol" />
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

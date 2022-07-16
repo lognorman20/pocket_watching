@@ -71,6 +71,13 @@ public class SortingFragment extends Fragment {
             return;
         }
 
+        svTokenSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                svTokenSearch.setIconified(false);
+            }
+        });
+
         svTokenSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
