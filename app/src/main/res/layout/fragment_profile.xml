@@ -1,14 +1,9 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_profile"
+<ScrollView android:id="@+id/svContainer"
     android:layout_width="match_parent"
-    android:layout_height="750dp">
-
-    <ScrollView
-        android:id="@+id/svContainer"
-        android:layout_width="match_parent"
-        android:layout_height="680dp">
+    android:layout_height="680dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clContainer"
@@ -292,4 +287,3 @@
                 app:layout_constraintTop_toBottomOf="@+id/reportingChart" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-</RelativeLayout>
