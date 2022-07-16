@@ -1,6 +1,7 @@
 package com.example.pocketwatching.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,6 +103,12 @@ public class TokenAdapter extends RecyclerView.Adapter<TokenAdapter.ViewHolder> 
             tvBalance.setText("$" + balance);
             tvMarketCap.setText("$" + marketCap);
             tvMarketPrice.setText("$" + marketPrice);
+
+            if (price.getDiff() < 0) {
+                tvPctChange.setTextColor(Color.parseColor("#a30716"));
+            } else if (price.getDiff() > 0) {
+                tvPctChange.setTextColor(Color.parseColor("#07a319"));
+            }
         }
     }
 
