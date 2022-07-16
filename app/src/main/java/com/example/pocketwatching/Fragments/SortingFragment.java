@@ -1,6 +1,5 @@
 package com.example.pocketwatching.Fragments;
 
-import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Adapters.TokenAdapter;
-import com.example.pocketwatching.Etc.TokenSorter;
+import com.example.pocketwatching.Utils.TokenSorter;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.R;
 
