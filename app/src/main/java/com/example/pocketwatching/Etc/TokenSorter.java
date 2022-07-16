@@ -1,9 +1,13 @@
 package com.example.pocketwatching.Etc;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Price;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +16,7 @@ public class TokenSorter {
     private String sortType;
     private Boolean descending;
     private List<Token> tokens;
+    private String query;
 
     public TokenSorter(List<Token> tokens, Boolean descending) {
         this.tokens = tokens;
@@ -32,6 +37,21 @@ public class TokenSorter {
         }
     }
 
+    public void sort(String sort, String query) {
+        int start = 0;
+        int end = tokens.size() - 1;
+
+        this.sortType = sort;
+        this.descending = false;
+        this.query = query;
+
+         runSort(start, end);
+
+         if (this.descending) {
+             reverseList(tokens);
+         }
+    }
+
     public void runSort(int start, int end) {
         if ((start < end) && ((end - start) >= 1)) {
             int mid = (end + start) / 2;
@@ -39,6 +59,9 @@ public class TokenSorter {
             runSort(mid + 1, end);
 
             switch (sortType) {
+                case "search":
+                    searchSort(start, mid, end);
+                    break;
                 case "Percent Change (24h)":
                     pctSort(start, mid, end);
                     break;
@@ -66,6 +89,63 @@ public class TokenSorter {
                 default:
                     balanceSort(start, mid, end);
             }
+        }
+    }
+
+    private void searchSort(int start, int mid, int end) {
+        List<Token> sortedArr = new ArrayList<>();
+        int l = start;
+        int r = mid + 1;
+
+        Token leftToken;
+        Token rightToken;
+        while ((l <= mid) && (r <= end)) {
+            leftToken = tokens.get(l);
+            rightToken = tokens.get(r);
+
+            String leftSymbol = leftToken.getTokenInfo().getSymbol().toLowerCase(Locale.ROOT);
+            String rightSymbol = rightToken.getTokenInfo().getSymbol().toLowerCase(Locale.ROOT);
+
+            String leftName = leftToken.getTokenInfo().getName().toLowerCase(Locale.ROOT);
+            String rightName = rightToken.getTokenInfo().getName().toLowerCase(Locale.ROOT);
+
+            int leftSymbolDistance = minDistance(query, leftSymbol);
+            int rightSymbolDistance = minDistance(query, rightSymbol);
+
+            int leftNameDistance = minDistance(query, leftName);
+            int rightNameDistance = minDistance(query, rightName);
+
+            int left = Math.min(leftSymbolDistance, leftNameDistance);
+            int right = Math.min(rightSymbolDistance, rightNameDistance);
+
+            if (left < right) {
+                sortedArr.add(leftToken);
+                l++;
+            } else {
+                sortedArr.add(rightToken);
+                r++;
+            }
+        }
+
+        while (l <= mid) {
+            leftToken = tokens.get(l);
+            sortedArr.add(leftToken);
+            l++;
+        }
+
+        while (r <= end) {
+            rightToken = tokens.get(r);
+            sortedArr.add(rightToken);
+            r++;
+        }
+
+        int i = 0;
+        int j = start;
+
+        while (i < sortedArr.size()) {
+            tokens.set(j, sortedArr.get(i));
+            i++;
+            j++;
         }
     }
 
@@ -524,5 +604,45 @@ public class TokenSorter {
             start += 1;
             end -= 1;
         }
+    }
+
+    private int minDistance(String word1, String word2) {
+        int m = word1.length()-1;
+        int n = word2.length()-1;
+        int[][] dp = new int[m+2][n+2];
+        for (int[] d: dp) {
+            Arrays.fill(d, -1);
+        }
+        return distHelper(word1, word2, m, n, dp);
+    }
+
+    private int distHelper(String word1, String word2, int m, int n, int[][] dp) {
+        // the strings are null
+        if (m + 1 == 0 && n + 1 == 0) {
+            return 0;
+        }
+        // one of the strings are null
+        if (m + 1 == 0 || n + 1 == 0) {
+            return Math.max(m + 1, n + 1);
+        }
+        // both values at the index are equal
+        if (dp[m][n] != -1) {
+            return dp[m][n];
+        }
+
+        if (word1.charAt(m) == word2.charAt(n)) {
+            dp[m][n] = distHelper(word1, word2, m - 1, n - 1, dp);
+        } else {
+            // try deletion
+            int delete = 1  + distHelper(word1, word2, m - 1, n, dp);
+            // try insertion
+            int insert = 1 + distHelper(word1, word2, m, n - 1, dp);
+            // try replacing
+            int replace = 1 + distHelper(word1, word2, m - 1, n - 1, dp);
+            // choose min from the three and add one
+            dp[m][n] = Math.min(Math.min(delete, insert), replace);
+        }
+
+        return dp[m][n];
     }
 }

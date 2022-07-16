@@ -16,26 +16,26 @@
             android:id="@+id/MarketPrice"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="16dp"
             android:text="Market Price"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="11sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintStart_toEndOf="@+id/verticalBar"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvMarketPrice"
             android:layout_width="100dp"
             android:layout_height="15sp"
-            android:layout_marginStart="1dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="3dp"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="11sp"
-            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintStart_toEndOf="@+id/verticalBar"
             app:layout_constraintTop_toBottomOf="@+id/MarketPrice"
             tools:text="42.94" />
 
@@ -43,12 +43,12 @@
             android:id="@+id/tvMarketCap"
             android:layout_width="100dp"
             android:layout_height="15sp"
-            android:layout_marginStart="1dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="5dp"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="11sp"
-            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintStart_toEndOf="@+id/verticalBar"
             app:layout_constraintTop_toBottomOf="@+id/MarketCap"
             tools:text="42.94" />
 
@@ -56,14 +56,14 @@
             android:id="@+id/MarketCap"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:text="Market Cap"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="11sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintStart_toEndOf="@+id/verticalBar"
             app:layout_constraintTop_toBottomOf="@+id/tvMarketPrice" />
 
         <TextView
@@ -159,13 +159,13 @@
 
         <TextView
             android:id="@+id/tvPctChange"
-            android:layout_width="89dp"
+            android:layout_width="75dp"
             android:layout_height="16dp"
-            android:layout_marginEnd="1dp"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="11sp"
-            app:layout_constraintEnd_toStartOf="@+id/MarketCap"
+            app:layout_constraintEnd_toStartOf="@+id/verticalBar"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvSymbol"
             tools:text="42.94" />
 
@@ -184,34 +184,35 @@
 
         <TextView
             android:id="@+id/tvName"
-            android:layout_width="89dp"
-            android:layout_height="16sp"
-            android:layout_marginEnd="2dp"
+            android:layout_width="75dp"
+            android:layout_height="20sp"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintBottom_toTopOf="@+id/tvSymbol"
-            app:layout_constraintEnd_toStartOf="@+id/MarketPrice"
+            app:layout_constraintEnd_toStartOf="@+id/verticalBar"
+            app:layout_constraintStart_toStartOf="parent"
             tools:text="Ethereum" />
 
         <TextView
             android:id="@+id/tvSymbol"
-            android:layout_width="89dp"
-            android:layout_height="16sp"
-            android:layout_marginEnd="1dp"
+            android:layout_width="75dp"
+            android:layout_height="20sp"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvMarketPrice"
+            app:layout_constraintEnd_toStartOf="@+id/verticalBar"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="ETH" />
 
         <View
-            android:id="@+id/view"
+            android:id="@+id/verticalBar"
             android:layout_width="1dp"
             android:layout_height="match_parent"
+            android:layout_marginStart="83dp"
             android:background="#FF0000FF"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvName"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
