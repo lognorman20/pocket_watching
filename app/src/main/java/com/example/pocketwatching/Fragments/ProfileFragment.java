@@ -5,6 +5,7 @@ import static com.example.pocketwatching.Models.Ethplorer.Transaction.fromTxHist
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -202,6 +204,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initView() {
+        Stopwatch timer = Stopwatch.createStarted();
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
         query.whereEqualTo("owner", currUser);
         query.findInBackground(new FindCallback<Wallet>() {
@@ -212,6 +215,8 @@ public class ProfileFragment extends Fragment {
                         Toast.makeText(getContext(), "User has no wallets, please add some...", Toast.LENGTH_SHORT).show();
                         goAddWalletActivity();
                     }
+
+                    Log.i("initView timing", "Method took: " + timer.stop());
                     userWallets = objects;
                     for (int i = 0; i < userWallets.size(); i++) {
                         String walletAddress = userWallets.get(i).getWalletAddress();
@@ -243,10 +248,12 @@ public class ProfileFragment extends Fragment {
 
     // gets EthWallet object from given address
     private synchronized void getEthWallet(String address) {
+        Stopwatch timer = Stopwatch.createStarted();
         Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getEthWallet(address);
         call.enqueue(new Callback<EthWallet>() {
             @Override
             public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
+                Log.i("getEthWallet timing", "Method took: " + timer.stop());
                 userEthWallets.add(response.body());
                 if (userEthWallets.size() == userWallets.size()) {
                     initValuableTokens();
@@ -262,10 +269,12 @@ public class ProfileFragment extends Fragment {
     }
 
     private synchronized void getTxHistory(String address) {
+        Stopwatch timer = Stopwatch.createStarted();
         Call<List<TxHistory>> call = (Call<List<TxHistory>>) EthplorerClient.getInstance().getEthplorerApi().getTxHistory(address);
         call.enqueue(new Callback<List<TxHistory>>() {
             @Override
             public void onResponse(Call<List<TxHistory>> call, Response<List<TxHistory>> response) {
+                Log.i("getTxHistory timing", "Method took: " + timer.stop());
                 try {
                     List<TxHistory> txHistory = response.body();
                     List<Transaction> cheese = fromTxHistoryList(txHistory);
@@ -285,6 +294,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getHistoricalBalance() {
+        Stopwatch timer = Stopwatch.createStarted();
         // make a list of longs to pass to the API
         long currTime = System.currentTimeMillis() / 1000L;
         long tempTime = currTime;
@@ -299,6 +309,7 @@ public class ProfileFragment extends Fragment {
             floatTimes.add(Float.valueOf(longTimes.get(i) / 1000));
         }
 
+        Log.i("getHistoricalBalances timing", "Method took: " + timer.stop());
         getEthPrices(longTimes.get(0), longTimes.get(6));
 
         for (int i = 0; i < 7; i++) {
@@ -310,10 +321,12 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getEthPrices(Long start, Long end) {
+        Stopwatch timer = Stopwatch.createStarted();
         Call<List<EthPrice>> call = (Call<List<EthPrice>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start.toString(), end.toString());
         call.enqueue(new Callback<List<EthPrice>>() {
             @Override
             public void onResponse(Call<List<EthPrice>> call, Response<List<EthPrice>> response) {
+                Log.i("getEthPrices timing", "Method took: " + timer.stop());
                 for (int i = 0; i < response.body().size(); i++) {
                     ethPrices.set(i, Double.valueOf(response.body().get(i).getWeightedAverage()));
                 }
@@ -327,10 +340,12 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getBlockHeight(Long timestamp) {
+        Stopwatch timer = Stopwatch.createStarted();
         Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().timeToBlock(timestamp.toString());
         call.enqueue(new Callback<DateToBlock>() {
             @Override
             public void onResponse(Call<DateToBlock> call, Response<DateToBlock> response) {
+                Log.i("getBlockHeight timing", "Method took: " + timer.stop());
                 blockHeights.add(response.body().getBlock());
                 if (blockHeights.size() == 7) {
                     Collections.sort(blockHeights);
@@ -355,10 +370,12 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getBlockBalance(String address, long blockHeight, int index) {
+        Stopwatch timer = Stopwatch.createStarted();
         Call<BlockBalance> call = (Call<BlockBalance>) MoralisClient.getInstance().getMoralisApi().getBlockBalance(address, blockHeight);
         call.enqueue(new Callback<BlockBalance>() {
             @Override
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
+                Log.i("getBlockBalance timing", "Method took: " + timer.stop());
                 blockBalances.set(index, Float.valueOf(response.body().getBalance()));
                 if (index == 6) {
                     for (int i = 0; i < blockBalances.size(); i++) {
@@ -380,6 +397,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupChart(List<Float> xValues, List<Float> yValues) {
+        Stopwatch timer = Stopwatch.createStarted();
+
         XAxis xAxis = volumeReportChart.getXAxis();
 
         volumeReportChart.getAxisLeft().setEnabled(false);
@@ -442,6 +461,7 @@ public class ProfileFragment extends Fragment {
         volumeReportChart.setData(data);
 
         stopLoading();
+        Log.i("setupChart timing", "Method took: " + timer.stop());
     }
 
     // makes y values, reduce all y values by a factor of 1000 to get relative values

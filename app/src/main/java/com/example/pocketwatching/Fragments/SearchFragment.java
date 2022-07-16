@@ -53,48 +53,28 @@ public class SearchFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         users = new ArrayList<>();
 
+        searchView = view.findViewById(R.id.svUserSearch);
         rvUsers = view.findViewById(R.id.rvUsers);
         adapter = new UserAdapter(getContext(), users);
         rvUsers.setLayoutManager(new LinearLayoutManager(getContext()));
         rvUsers.setAdapter(adapter);
-    }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mQuery = query;
+                processQuery();
+                return true;
+            }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-
-        if (searchItem != null) {
-            searchView = (SearchView) searchItem.getActionView();
-        }
-
-        if (searchView != null) {
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-
-            queryTextListener = new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    return true;
-                }
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    mQuery = query;
-                    processQuery();
-                    return true;
-                }
-            };
-            searchView.setOnQueryTextListener(queryTextListener);
-        }
-        super.onCreateOptionsMenu(menu, inflater);
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return true;
+            }
+        });
     }
 
     private void processQuery() {
