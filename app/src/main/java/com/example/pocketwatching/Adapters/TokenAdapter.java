@@ -108,6 +108,8 @@ public class TokenAdapter extends RecyclerView.Adapter<TokenAdapter.ViewHolder> 
                 tvPctChange.setTextColor(Color.parseColor("#a30716"));
             } else if (price.getDiff() > 0) {
                 tvPctChange.setTextColor(Color.parseColor("#07a319"));
+            } else {
+                tvPctChange.setTextColor(Color.parseColor("#000000"));
             }
         }
     }
