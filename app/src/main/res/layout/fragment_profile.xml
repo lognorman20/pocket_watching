@@ -17,175 +17,112 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
             android:background="@color/white"
-            app:layout_constraintStart_toStartOf="@+id/tvWelcome"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvWelcome" />
 
-        <TextView
-            android:id="@+id/tvCountTx"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="14sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/numTx"
-            app:layout_constraintStart_toEndOf="@+id/numTx"
-            tools:text="932,250 total transactions" />
-
-        <TextView
-            android:id="@+id/ethAmount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="8dp"
-            android:text="ETH Amount"
-            android:textAllCaps="false"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/numTx"
-            app:layout_constraintTop_toBottomOf="@+id/totalTokens" />
-
-        <TextView
-            android:id="@+id/numTx"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="8dp"
-            android:text="# of Txs"
-            android:textAllCaps="false"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/ethPrice"
-            app:layout_constraintTop_toBottomOf="@+id/ethAmount" />
-
-        <TextView
-            android:id="@+id/topThreeTokens"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="13dp"
-            android:layout_marginTop="8dp"
-            android:text="Top 3 Tokens"
-            android:textAllCaps="false"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ethPrice" />
-
-        <TextView
-            android:id="@+id/tvTopThreeTokens"
-            android:layout_width="239dp"
-            android:layout_height="16dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="14sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/topThreeTokens"
-            app:layout_constraintStart_toEndOf="@+id/topThreeTokens"
-            tools:text="1203912" />
-
-        <TextView
-            android:id="@+id/ethPrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="8dp"
-            android:text="ETH Price"
-            android:textAllCaps="false"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/topThreeTokens"
-            app:layout_constraintTop_toBottomOf="@+id/numTx" />
-
-        <TextView
-            android:id="@+id/tvEthAmount"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="14sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/ethAmount"
-            app:layout_constraintStart_toEndOf="@+id/ethAmount"
-            tools:text="281.98109 ETH" />
-
-        <TextView
-            android:id="@+id/tvTotalTokens"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="14sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/totalTokens"
-            app:layout_constraintStart_toEndOf="@+id/totalTokens"
-            tools:text="787" />
-
-        <TextView
-            android:id="@+id/tvPortfolioValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="4dp"
-            android:text="$17,392,537.68"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#000000"
-            android:textStyle="bold"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/clOverview"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:layout_margin="12dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/totalTokens"
-            app:layout_constraintTop_toBottomOf="@+id/currentBalance" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reportingChart">
 
-        <TextView
-            android:id="@+id/totalTokens"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="8dp"
-            android:text="Total Tokens"
-            android:textAllCaps="false"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/ethAmount"
-            app:layout_constraintTop_toBottomOf="@+id/tvPortfolioValue" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="16dp">
 
-        <TextView
-            android:id="@+id/tvEthPrice"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="14sp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/ethPrice"
-            app:layout_constraintStart_toEndOf="@+id/ethPrice"
-            tools:text="$1,341.64" />
+
+                <View
+                    android:id="@+id/verticalBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#FF0000FF"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.16" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="username"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="#000000"
+                    android:textStyle="bold|italic"
+                    tools:layout_editor_absoluteX="168dp"
+                    tools:layout_editor_absoluteY="5dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Current Balance"
+                    android:textColor="#000000"
+                    android:textSize="12sp"
+                    tools:layout_editor_absoluteX="60dp"
+                    tools:layout_editor_absoluteY="43dp" />
+
+                <TextView
+                    android:id="@+id/tvPortfolioValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$17,392,537.68"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="#000000"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="64dp" />
+
+                <TextView
+                    android:id="@+id/tvTotalTokens"
+                    android:layout_width="156dp"
+                    android:layout_height="20dp"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="14sp"
+                    tools:layout_editor_absoluteX="214dp"
+                    tools:layout_editor_absoluteY="76dp"
+                    tools:text="787 total tokens" />
+
+                <TextView
+                    android:id="@+id/tvEthAmount"
+                    android:layout_width="157dp"
+                    android:layout_height="20dp"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="14sp"
+                    tools:layout_editor_absoluteX="214dp"
+                    tools:layout_editor_absoluteY="44dp"
+                    tools:text="Hodling 281.98109 ETH" />
+
+                <TextView
+                    android:id="@+id/tvEthAmount2"
+                    android:layout_width="367dp"
+                    android:layout_height="21dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="14sp"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="107dp"
+                    tools:text="Most invested in Solana, holding 28.2 SOL" />
+
+                <TextView
+                    android:id="@+id/tvEthAmount3"
+                    android:layout_width="367dp"
+                    android:layout_height="21dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="14sp"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="139dp"
+                    tools:text="42% of portfolio value from Bitcoin" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvTransactions"
@@ -195,10 +132,9 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="36dp"
             android:background="@drawable/border"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.488"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/transactionHistory" />
 
@@ -209,7 +145,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="16dp"
             android:text="Transaction History"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#000000"
@@ -217,37 +152,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.038"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTopThreeTokens" />
-
-        <ProgressBar
-            android:id="@+id/pbApi"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="249dp"
-            android:layout_height="148dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.859" />
-
-        <TextView
-            android:id="@+id/currentBalance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="20dp"
-            android:text="Current Balance"
-            android:textSize="10sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/reportingChart" />
+            tools:layout_editor_absoluteY="788dp" />
 
         <ImageButton
             android:id="@+id/btnSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="28dp"
             android:backgroundTint="#80FFFFFF"
             android:backgroundTintMode="src_over"
             app:layout_constraintEnd_toEndOf="parent"
@@ -262,9 +174,9 @@
             android:layout_centerHorizontal="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Joe Biden's Portfolio"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="28sp"
+            android:text="Your Portfolio"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="34sp"
             app:layout_constraintBottom_toTopOf="@+id/reportingChart"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

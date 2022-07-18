@@ -83,14 +83,11 @@ public class ProfileFragment extends Fragment {
     private TextView tvCountTx;
     private TextView tvEthPrice;
     private TextView tvTotalTokens;
-    private TextView tvWelcome;
 
     // text views that don't change
     private TextView portfolioInformation;
-    private TextView currentBalance;
     private TextView totalTokens;
     private TextView ethAmount;
-    private TextView numTx;
     private TextView topThreeTokens;
     private TextView ethPrice;
     private TextView transactionHistory;
@@ -113,7 +110,6 @@ public class ProfileFragment extends Fragment {
     private TransactionAdapter adapter;
 
     // widgets and buttons
-    private ProgressBar pbApi;
     private Button btnLogout;
     private ImageButton btnSettings;
     private Button btnAddWallet;
@@ -143,19 +139,9 @@ public class ProfileFragment extends Fragment {
 
         tvEthBalance = view.findViewById(R.id.tvEthAmount);
         tvPortfolioValue = view.findViewById(R.id.tvPortfolioValue);
-        tvTopThreeTokens = view.findViewById(R.id.tvTopThreeTokens);
         tvTotalTokens = view.findViewById(R.id.tvTotalTokens);
-        tvCountTx = view.findViewById(R.id.tvCountTx);
-        tvEthPrice = view.findViewById(R.id.tvEthPrice);
-        tvWelcome = view.findViewById(R.id.tvWelcome);
 
         portfolioInformation = view.findViewById(R.id.tvPortfolioValue);
-        totalTokens = view.findViewById(R.id.totalTokens);
-        currentBalance = view.findViewById(R.id.currentBalance);
-        ethAmount = view.findViewById(R.id.ethAmount);
-        numTx = view.findViewById(R.id.numTx);
-        topThreeTokens = view.findViewById(R.id.topThreeTokens);
-        ethPrice = view.findViewById(R.id.ethPrice);
         transactionHistory = view.findViewById(R.id.transactionHistory);
 
         if (getArguments() == null) {
@@ -176,7 +162,6 @@ public class ProfileFragment extends Fragment {
         blockBalances = new ArrayList<Float>(Collections.nCopies(7, (float)-9.9));
         ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
 
-        pbApi = view.findViewById(R.id.pbApi);
         btnSettings = view.findViewById(R.id.btnSettings);
         volumeReportChart = view.findViewById(R.id.reportingChart);
 
@@ -496,7 +481,6 @@ public class ProfileFragment extends Fragment {
             topThreeTokensText = "N/A";
         }
 
-        tvWelcome.setText(currUser.getUsername() + "'s Portfolio");
         tvPortfolioValue.setText(portfolioValue);
         tvEthBalance.setText(ethBalance);
         tvCountTx.setText(countTx);
@@ -542,34 +526,28 @@ public class ProfileFragment extends Fragment {
     // shows loading screen
     private void startLoading() {
         volumeReportChart.setVisibility(View.INVISIBLE);
-        tvWelcome.setVisibility(View.INVISIBLE);
-        currentBalance.setVisibility(View.INVISIBLE);
+        btnSettings.setVisibility(View.INVISIBLE);
         rvTransactions.setVisibility(View.INVISIBLE);
         portfolioInformation.setVisibility(View.INVISIBLE);
         totalTokens.setVisibility(View.INVISIBLE);
         ethAmount.setVisibility(View.INVISIBLE);
-        numTx.setVisibility(View.INVISIBLE);
         topThreeTokens.setVisibility(View.INVISIBLE);
         ethPrice.setVisibility(View.INVISIBLE);
         transactionHistory.setVisibility(View.INVISIBLE);
-        pbApi.setVisibility(View.VISIBLE);
     }
 
     // hides loading screen
     private void stopLoading() {
         addPortfolioData();
-        tvWelcome.setVisibility(View.VISIBLE);
+        btnSettings.setVisibility(View.VISIBLE);
         volumeReportChart.setVisibility(View.VISIBLE);
-        currentBalance.setVisibility(View.VISIBLE);
         rvTransactions.setVisibility(View.VISIBLE);
         portfolioInformation.setVisibility(View.VISIBLE);
         totalTokens.setVisibility(View.VISIBLE);
         ethAmount.setVisibility(View.VISIBLE);
-        numTx.setVisibility(View.VISIBLE);
         topThreeTokens.setVisibility(View.VISIBLE);
         ethPrice.setVisibility(View.VISIBLE);
         transactionHistory.setVisibility(View.VISIBLE);
-        pbApi.setVisibility(View.INVISIBLE);
     }
 
     /***** Getter functions *****/
