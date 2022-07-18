@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,8 @@ import com.example.pocketwatching.Models.Moralis.DateToBlock;
 import com.example.pocketwatching.Models.Poloniex.EthPrice;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
+import com.example.pocketwatching.Utils.TokenSorter;
+import com.example.pocketwatching.Utils.Utils;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.IMarker;
@@ -79,6 +82,9 @@ public class ProfileFragment extends Fragment {
     private TextView tvEthAmount;
     private TextView tvPortfolioValue;
     private TextView tvTotalTokens;
+    private TextView tvMostInvested;
+    private TextView tvMostValue;
+    private TextView tvProfileUsername;
 
     // text views that don't change
     private TextView portfolioInformation;
@@ -100,6 +106,7 @@ public class ProfileFragment extends Fragment {
     // screen elements
     private RecyclerView rvTransactions;
     private CardView cvOverview;
+    private CardView cvTopTokens;
     private TransactionAdapter adapter;
 
     // widgets and buttons
@@ -162,7 +169,10 @@ public class ProfileFragment extends Fragment {
 
         tvEthAmount = cvOverview.findViewById(R.id.tvEth);
         tvPortfolioValue = cvOverview.findViewById(R.id.tvPortfolioValue);
+        tvMostInvested = cvOverview.findViewById(R.id.tvMostInvested);
         tvTotalTokens = cvOverview.findViewById(R.id.tvTotalTokens);
+        tvMostValue = cvOverview.findViewById(R.id.tvMostValue);
+        tvProfileUsername = cvOverview.findViewById(R.id.tvProfileUsername);
 
 //        startLoading();
 
@@ -178,7 +188,6 @@ public class ProfileFragment extends Fragment {
         });
 
         initView();
-        addPortfolioData();
     }
 
     private void initView() {
@@ -362,6 +371,7 @@ public class ProfileFragment extends Fragment {
                         // TODO: get the price of each token in the wallet at the given time
                         blockBalances.set(i, (float) (usdAmount));
                     }
+                    addPortfolioData();
                     setupChart(floatTimes, blockBalances);
                 }
             }
@@ -466,12 +476,25 @@ public class ProfileFragment extends Fragment {
     // binds values onto the display
     private void addPortfolioData() {
         String portfolioValue = "$" + String.format("%,.2f", getPortfolioBalance());
-        String ethAmount = String.format("%,.5f", getTotalEthAmount()) + " ETH";
-        String totalTokens = String.format("%,d", getTotalTokens());
+        String ethAmount = "Hodling " + String.format("%,.2f", getTotalEthAmount()) + " ETH";
+        String totalTokens = "Owns " + String.format("%,d", getTotalTokens()) + " total tokens";
+        String profileUsername = "@" + ParseUser.getCurrentUser().getUsername();
 
-        tvPortfolioValue.setText("QUESO");
-        tvEthAmount.setText("CHEESE");
-        tvTotalTokens.setText("BUTTER");
+        Pair<String, Double> topToken = getTopTokenByAmount();
+        String mostAmountToken = "Most invested in " + topToken.first + " ("
+                + Utils.getString(topToken.second) + " tokens)";
+
+        topToken = getTopTokenByBalance();
+        Double pctOfPortfolio = topToken.second / getPortfolioBalance();
+        String mostValue = String.format("%,.2f", pctOfPortfolio) +
+                "% of portfolio balance from " + topToken.first;
+
+        tvPortfolioValue.setText(portfolioValue);
+        tvProfileUsername.setText(profileUsername);
+        tvEthAmount.setText(ethAmount);
+        tvTotalTokens.setText(totalTokens);
+        tvMostInvested.setText(mostAmountToken);
+        tvMostValue.setText(mostValue);
     }
 
     /***** Initialization functions *****/
@@ -565,19 +588,30 @@ public class ProfileFragment extends Fragment {
         return balance;
     }
 
-    // gets list of top three tokens by amount
-    private List<String> getTopThreeTokensByAmount() {
-        List<String> output = new ArrayList<>();
-        int i = 0;
-        while (i < 3) {
-            if (i < topTokensByAmount.size()) {
-                output.add(topTokensByAmount.get(i).getTokenInfo().getSymbol());
-            }
-            i++;
-        }
-        return output;
+    private Pair<String, Double> getTopTokenByAmount() {
+        TokenSorter sorter = new TokenSorter(valuableTokens, true);
+        sorter.sort("balance", true);
+
+        Token topToken = valuableTokens.get(0);
+
+        String mostValuableName = topToken.getTokenInfo().getName();
+        Double mostValuableAmount = topToken.getAmount();
+
+        Pair<String, Double> topTokenInfo = new Pair<>(mostValuableName, mostValuableAmount);
+        return topTokenInfo;
     }
 
+    private Pair<String, Double> getTopTokenByBalance() {
+        TokenSorter sorter = new TokenSorter(valuableTokens, true);
+        sorter.sort("amount", true);
+
+        Token topToken = valuableTokens.get(0);
+        String name = topToken.getTokenInfo().getName();
+        Double balance = topToken.getTokenBalance();
+
+        Pair<String, Double> output = new Pair<>(name, balance);
+        return output;
+    }
     public List<Token> getValuableTokens() {
         return valuableTokens;
     }
