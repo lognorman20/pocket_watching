@@ -24,7 +24,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/clOverview"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="145dp"
             android:layout_margin="12dp"
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,47 +37,51 @@
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="16dp">
 
-
                 <View
                     android:id="@+id/verticalBar"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginTop="2dp"
                     android:background="#FF0000FF"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.16" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
                 <TextView
+                    android:id="@+id/textView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:text="username"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="#000000"
                     android:textStyle="bold|italic"
-                    tools:layout_editor_absoluteX="168dp"
-                    tools:layout_editor_absoluteY="5dp" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="67dp"
                     android:text="Current Balance"
                     android:textColor="#000000"
                     android:textSize="12sp"
-                    tools:layout_editor_absoluteX="60dp"
-                    tools:layout_editor_absoluteY="43dp" />
+                    app:layout_constraintEnd_toStartOf="@+id/tvEthAmount"
+                    app:layout_constraintTop_toTopOf="@+id/tvEthAmount" />
 
                 <TextView
                     android:id="@+id/tvPortfolioValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
                     android:text="$17,392,537.68"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="#000000"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    tools:layout_editor_absoluteX="16dp"
-                    tools:layout_editor_absoluteY="64dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView3"
+                    tools:layout_editor_absoluteX="16dp" />
 
                 <TextView
                     android:id="@+id/tvTotalTokens"
@@ -86,40 +90,46 @@
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textSize="14sp"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/tvPortfolioValue"
                     tools:layout_editor_absoluteX="214dp"
-                    tools:layout_editor_absoluteY="76dp"
-                    tools:text="787 total tokens" />
+                    tools:text="Owns 787 total tokens" />
 
                 <TextView
                     android:id="@+id/tvEthAmount"
                     android:layout_width="157dp"
                     android:layout_height="20dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="26dp"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textSize="14sp"
-                    tools:layout_editor_absoluteX="214dp"
-                    tools:layout_editor_absoluteY="44dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/verticalBar"
                     tools:text="Hodling 281.98109 ETH" />
 
                 <TextView
                     android:id="@+id/tvEthAmount2"
                     android:layout_width="367dp"
                     android:layout_height="21dp"
+                    android:layout_marginTop="8dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textSize="14sp"
-                    tools:layout_editor_absoluteX="16dp"
-                    tools:layout_editor_absoluteY="107dp"
-                    tools:text="Most invested in Solana, holding 28.2 SOL" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTotalTokens"
+                    tools:text="Most invested in Solana, holding 28.2 SOL ($232.38)" />
 
                 <TextView
                     android:id="@+id/tvEthAmount3"
                     android:layout_width="367dp"
                     android:layout_height="21dp"
+                    android:layout_marginTop="4dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textSize="14sp"
-                    tools:layout_editor_absoluteX="16dp"
-                    tools:layout_editor_absoluteY="139dp"
-                    tools:text="42% of portfolio value from Bitcoin" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvEthAmount2"
+                    tools:text="42% of portfolio value from Bitcoin ($12,208,31.21)" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
