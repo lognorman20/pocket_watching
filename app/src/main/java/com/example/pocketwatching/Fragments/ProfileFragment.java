@@ -9,15 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -77,19 +76,12 @@ public class ProfileFragment extends Fragment {
     private static ProfileFragment instance = null;
 
     // text views that change
-    private TextView tvEthBalance;
+    private TextView tvEthAmount;
     private TextView tvPortfolioValue;
-    private TextView tvTopThreeTokens;
-    private TextView tvCountTx;
-    private TextView tvEthPrice;
     private TextView tvTotalTokens;
 
     // text views that don't change
     private TextView portfolioInformation;
-    private TextView totalTokens;
-    private TextView ethAmount;
-    private TextView topThreeTokens;
-    private TextView ethPrice;
     private TextView transactionHistory;
 
     // variables for helper functions
@@ -107,12 +99,11 @@ public class ProfileFragment extends Fragment {
 
     // screen elements
     private RecyclerView rvTransactions;
+    private CardView cvOverview;
     private TransactionAdapter adapter;
 
     // widgets and buttons
-    private Button btnLogout;
     private ImageButton btnSettings;
-    private Button btnAddWallet;
     private LineChart volumeReportChart;
 
     public ProfileFragment() {}
@@ -137,9 +128,6 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        tvEthBalance = view.findViewById(R.id.tvEthAmount);
-        tvPortfolioValue = view.findViewById(R.id.tvPortfolioValue);
-        tvTotalTokens = view.findViewById(R.id.tvTotalTokens);
 
         portfolioInformation = view.findViewById(R.id.tvPortfolioValue);
         transactionHistory = view.findViewById(R.id.transactionHistory);
@@ -170,7 +158,13 @@ public class ProfileFragment extends Fragment {
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
         rvTransactions.setAdapter(adapter);
 
-        startLoading();
+        cvOverview = view.findViewById(R.id.cvOverview);
+
+        tvEthAmount = cvOverview.findViewById(R.id.tvEth);
+        tvPortfolioValue = cvOverview.findViewById(R.id.tvPortfolioValue);
+        tvTotalTokens = cvOverview.findViewById(R.id.tvTotalTokens);
+
+//        startLoading();
 
         btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,6 +178,7 @@ public class ProfileFragment extends Fragment {
         });
 
         initView();
+        addPortfolioData();
     }
 
     private void initView() {
@@ -442,7 +437,7 @@ public class ProfileFragment extends Fragment {
         LineData data = new LineData(dataSets);
         volumeReportChart.setData(data);
 
-        stopLoading();
+//        stopLoading();
 
     }
 
@@ -471,29 +466,12 @@ public class ProfileFragment extends Fragment {
     // binds values onto the display
     private void addPortfolioData() {
         String portfolioValue = "$" + String.format("%,.2f", getPortfolioBalance());
-        String ethBalance = String.format("%,.5f", getTotalEthAmount()) + " ETH";
-        String countTx = String.format("%,d", getTxCount()) + " total transactions";
-        String ethPrice = "$" + String.format("%,.2f", getEthPrice());
+        String ethAmount = String.format("%,.5f", getTotalEthAmount()) + " ETH";
         String totalTokens = String.format("%,d", getTotalTokens());
-        String topThreeTokensText = String.valueOf(getTopThreeTokensByAmount());
-        // setting top three tokens
-        if (getTopThreeTokensByAmount().size() == 0) {
-            topThreeTokensText = "N/A";
-        }
 
-        tvPortfolioValue.setText(portfolioValue);
-        tvEthBalance.setText(ethBalance);
-        tvCountTx.setText(countTx);
-        tvEthPrice.setText(ethPrice);
-        tvTotalTokens.setText(totalTokens);
-        tvTopThreeTokens.setText(topThreeTokensText);
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        tvPortfolioValue.setText("QUESO");
+        tvEthAmount.setText("CHEESE");
+        tvTotalTokens.setText("BUTTER");
     }
 
     /***** Initialization functions *****/
@@ -529,10 +507,6 @@ public class ProfileFragment extends Fragment {
         btnSettings.setVisibility(View.INVISIBLE);
         rvTransactions.setVisibility(View.INVISIBLE);
         portfolioInformation.setVisibility(View.INVISIBLE);
-        totalTokens.setVisibility(View.INVISIBLE);
-        ethAmount.setVisibility(View.INVISIBLE);
-        topThreeTokens.setVisibility(View.INVISIBLE);
-        ethPrice.setVisibility(View.INVISIBLE);
         transactionHistory.setVisibility(View.INVISIBLE);
     }
 
@@ -543,10 +517,6 @@ public class ProfileFragment extends Fragment {
         volumeReportChart.setVisibility(View.VISIBLE);
         rvTransactions.setVisibility(View.VISIBLE);
         portfolioInformation.setVisibility(View.VISIBLE);
-        totalTokens.setVisibility(View.VISIBLE);
-        ethAmount.setVisibility(View.VISIBLE);
-        topThreeTokens.setVisibility(View.VISIBLE);
-        ethPrice.setVisibility(View.VISIBLE);
         transactionHistory.setVisibility(View.VISIBLE);
     }
 
