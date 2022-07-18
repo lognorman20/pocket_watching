@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Activities.AddWalletActivity;
 import com.example.pocketwatching.Activities.MainActivity;
+import com.example.pocketwatching.Adapters.TopTokenAdapter;
 import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Apis.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Apis.Moralis.MoralisClient;
@@ -105,9 +106,13 @@ public class ProfileFragment extends Fragment {
 
     // screen elements
     private RecyclerView rvTransactions;
+    private TransactionAdapter adapter;
+
     private CardView cvOverview;
     private CardView cvTopTokens;
-    private TransactionAdapter adapter;
+
+    private RecyclerView rvTopTokens;
+    private TopTokenAdapter tokenAdapter;
 
     // widgets and buttons
     private ImageButton btnSettings;
@@ -164,6 +169,11 @@ public class ProfileFragment extends Fragment {
         adapter = new TransactionAdapter(getContext(), txs);
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
         rvTransactions.setAdapter(adapter);
+
+        rvTopTokens = view.findViewById(R.id.rvTopTokens);
+        tokenAdapter = new TopTokenAdapter(getContext(), valuableTokens);
+        rvTopTokens.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        rvTopTokens.setAdapter(tokenAdapter);
 
         cvOverview = view.findViewById(R.id.cvOverview);
 
@@ -517,7 +527,9 @@ public class ProfileFragment extends Fragment {
                 }
             }
         }
-
+        TokenSorter sorter = new TokenSorter(valuableTokens, true);
+        sorter.sort("balance", true);
+        tokenAdapter.notifyDataSetChanged();
         // gets the top three tokens by investment distribution, add balance based implementation??
         for (int i = 0; i < topThreeTokens.size(); i++) {
             topTokensByAmount.add(topThreeTokens.pollLast());
