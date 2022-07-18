@@ -15,11 +15,9 @@
             android:layout_width="375dp"
             android:layout_height="230dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:background="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.361"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvWelcome"
             app:layout_constraintTop_toBottomOf="@+id/tvWelcome" />
 
         <TextView
@@ -35,7 +33,7 @@
             android:textSize="14sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/numTx"
             app:layout_constraintStart_toEndOf="@+id/numTx"
-            tools:text="932,250 total transactiions" />
+            tools:text="932,250 total transactions" />
 
         <TextView
             android:id="@+id/ethAmount"
@@ -204,35 +202,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/transactionHistory" />
 
-        <Button
-            android:id="@+id/btnLogout"
-            android:layout_width="114dp"
-            android:layout_height="49dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="64dp"
-            android:onClick="onLogoutButton"
-            android:text="Log Out"
-            app:layout_constraintBottom_toBottomOf="@+id/btnAddWallet2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnAddWallet2" />
-
-        <Button
-            android:id="@+id/btnAddWallet2"
-            android:layout_width="wrap_content"
-            android:layout_height="49dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="41dp"
-            android:layout_marginTop="16dp"
-            android:onClick="onLogoutButton"
-            android:text="Add Wallet(s)"
-            app:layout_constraintStart_toEndOf="@+id/btnLogout"
-            app:layout_constraintTop_toBottomOf="@+id/rvTransactions" />
 
         <TextView
             android:id="@+id/transactionHistory"
@@ -249,21 +218,6 @@
             app:layout_constraintHorizontal_bias="0.038"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTopThreeTokens" />
-
-        <TextView
-            android:id="@+id/tvWelcome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
-            android:text="Joe Biden's Portfolio"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="28sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.48"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
             android:id="@+id/pbApi"
@@ -287,5 +241,33 @@
             android:textSize="10sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/reportingChart" />
+
+        <ImageButton
+            android:id="@+id/btnSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="#80FFFFFF"
+            android:backgroundTintMode="src_over"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_settings_24" />
+
+        <TextView
+            android:id="@+id/tvWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Joe Biden's Portfolio"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="28sp"
+            app:layout_constraintBottom_toTopOf="@+id/reportingChart"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

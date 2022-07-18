@@ -24,7 +24,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="/private/var/folders/0z/pkdyqx7x4l185nrpsp3rb8yw0000gn/T/baseline_mode_comment_24.xml" />
+                                                <entry key="imagePath" value="/private/var/folders/0z/pkdyqx7x4l185nrpsp3rb8yw0000gn/T/baseline_settings_24.xml" />
                                                 <entry key="opacityPercent" value="60" />
                                               </map>
                                             </option>
@@ -36,7 +36,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/mode_comment/baseline_mode_comment_24.xml" />
+                                                <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/settings/baseline_settings_24.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -64,6 +64,11 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                    </map>
+                                  </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="outputName" value="ic_action_settings" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -316,7 +321,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/sort/baseline_sort_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/settings/baseline_settings_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -326,7 +331,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_baseline_sort_24" />
+                            <entry key="outputName" value="ic_baseline_settings_24" />
                           </map>
                         </option>
                       </PersistentState>

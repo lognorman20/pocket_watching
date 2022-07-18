@@ -10,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -113,6 +115,7 @@ public class ProfileFragment extends Fragment {
     // widgets and buttons
     private ProgressBar pbApi;
     private Button btnLogout;
+    private ImageButton btnSettings;
     private Button btnAddWallet;
     private LineChart volumeReportChart;
 
@@ -174,8 +177,7 @@ public class ProfileFragment extends Fragment {
         ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
 
         pbApi = view.findViewById(R.id.pbApi);
-        btnLogout = view.findViewById(R.id.btnLogout);
-        btnAddWallet = view.findViewById(R.id.btnAddWallet2);
+        btnSettings = view.findViewById(R.id.btnSettings);
         volumeReportChart = view.findViewById(R.id.reportingChart);
 
         rvTransactions = view.findViewById(R.id.rvTransactions);
@@ -185,18 +187,14 @@ public class ProfileFragment extends Fragment {
 
         startLoading();
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+        btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ParseUser.logOut();
-                goMainActivity();
-            }
-        });
+                AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                SettingsFragment fragment = new SettingsFragment();
 
-        btnAddWallet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goAddWalletActivity();
+                activity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.flContainer, fragment).commit();
             }
         });
 
@@ -317,7 +315,6 @@ public class ProfileFragment extends Fragment {
             date.setTime(longTimes.get(i));
             getBlockHeight(longTimes.get(i));
         }
-
     }
 
     private void getEthPrices(Long start, Long end) {
@@ -461,7 +458,7 @@ public class ProfileFragment extends Fragment {
         volumeReportChart.setData(data);
 
         stopLoading();
-        Log.i("setupChart timing", "Method took: " + timer.stop());
+
     }
 
     // makes y values, reduce all y values by a factor of 1000 to get relative values
@@ -547,7 +544,6 @@ public class ProfileFragment extends Fragment {
         volumeReportChart.setVisibility(View.INVISIBLE);
         tvWelcome.setVisibility(View.INVISIBLE);
         currentBalance.setVisibility(View.INVISIBLE);
-        btnLogout.setVisibility(View.INVISIBLE);
         rvTransactions.setVisibility(View.INVISIBLE);
         portfolioInformation.setVisibility(View.INVISIBLE);
         totalTokens.setVisibility(View.INVISIBLE);
@@ -565,7 +561,6 @@ public class ProfileFragment extends Fragment {
         tvWelcome.setVisibility(View.VISIBLE);
         volumeReportChart.setVisibility(View.VISIBLE);
         currentBalance.setVisibility(View.VISIBLE);
-        btnLogout.setVisibility(View.VISIBLE);
         rvTransactions.setVisibility(View.VISIBLE);
         portfolioInformation.setVisibility(View.VISIBLE);
         totalTokens.setVisibility(View.VISIBLE);

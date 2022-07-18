@@ -6,8 +6,7 @@
     android:layout_margin="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.ProfileActivity"
-    >
+    tools:context=".Activities.ProfileActivity">
 
     <FrameLayout
         android:id="@+id/flContainer"
