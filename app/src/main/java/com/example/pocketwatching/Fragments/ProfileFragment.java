@@ -99,6 +99,7 @@ public class ProfileFragment extends Fragment {
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
     private List<Token> topTokensByAmount;
+    List<Operation> operations;
     private List<Float> floatTimes;
     private List<Long> longTimes;
     private List<Integer> blockHeights;
@@ -114,6 +115,9 @@ public class ProfileFragment extends Fragment {
 
     private RecyclerView rvTopTokens;
     private TopTokenAdapter tokenAdapter;
+
+    private RecyclerView rvTxHistory;
+//    private OperationAdapter operationAdapter;
 
     // widgets and buttons
     private ImageButton btnSettings;
@@ -156,6 +160,7 @@ public class ProfileFragment extends Fragment {
         longTimes = new ArrayList<>();
 
         userEthWallets = new ArrayList<>();
+        operations = new ArrayList<>();
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
         topTokensByAmount = new ArrayList<>();
@@ -276,14 +281,13 @@ public class ProfileFragment extends Fragment {
         call.enqueue(new Callback<TxHistory>() {
             @Override
             public void onResponse(Call<TxHistory> call, Response<TxHistory> response) {
-                List<Operation> operations = response.body().getOperations();
-                String tokenName = operations.get(3).getTokenInfo().getSymbol();
-                Toast.makeText(getContext(), tokenName, Toast.LENGTH_SHORT).show();
+                List<Operation> operationHistory = response.body().getOperations();
+                operations = operationHistory;
             }
 
             @Override
             public void onFailure(Call<TxHistory> call, Throwable t) {
-                Toast.makeText(getContext(), "could not get txhistory", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Could not get txhistory", Toast.LENGTH_SHORT).show();
             }
         });
     }
