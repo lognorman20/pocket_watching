@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -82,7 +83,7 @@ public class TopTokenAdapter extends RecyclerView.Adapter<TopTokenAdapter.ViewHo
             String pctChange = price.getDiff().toString() + "%";
             String balance = "Balance: $" + Utils.getString(token.getTokenBalance());
             String amountHeld = "Amount: " + Utils.getString(token.getAmount()) + " " + symbol;
-            String marketPrice = "Market Price: " + price.getRate().toString();
+            String marketPrice = "Market Price: $" + String.format("%,.2f", price.getRate());
 
             tvItemSymbol.setText(symbol);
             tvItemPctChange.setText(pctChange);

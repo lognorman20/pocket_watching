@@ -172,7 +172,13 @@ public class ProfileFragment extends Fragment {
 
         rvTopTokens = view.findViewById(R.id.rvTopTokens);
         tokenAdapter = new TopTokenAdapter(getContext(), valuableTokens);
-        rvTopTokens.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        rvTopTokens.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false){
+            @Override
+            public boolean checkLayoutParams(RecyclerView.LayoutParams lp) {
+                lp.width = getWidth() / 3;
+                return true;
+            }
+        });
         rvTopTokens.setAdapter(tokenAdapter);
 
         cvOverview = view.findViewById(R.id.cvOverview);

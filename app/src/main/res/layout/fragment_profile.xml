@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/svContainer"
     android:layout_width="match_parent"
+    android:layout_gravity="center_horizontal"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -143,13 +144,11 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvTopTokens"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_margin="13dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cvOverview">
-
         </androidx.recyclerview.widget.RecyclerView>
 
         <androidx.recyclerview.widget.RecyclerView
