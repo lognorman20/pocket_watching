@@ -222,7 +222,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="28dp"
+            android:layout_marginEnd="24dp"
             android:backgroundTint="#80FFFFFF"
             android:backgroundTintMode="src_over"
             android:minHeight="48dp"

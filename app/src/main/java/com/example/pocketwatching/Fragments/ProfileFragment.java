@@ -1,6 +1,5 @@
 package com.example.pocketwatching.Fragments;
 
-import static com.example.pocketwatching.Models.Ethplorer.Transaction.fromTxHistoryList;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,17 +24,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.pocketwatching.Activities.AddWalletActivity;
 import com.example.pocketwatching.Activities.MainActivity;
 import com.example.pocketwatching.Adapters.TopTokenAdapter;
-import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Apis.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Apis.Moralis.MoralisClient;
 import com.example.pocketwatching.Apis.Poloniex.PoloniexClient;
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Operation;
 import com.example.pocketwatching.Utils.ClaimsXAxisValueFormatter;
 import com.example.pocketwatching.Utils.CustomMarkerView;
 import com.example.pocketwatching.Utils.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
-import com.example.pocketwatching.Models.Ethplorer.Transaction;
 import com.example.pocketwatching.Models.Ethplorer.TxHistory;
 import com.example.pocketwatching.Models.Moralis.BlockBalance;
 import com.example.pocketwatching.Models.Moralis.DateToBlock;
@@ -70,15 +68,11 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import org.json.JSONException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -110,12 +104,10 @@ public class ProfileFragment extends Fragment {
     private List<Integer> blockHeights;
     private List<Float> blockBalances;
     private List<Double> ethPrices;
-    private List<Transaction> txs;
     private ParseUser currUser;
 
     // screen elements
     private RecyclerView rvTransactions;
-    private TransactionAdapter adapter;
 
     private CardView cvOverview;
     private CardView cvTopTokens;
@@ -160,7 +152,6 @@ public class ProfileFragment extends Fragment {
             currUser = getArguments().getParcelable("user");
         }
 
-        txs = new ArrayList<>();
         floatTimes = new ArrayList<>();
         longTimes = new ArrayList<>();
 
@@ -177,9 +168,7 @@ public class ProfileFragment extends Fragment {
         pieChart = view.findViewById(R.id.pieChart_view);
 
         rvTransactions = view.findViewById(R.id.rvTransactions);
-        adapter = new TransactionAdapter(getContext(), txs);
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvTransactions.setAdapter(adapter);
 
         rvTopTokens = view.findViewById(R.id.rvTopTokens);
         tokenAdapter = new TopTokenAdapter(getContext(), valuableTokens);
@@ -240,7 +229,7 @@ public class ProfileFragment extends Fragment {
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
-                        getTxHistory(walletAddress);
+                        getTxHistory(walletAddress, "5");
                     }
                     getHistoricalBalance();
                 } else {
@@ -282,27 +271,19 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private synchronized void getTxHistory(String address) {
-        Stopwatch timer = Stopwatch.createStarted();
-        Call<List<TxHistory>> call = (Call<List<TxHistory>>) EthplorerClient.getInstance().getEthplorerApi().getTxHistory(address);
-        call.enqueue(new Callback<List<TxHistory>>() {
+    private synchronized void getTxHistory(String address, String limit) {
+        Call<TxHistory> call = (Call<TxHistory>) EthplorerClient.getInstance().getEthplorerApi().getTxHistory(address, limit);
+        call.enqueue(new Callback<TxHistory>() {
             @Override
-            public void onResponse(Call<List<TxHistory>> call, Response<List<TxHistory>> response) {
-                Log.i("getTxHistory timing", "Method took: " + timer.stop());
-                try {
-                    List<TxHistory> txHistory = response.body();
-                    List<Transaction> cheese = fromTxHistoryList(txHistory);
-                    txs.addAll(cheese);
-                    adapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-                    Toast.makeText(getContext(), "Failed to add txHistory to txs", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
+            public void onResponse(Call<TxHistory> call, Response<TxHistory> response) {
+                List<Operation> operations = response.body().getOperations();
+                String tokenName = operations.get(3).getTokenInfo().getSymbol();
+                Toast.makeText(getContext(), tokenName, Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onFailure(Call<List<TxHistory>> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed to get txHistory", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<TxHistory> call, Throwable t) {
+                Toast.makeText(getContext(), "could not get txhistory", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -509,6 +490,7 @@ public class ProfileFragment extends Fragment {
 
         String mostAmountToken;
         String mostValue;
+
         if (valuableTokens.size() > 0) {
             Pair<String, Double> topToken = getTopTokenByAmount();
             mostAmountToken = "Most invested in " + topToken.first + " ("

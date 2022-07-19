@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Adapters.UserAdapter;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
