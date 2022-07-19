@@ -673,7 +673,7 @@ public class ProfileFragment extends Fragment {
             Double tokenBalance = token.getTokenBalance();
 
             Float pct = (float) ((tokenBalance / totalBalance) * 100);
-            if (pct > 2.0f) {
+            if (pct > 3.0f) {
                 totalPct += pct;
                 entries.add(new PieEntry(pct, token.getTokenInfo().getSymbol()));
             }

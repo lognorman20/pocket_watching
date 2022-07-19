@@ -1,51 +1,53 @@
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/item_token"
-    app:cardCornerRadius="4dp"
-    android:layout_margin="8dp"
-    android:layout_height="50dp" >
+    android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/tvTxTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTxHash"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvTxHash"
+        tools:text="5:32 pm Jul 12th 2022" />
+
+    <View
+        android:id="@+id/verticalBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="#FF0000FF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTx"
+        tools:layout_editor_absoluteX="0dp" />
 
-        <TextView
-            android:id="@+id/tvTxTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tvTxHash"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvTxHash"
-            tools:text="5:32 pm Jul 12th 2022" />
+    <TextView
+        android:id="@+id/tvTxHash"
+        android:layout_width="250dp"
+        android:layout_height="13dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/tvTxTime"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Tx Hash: 0x2b3929dcbc884c07c08be023aa..." />
 
-        <TextView
-            android:id="@+id/tvTxHash"
-            android:layout_width="271dp"
-            android:layout_height="13dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/tvTxTime"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Tx Hash: 0x2b3929dcbc884c07c08be023aa..." />
+    <TextView
+        android:id="@+id/tvTx"
+        android:layout_width="397dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTxTime"
+        tools:text="Obama sent 300 ETH ($3000.00) to ejubjhburhuerhj" />
 
-        <TextView
-            android:id="@+id/tvTx"
-            android:layout_width="381dp"
-            android:layout_height="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTxTime"
-            tools:text="Obama sent 300 ETH ($3000.00) to ejubjhburhuerhj" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

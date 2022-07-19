@@ -154,19 +154,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/TopTokens"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvTx"
-            android:layout_width="375dp"
-            android:layout_height="200dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.214"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/transactionHistory" />
+            app:layout_constraintTop_toBottomOf="@+id/transactionHistory">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTx"
+                android:layout_width="375dp"
+                android:layout_height="200dp" />
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/transactionHistory"

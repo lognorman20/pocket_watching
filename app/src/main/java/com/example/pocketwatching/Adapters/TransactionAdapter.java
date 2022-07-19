@@ -96,10 +96,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             String usdValue = "$" + Utils.getString(operation.getUsdValue());
 
             if (wallets.contains(operation.getTo())) {
-                String from = operation.getFrom().substring(0, 18);
+                String from = operation.getFrom().substring(0, 15);
                 tx = username + " received " + amount + " " + symbol + " (" + usdValue + ")" + " from " + from;
             } else {
-                String to = operation.getTo().substring(0, 18) + "...";
+                String to = operation.getTo().substring(0, 15) + "...";
                 tx = username + " sent " + amount + " " + symbol + " (" + usdValue + ")" + " to " + to;
             }
 
