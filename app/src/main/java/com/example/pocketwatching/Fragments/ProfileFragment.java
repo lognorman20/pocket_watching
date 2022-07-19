@@ -100,7 +100,7 @@ public class ProfileFragment extends Fragment {
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
     private List<Token> topTokensByAmount;
-    List<Operation> operations;
+    private List<Operation> operations;
     private List<Float> floatTimes;
     private List<Long> longTimes;
     private List<Integer> blockHeights;
@@ -113,12 +113,9 @@ public class ProfileFragment extends Fragment {
     private TransactionAdapter transactionAdapter;
 
     private CardView cvOverview;
-    private CardView cvTopTokens;
 
     private RecyclerView rvTopTokens;
     private TopTokenAdapter tokenAdapter;
-
-    private RecyclerView rvTxHistory;
 
     // widgets and buttons
     private ImageButton btnSettings;
@@ -173,9 +170,9 @@ public class ProfileFragment extends Fragment {
         volumeReportChart = view.findViewById(R.id.reportingChart);
         pieChart = view.findViewById(R.id.pieChart_view);
 
-        rvTransactions = view.findViewById(R.id.rvTransactions);
+        rvTransactions = view.findViewById(R.id.rvTx);
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
-        transactionAdapter = new TransactionAdapter(getContext(), operations, userEthWallets, currUser.getUsername());
+        transactionAdapter = new TransactionAdapter(getContext(), operations);
         rvTransactions.setAdapter(transactionAdapter);
 
         rvTopTokens = view.findViewById(R.id.rvTopTokens);
@@ -269,7 +266,6 @@ public class ProfileFragment extends Fragment {
                 if (userEthWallets.size() == userWallets.size()) {
                     initValuableTokens();
                 }
-                transactionAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -286,7 +282,8 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onResponse(Call<TxHistory> call, Response<TxHistory> response) {
                 List<Operation> operationHistory = response.body().getOperations();
-                operations = operationHistory;
+                operations.addAll(operationHistory);
+                transactionAdapter.notifyDataSetChanged();
             }
 
             @Override
