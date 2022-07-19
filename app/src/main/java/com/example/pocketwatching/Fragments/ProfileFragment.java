@@ -653,6 +653,7 @@ public class ProfileFragment extends Fragment {
         pieChart.setDrawHoleEnabled(true);
         pieChart.setEntryLabelTextSize(0);
         pieChart.setEntryLabelColor(Color.BLACK);
+        pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
 
         Legend l = pieChart.getLegend();
@@ -671,14 +672,15 @@ public class ProfileFragment extends Fragment {
 
         Double totalBalance = getPortfolioBalance();
         Float totalPct = 0.0f;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             Token token = valuableTokens.get(i);
             Double tokenBalance = token.getTokenBalance();
 
             Float pct = (float) ((tokenBalance / totalBalance) * 100);
-            totalPct += pct;
-
-            entries.add(new PieEntry(pct, token.getTokenInfo().getSymbol()));
+            if (pct > 5.0f) {
+                totalPct += pct;
+                entries.add(new PieEntry(pct, token.getTokenInfo().getSymbol()));
+            }
         }
 
         entries.add(new PieEntry(100 - totalPct, "Other"));
@@ -696,13 +698,8 @@ public class ProfileFragment extends Fragment {
         dataSet.setColors(colors);
         dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
 
-        dataSet.setValueLinePart1OffsetPercentage(10.f);
-        dataSet.setValueLinePart1Length(0.43f);
-        dataSet.setValueLinePart2Length(.1f);
         dataSet.setValueTextColor(Color.BLACK);
         dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        pieChart.setEntryLabelColor(Color.BLUE);
-
         PieData data = new PieData(dataSet);
         data.setDrawValues(true);
         data.setValueFormatter(new PercentFormatter(pieChart));
