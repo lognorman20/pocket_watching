@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.pocketwatching.Activities.AddWalletActivity;
 import com.example.pocketwatching.Activities.MainActivity;
 import com.example.pocketwatching.Adapters.TopTokenAdapter;
+import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Apis.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Apis.Moralis.MoralisClient;
 import com.example.pocketwatching.Apis.Poloniex.PoloniexClient;
@@ -109,6 +110,7 @@ public class ProfileFragment extends Fragment {
 
     // screen elements
     private RecyclerView rvTransactions;
+    private TransactionAdapter transactionAdapter;
 
     private CardView cvOverview;
     private CardView cvTopTokens;
@@ -117,7 +119,6 @@ public class ProfileFragment extends Fragment {
     private TopTokenAdapter tokenAdapter;
 
     private RecyclerView rvTxHistory;
-//    private OperationAdapter operationAdapter;
 
     // widgets and buttons
     private ImageButton btnSettings;
@@ -174,6 +175,8 @@ public class ProfileFragment extends Fragment {
 
         rvTransactions = view.findViewById(R.id.rvTransactions);
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
+        transactionAdapter = new TransactionAdapter(getContext(), operations, userEthWallets, currUser.getUsername());
+        rvTransactions.setAdapter(transactionAdapter);
 
         rvTopTokens = view.findViewById(R.id.rvTopTokens);
         tokenAdapter = new TopTokenAdapter(getContext(), valuableTokens);
@@ -266,6 +269,7 @@ public class ProfileFragment extends Fragment {
                 if (userEthWallets.size() == userWallets.size()) {
                     initValuableTokens();
                 }
+                transactionAdapter.notifyDataSetChanged();
             }
 
             @Override

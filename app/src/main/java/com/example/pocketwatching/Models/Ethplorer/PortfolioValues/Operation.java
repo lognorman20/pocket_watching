@@ -18,7 +18,7 @@ public class Operation {
     private String type;
     @SerializedName("value")
     @Expose
-    private String value;
+    private Double value;
     @SerializedName("priority")
     @Expose
     private int priority;
@@ -61,11 +61,21 @@ public class Operation {
         this.type = type;
     }
 
-    public String getValue() {
-        return value;
+    public Double getAmount() {
+        Double amount = (Double) (value / (long) (Math.pow(10.0, getTokenInfo().getDecimals())));
+        return amount;
     }
 
-    public void setValue(String value) {
+    public Double getUsdValue() {
+        Double amount = getAmount();
+
+        Price price = (Price) getTokenInfo().getPrice();
+        Double marketPrice = price.getRate();
+
+        return amount * marketPrice;
+    }
+
+    public void setValue(Double value) {
         this.value = value;
     }
 
