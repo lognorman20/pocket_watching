@@ -507,14 +507,21 @@ public class ProfileFragment extends Fragment {
         String totalTokens = "Owns " + String.format("%,d", getTotalTokens()) + " total tokens";
         String profileUsername = "@" + ParseUser.getCurrentUser().getUsername();
 
-        Pair<String, Double> topToken = getTopTokenByAmount();
-        String mostAmountToken = "Most invested in " + topToken.first + " ("
-                + Utils.getString(topToken.second) + " tokens)";
+        String mostAmountToken;
+        String mostValue;
+        if (valuableTokens.size() > 0) {
+            Pair<String, Double> topToken = getTopTokenByAmount();
+            mostAmountToken = "Most invested in " + topToken.first + " ("
+                    + Utils.getString(topToken.second) + " tokens)";
 
-        topToken = getTopTokenByBalance();
-        Double pctOfPortfolio = topToken.second / getPortfolioBalance();
-        String mostValue = String.format("%,.2f", pctOfPortfolio) +
-                "% of portfolio balance from " + topToken.first;
+            topToken = getTopTokenByBalance();
+            Double pctOfPortfolio = topToken.second / getPortfolioBalance();
+            mostValue = String.format("%,.2f", pctOfPortfolio) +
+                    "% of portfolio balance from " + topToken.first;
+        } else {
+            mostAmountToken = "Not holding tokens with monetary value.";
+            mostValue = "Not holding tokens with monetary value.";
+        }
 
         tvPortfolioValue.setText(portfolioValue);
         tvProfileUsername.setText(profileUsername);
@@ -547,8 +554,10 @@ public class ProfileFragment extends Fragment {
         TokenSorter sorter = new TokenSorter(valuableTokens, true);
         sorter.sort("balance", true);
 
-        loadPieChartData();
-        setupPieChart();
+        if (valuableTokens.size() > 0) {
+            loadPieChartData();
+            setupPieChart();
+        }
 
         tokenAdapter.notifyDataSetChanged();
         // gets the top three tokens by investment distribution, add balance based implementation??
@@ -677,7 +686,7 @@ public class ProfileFragment extends Fragment {
             Double tokenBalance = token.getTokenBalance();
 
             Float pct = (float) ((tokenBalance / totalBalance) * 100);
-            if (pct > 5.0f) {
+            if (pct > 2.0f) {
                 totalPct += pct;
                 entries.add(new PieEntry(pct, token.getTokenInfo().getSymbol()));
             }
