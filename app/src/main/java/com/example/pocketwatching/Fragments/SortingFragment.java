@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Adapters.TokenAnalyticsAdapter;
-import com.example.pocketwatching.Utils.TokenSorter;
+import com.example.pocketwatching.Utils.Sorter;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.R;
 
@@ -30,7 +30,7 @@ public class SortingFragment extends Fragment {
     private ImageButton ibDescending;
     private SearchView svTokenSearch;
 
-    private TokenSorter sorter;
+    private Sorter sorter;
     private String sort;
     private Boolean descending = true;
     private ArrayList<Token> tokens;
@@ -55,7 +55,7 @@ public class SortingFragment extends Fragment {
         ibDescending = view.findViewById(R.id.ibDescending);
         spinner_sort_types = (Spinner) view.findViewById(R.id.spinner_sort_types);
         tokens = (ArrayList<Token>) getArguments().getSerializable("tokens");
-        sorter = new TokenSorter(tokens, descending);
+        sorter = new Sorter(tokens, descending);
 
         adapter = new TokenAnalyticsAdapter(getContext(), tokens);
         rvTokens.setLayoutManager(new LinearLayoutManager(getContext()));

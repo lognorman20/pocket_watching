@@ -41,7 +41,7 @@ import com.example.pocketwatching.Models.Moralis.DateToBlock;
 import com.example.pocketwatching.Models.Poloniex.EthPrice;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
-import com.example.pocketwatching.Utils.TokenSorter;
+import com.example.pocketwatching.Utils.Sorter;
 import com.example.pocketwatching.Utils.Utils;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
@@ -538,7 +538,7 @@ public class ProfileFragment extends Fragment {
                 }
             }
         }
-        TokenSorter sorter = new TokenSorter(valuableTokens, true);
+        Sorter sorter = new Sorter(valuableTokens, true);
         sorter.sort("balance", true);
 
         if (valuableTokens.size() > 0) {
@@ -618,7 +618,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private Pair<String, Double> getTopTokenByAmount() {
-        TokenSorter sorter = new TokenSorter(valuableTokens, true);
+        Sorter sorter = new Sorter(valuableTokens, true);
         sorter.sort("balance", true);
 
         Token topToken = valuableTokens.get(0);
@@ -631,7 +631,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private Pair<String, Double> getTopTokenByBalance() {
-        TokenSorter sorter = new TokenSorter(valuableTokens, true);
+        Sorter sorter = new Sorter(valuableTokens, true);
         sorter.sort("amount", true);
 
         Token topToken = valuableTokens.get(0);
@@ -663,7 +663,7 @@ public class ProfileFragment extends Fragment {
 
     private void loadPieChartData() {
         ArrayList<PieEntry> entries = new ArrayList<>();
-        TokenSorter sorter = new TokenSorter(valuableTokens, true);
+        Sorter sorter = new Sorter(valuableTokens, true);
         sorter.sort("balance", true);
 
         Double totalBalance = getPortfolioBalance();

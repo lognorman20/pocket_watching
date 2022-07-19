@@ -9,13 +9,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class TokenSorter {
+public class Sorter {
     private String sortType;
     private Boolean descending;
     private List<Token> tokens;
     private String query;
 
-    public TokenSorter(List<Token> tokens, Boolean descending) {
+    public Sorter(List<Token> tokens, Boolean descending) {
         this.tokens = tokens;
         this.descending = descending;
     }
