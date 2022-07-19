@@ -17,6 +17,7 @@ import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Operation;
 import com.example.pocketwatching.R;
 import com.example.pocketwatching.Utils.ClaimsXAxisValueFormatter;
+import com.example.pocketwatching.Utils.Utils;
 import com.parse.ParseUser;
 
 import java.text.SimpleDateFormat;
@@ -28,16 +29,25 @@ import java.util.TimeZone;
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
     private Context context;
     private List<Operation> operations;
+    private List<String> wallets;
+    private String username;
 
-    public TransactionAdapter(Context context, List<Operation> operations) {
+    public TransactionAdapter(Context context, List<Operation> operations, List<EthWallet> inputWallets, String username) {
         this.context = context;
         this.operations = operations;
+        this.username = username;
+
+        List<String> walletAddresses = new ArrayList<>();
+        for (int i = 0; i < inputWallets.size(); i++) {
+            walletAddresses.add(inputWallets.get(i).getAddress());
+        }
+
+        this.wallets = walletAddresses;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Toast.makeText(context, "create view holder", Toast.LENGTH_SHORT).show();
         View view = LayoutInflater.from(context).inflate(R.layout.item_transaction, parent, false);
         return new TransactionAdapter.ViewHolder(view);
     }
@@ -45,7 +55,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     @Override
     public void onBindViewHolder(@NonNull TransactionAdapter.ViewHolder holder, int position) {
         Operation operation = operations.get(position);
-        Toast.makeText(context, "bind view holder", Toast.LENGTH_SHORT).show();
         holder.bind(operation);
     }
 
@@ -60,7 +69,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     public void addAll(List<Operation> list) {
-        this.operations.addAll(list);
+        operations.addAll(list);
         notifyDataSetChanged();
     }
 
@@ -74,29 +83,29 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
             tvTxTime = itemView.findViewById(R.id.tvTxTime);
             tvTxHash = itemView.findViewById(R.id.tvTxHash);
-            tvTx = itemView.findViewById(R.id.tvTxHash);
+            tvTx = itemView.findViewById(R.id.tvTx);
         }
 
         public void bind(Operation operation) {
-            Toast.makeText(context, "BINDING OPERATION", Toast.LENGTH_SHORT).show();
             String time = toDate(operation.getTimestamp());
-            String hash = "Tx Hash:" + operation.getTransactionHash().substring(0, 12) + "...";
+            String hash = "Tx Hash: " + operation.getTransactionHash().substring(0, 24) + "...";
             String symbol = operation.getTokenInfo().getSymbol();
 
             String tx;
-            String amount = operation.getAmount().toString();;
-            String usdValue = operation.getUsdValue().toString();
-//            if (wallets.contains(operation.getTo())) {
-//                String from = operation.getFrom().substring(0, 12);
-//                tx = username + " received " + amount + " " + symbol + " (" + usdValue + ")" + " from " + from;
-//            } else {
-//                String to = operation.getTo();
-//                tx = username + " sent " + amount + " " + symbol + " (" + usdValue + ")" + " to " + to;
-//            }
+            String amount = Utils.getString(operation.getAmount());
+            String usdValue = "$" + Utils.getString(operation.getUsdValue());
+
+            if (wallets.contains(operation.getTo())) {
+                String from = operation.getFrom().substring(0, 18);
+                tx = username + " received " + amount + " " + symbol + " (" + usdValue + ")" + " from " + from;
+            } else {
+                String to = operation.getTo().substring(0, 18) + "...";
+                tx = username + " sent " + amount + " " + symbol + " (" + usdValue + ")" + " to " + to;
+            }
 
             tvTxTime.setText(time);
             tvTxHash.setText(hash);
-//            tvTx.setText(tx);
+            tvTx.setText(tx);
         }
     }
 

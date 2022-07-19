@@ -172,7 +172,7 @@ public class ProfileFragment extends Fragment {
 
         rvTransactions = view.findViewById(R.id.rvTx);
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
-        transactionAdapter = new TransactionAdapter(getContext(), operations);
+        transactionAdapter = new TransactionAdapter(getContext(), operations, userEthWallets, currUser.getUsername());
         rvTransactions.setAdapter(transactionAdapter);
 
         rvTopTokens = view.findViewById(R.id.rvTopTokens);
