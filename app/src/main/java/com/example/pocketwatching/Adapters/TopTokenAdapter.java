@@ -19,7 +19,7 @@ import com.example.pocketwatching.Utils.Utils;
 import java.util.List;
 
 public class TopTokenAdapter extends RecyclerView.Adapter<TopTokenAdapter.ViewHolder> {
-    private final int limit = 3;
+    private final int limit = 5;
     private Context context;
     private List<Token> tokens;
 

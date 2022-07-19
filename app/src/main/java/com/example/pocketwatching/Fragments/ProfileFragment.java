@@ -46,16 +46,23 @@ import com.example.pocketwatching.Utils.TokenSorter;
 import com.example.pocketwatching.Utils.Utils;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.IMarker;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
@@ -69,7 +76,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -117,6 +126,7 @@ public class ProfileFragment extends Fragment {
     // widgets and buttons
     private ImageButton btnSettings;
     private LineChart volumeReportChart;
+    private PieChart pieChart;
 
     public ProfileFragment() {}
 
@@ -164,6 +174,7 @@ public class ProfileFragment extends Fragment {
 
         btnSettings = view.findViewById(R.id.btnSettings);
         volumeReportChart = view.findViewById(R.id.reportingChart);
+        pieChart = view.findViewById(R.id.pieChart_view);
 
         rvTransactions = view.findViewById(R.id.rvTransactions);
         adapter = new TransactionAdapter(getContext(), txs);
@@ -203,6 +214,8 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        loadPieChartData();
+        setupPieChart();
         initView();
     }
 
@@ -632,5 +645,63 @@ public class ProfileFragment extends Fragment {
     }
     public List<Token> getValuableTokens() {
         return valuableTokens;
+    }
+
+    private void setupPieChart() {
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setUsePercentValues(true);
+        pieChart.setEntryLabelTextSize(0);
+        pieChart.setEntryLabelColor(Color.BLACK);
+        pieChart.getDescription().setEnabled(false);
+
+        Legend l = pieChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(true);
+        l.setEnabled(true);
+    }
+
+    private void loadPieChartData() {
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        Double totalBalance = getPortfolioBalance();
+        TokenSorter sorter = new TokenSorter(valuableTokens, true);
+        sorter.sort("balance", true);
+
+//        for (int i = 0; i < valuableTokens.size(); i++) {
+//            Token currToken = valuableTokens.get(i);
+//            Float pct = (float) ();
+//            if (pct >= 0.05) {
+//                entries.add(new PieEntry(pct, "Food & Dining"));
+//            }
+//        }
+        entries.add(new PieEntry(0.8f, "Food & Dining"));
+        entries.add(new PieEntry(0.15f, "Medical"));
+        entries.add(new PieEntry(0.10f, "Entertainment"));
+        entries.add(new PieEntry(0.25f, "Electricity and Gas"));
+        entries.add(new PieEntry(0.3f, "Housing"));
+
+        ArrayList<Integer> colors = new ArrayList<>();
+        for (int color: ColorTemplate.MATERIAL_COLORS) {
+            colors.add(color);
+        }
+
+        for (int color: ColorTemplate.VORDIPLOM_COLORS) {
+            colors.add(color);
+        }
+
+        PieDataSet dataSet = new PieDataSet(entries, "Expense Category");
+        dataSet.setColors(colors);
+
+        PieData data = new PieData(dataSet);
+        data.setDrawValues(true);
+        data.setValueFormatter(new PercentFormatter(pieChart));
+        data.setValueTextSize(12f);
+        data.setValueTextColor(Color.BLACK);
+
+        pieChart.setData(data);
+        pieChart.invalidate();
+
+        pieChart.animateY(1400, Easing.EaseInOutQuad);
     }
 }
