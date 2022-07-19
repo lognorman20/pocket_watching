@@ -187,7 +187,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="16dp"
-            android:text="AssetDistribution"
+            android:text="Asset Distribution"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#000000"
             android:textStyle="bold"

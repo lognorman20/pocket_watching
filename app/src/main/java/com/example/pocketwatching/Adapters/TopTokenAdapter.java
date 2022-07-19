@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Price;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
-import com.example.pocketwatching.Models.Ethplorer.Transaction;
 import com.example.pocketwatching.R;
 import com.example.pocketwatching.Utils.Utils;
 

@@ -214,8 +214,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        loadPieChartData();
-        setupPieChart();
         initView();
     }
 
@@ -548,6 +546,10 @@ public class ProfileFragment extends Fragment {
         }
         TokenSorter sorter = new TokenSorter(valuableTokens, true);
         sorter.sort("balance", true);
+
+        loadPieChartData();
+        setupPieChart();
+
         tokenAdapter.notifyDataSetChanged();
         // gets the top three tokens by investment distribution, add balance based implementation??
         for (int i = 0; i < topThreeTokens.size(); i++) {
@@ -649,37 +651,37 @@ public class ProfileFragment extends Fragment {
 
     private void setupPieChart() {
         pieChart.setDrawHoleEnabled(true);
-        pieChart.setUsePercentValues(true);
         pieChart.setEntryLabelTextSize(0);
         pieChart.setEntryLabelColor(Color.BLACK);
         pieChart.getDescription().setEnabled(false);
 
         Legend l = pieChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(true);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(false);
+        l.setWordWrapEnabled(true);
         l.setEnabled(true);
     }
 
     private void loadPieChartData() {
         ArrayList<PieEntry> entries = new ArrayList<>();
-        Double totalBalance = getPortfolioBalance();
         TokenSorter sorter = new TokenSorter(valuableTokens, true);
         sorter.sort("balance", true);
 
-//        for (int i = 0; i < valuableTokens.size(); i++) {
-//            Token currToken = valuableTokens.get(i);
-//            Float pct = (float) ();
-//            if (pct >= 0.05) {
-//                entries.add(new PieEntry(pct, "Food & Dining"));
-//            }
-//        }
-        entries.add(new PieEntry(0.8f, "Food & Dining"));
-        entries.add(new PieEntry(0.15f, "Medical"));
-        entries.add(new PieEntry(0.10f, "Entertainment"));
-        entries.add(new PieEntry(0.25f, "Electricity and Gas"));
-        entries.add(new PieEntry(0.3f, "Housing"));
+        Double totalBalance = getPortfolioBalance();
+        Float totalPct = 0.0f;
+        for (int i = 0; i < 5; i++) {
+            Token token = valuableTokens.get(i);
+            Double tokenBalance = token.getTokenBalance();
+
+            Float pct = (float) ((tokenBalance / totalBalance) * 100);
+            totalPct += pct;
+
+            entries.add(new PieEntry(pct, token.getTokenInfo().getSymbol()));
+        }
+
+        entries.add(new PieEntry(100 - totalPct, "Other"));
 
         ArrayList<Integer> colors = new ArrayList<>();
         for (int color: ColorTemplate.MATERIAL_COLORS) {
@@ -690,8 +692,16 @@ public class ProfileFragment extends Fragment {
             colors.add(color);
         }
 
-        PieDataSet dataSet = new PieDataSet(entries, "Expense Category");
+        PieDataSet dataSet = new PieDataSet(entries, "");
         dataSet.setColors(colors);
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+        dataSet.setValueLinePart1OffsetPercentage(10.f);
+        dataSet.setValueLinePart1Length(0.43f);
+        dataSet.setValueLinePart2Length(.1f);
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        pieChart.setEntryLabelColor(Color.BLUE);
 
         PieData data = new PieData(dataSet);
         data.setDrawValues(true);
