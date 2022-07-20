@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 public class Token implements Serializable {
 
@@ -37,5 +38,13 @@ public class Token implements Serializable {
         Price price = (Price) getTokenInfo().getPrice(); // problem line
         Double balance = amount * price.getRate();
         return balance;
+    }
+
+    // Token Comparators for sorting
+    public static class CompAmount implements Comparator<Token> {
+        @Override
+        public int compare(Token left, Token right) {
+            return left.getAmount().compareTo(right.getAmount());
+        }
     }
 }

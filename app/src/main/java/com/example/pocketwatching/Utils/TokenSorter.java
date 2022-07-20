@@ -1,11 +1,14 @@
 package com.example.pocketwatching.Utils;
 
+import android.util.Log;
+
 import com.example.pocketwatching.Models.Ethplorer.Price;
 import com.example.pocketwatching.Models.Ethplorer.Token;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,6 +17,7 @@ public class TokenSorter {
     private Boolean descending;
     private List<Token> tokens;
     private String query;
+    private Comparator<Token> comparator;
 
     public TokenSorter(List<Token> tokens, Boolean descending) {
         this.tokens = tokens;
@@ -27,10 +31,36 @@ public class TokenSorter {
         this.sortType = sort;
         this.descending = descending;
 
-        runSort(start, end);
+        getComparator();
+        mergeSort(start, end);
 
         if (this.descending) {
             reverseList(tokens);
+        }
+    }
+
+    private void getComparator() {
+        switch (sortType) {
+            case "search":
+                break;
+            case "Percent Change (24h)":
+                break;
+            case "Market Price":
+                break;
+            case "Amount Held":
+                comparator = new Token.CompAmount();
+                break;
+            case "Market Cap":
+                break;
+            case "Circulating Supply":
+                break;
+            case "Volume (24h)":
+                break;
+            case "Name":
+                break;
+            case "Symbol":
+                break;
+            default:
         }
     }
 
@@ -42,18 +72,18 @@ public class TokenSorter {
         this.descending = false;
         this.query = query;
 
-         runSort(start, end);
+         mergeSort(start, end);
 
          if (this.descending) {
              reverseList(tokens);
          }
     }
 
-    private void runSort(int start, int end) {
+    private void mergeSort(int start, int end) {
         if ((start < end) && ((end - start) >= 1)) {
             int mid = (end + start) / 2;
-            runSort(start, mid);
-            runSort(mid + 1, end);
+            mergeSort(start, mid);
+            mergeSort(mid + 1, end);
 
             switch (sortType) {
                 case "search":
@@ -66,7 +96,7 @@ public class TokenSorter {
                     priceSort(start, mid, end);
                     break;
                 case "Amount Held":
-                    amountSort(start, mid, end);
+                    merge(start, mid, end);
                     break;
                 case "Market Cap":
                     marketCapSort(start, mid, end);
@@ -406,7 +436,7 @@ public class TokenSorter {
         }
     }
 
-    private void amountSort(int start, int mid, int end) {
+    private void merge(int start, int mid, int end) {
         List<Token> sortedArr = new ArrayList<>();
         int l = start;
         int r = mid + 1;
@@ -417,10 +447,7 @@ public class TokenSorter {
             leftToken = tokens.get(l);
             rightToken = tokens.get(r);
 
-            Double left = leftToken.getAmount();
-            Double right = rightToken.getAmount();
-
-            if (left <= right) {
+            if (comparator.compare(leftToken, rightToken) < 0) {
                 sortedArr.add(leftToken);
                 l++;
             } else {
