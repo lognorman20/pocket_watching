@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.pocketwatching.Fragments.ProfileFragment;
 import com.example.pocketwatching.Fragments.SearchFragment;
 import com.example.pocketwatching.Fragments.SortingFragment;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
+import com.example.pocketwatching.Models.Ethplorer.Token;
 import com.example.pocketwatching.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 

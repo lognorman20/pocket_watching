@@ -27,14 +27,13 @@ import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Apis.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Apis.Moralis.MoralisClient;
 import com.example.pocketwatching.Apis.Poloniex.PoloniexClient;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Operation;
+import com.example.pocketwatching.Models.Ethplorer.Operation;
 import com.example.pocketwatching.Utils.ClaimsXAxisValueFormatter;
 import com.example.pocketwatching.Utils.CustomMarkerView;
 import com.example.pocketwatching.Utils.OperationSorter;
-import com.example.pocketwatching.Utils.TokenAmountComparator;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
+import com.example.pocketwatching.Models.Ethplorer.EthWallet;
+import com.example.pocketwatching.Models.Ethplorer.Token;
+import com.example.pocketwatching.Models.Ethplorer.TokenInfo;
 import com.example.pocketwatching.Models.Ethplorer.TxHistory;
 import com.example.pocketwatching.Models.Moralis.BlockBalance;
 import com.example.pocketwatching.Models.Moralis.DateToBlock;
@@ -62,8 +61,6 @@ import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -99,7 +96,6 @@ public class ProfileFragment extends Fragment {
     private List<Wallet> userWallets;
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
-    private List<Token> topTokensByAmount;
     private List<Operation> operations;
     private List<Float> floatTimes;
     private List<Long> longTimes;
@@ -136,6 +132,7 @@ public class ProfileFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -160,7 +157,6 @@ public class ProfileFragment extends Fragment {
         operations = new ArrayList<>();
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
-        topTokensByAmount = new ArrayList<>();
         blockHeights = new ArrayList<>();
         blockBalances = new ArrayList<Float>(Collections.nCopies(7, (float)-9.9));
         ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
@@ -345,7 +341,7 @@ public class ProfileFragment extends Fragment {
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
                             try {
-                                Thread.sleep(120);
+                                Thread.sleep(150);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -516,8 +512,7 @@ public class ProfileFragment extends Fragment {
     /***** Initialization functions *****/
     // init lists of valuable/not valuable tokens, top 3 tokens
     private void initValuableTokens() {
-        Comparator<Token> comparator = new TokenAmountComparator();
-        MinMaxPriorityQueue<Token> topThreeTokens = MinMaxPriorityQueue.orderedBy(comparator).create();
+        Comparator<Token> comparator = new Token.CompAmount();
 
         for (int i = 0; i < userEthWallets.size(); i++) {
             if (userEthWallets.get(i).getTokens() != null) {
@@ -527,12 +522,12 @@ public class ProfileFragment extends Fragment {
                     if (tokenInfo.getPrice().equals(false)) {
                         notValuableTokens.add(token);
                     } else {
-                        topThreeTokens.add(token);
                         valuableTokens.add(token);
                     }
                 }
             }
         }
+
         TokenSorter sorter = new TokenSorter(valuableTokens, true);
         sorter.sort("balance", true);
 
@@ -542,10 +537,6 @@ public class ProfileFragment extends Fragment {
         }
 
         tokenAdapter.notifyDataSetChanged();
-        // gets the top three tokens by investment distribution, add balance based implementation??
-        for (int i = 0; i < topThreeTokens.size(); i++) {
-            topTokensByAmount.add(topThreeTokens.pollLast());
-        }
     }
 
     /***** Getter functions *****/

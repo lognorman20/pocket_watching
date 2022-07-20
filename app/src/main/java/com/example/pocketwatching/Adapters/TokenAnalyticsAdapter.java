@@ -10,8 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Price;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
+import com.example.pocketwatching.Models.Ethplorer.Price;
+import com.example.pocketwatching.Models.Ethplorer.Token;
 import com.example.pocketwatching.R;
 
 import java.util.List;

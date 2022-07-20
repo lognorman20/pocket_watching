@@ -1,9 +1,7 @@
 package com.example.pocketwatching.Apis.Ethplorer;
 
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
+import com.example.pocketwatching.Models.Ethplorer.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.TxHistory;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
