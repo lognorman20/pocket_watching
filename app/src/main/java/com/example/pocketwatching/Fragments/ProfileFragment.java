@@ -533,6 +533,7 @@ public class ProfileFragment extends Fragment {
                 }
             }
         }
+
         TokenSorter sorter = new TokenSorter(valuableTokens, true);
         sorter.sort("balance", true);
 

@@ -1,8 +1,5 @@
 package com.example.pocketwatching.Utils;
 
-import android.util.Log;
-
-import com.example.pocketwatching.Models.Ethplorer.Price;
 import com.example.pocketwatching.Models.Ethplorer.Token;
 
 import java.util.ArrayList;
@@ -39,37 +36,6 @@ public class TokenSorter {
         }
     }
 
-    private void getComparator() {
-        switch (sortType) {
-            case "search":
-                break;
-            case "Percent Change (24h)":
-                comparator = new Token.CompPctChange();
-                break;
-            case "Market Price":
-                comparator = new Token.CompMarketPrice();
-                break;
-            case "Amount Held":
-                comparator = new Token.CompAmount();
-                break;
-            case "Market Cap":
-                comparator = new Token.CompMarketCap();
-                break;
-            case "Circulating Supply":
-                comparator = new Token.CompCircSupply();
-                break;
-            case "Volume (24h)":
-                comparator = new Token.CompVolume();
-                break;
-            case "Name":
-                break;
-            case "Symbol":
-                break;
-            default:
-                comparator = new Token.CompBalance();
-        }
-    }
-
     public void sort(String sort, String query) {
         int start = 0;
         int end = tokens.size() - 1;
@@ -78,20 +44,20 @@ public class TokenSorter {
         this.descending = false;
         this.query = query;
 
-         mergeSort(start, end);
+        runSort(start, end);
 
-         if (this.descending) {
-             reverseList(tokens);
-         }
+        if (this.descending) {
+            reverseList(tokens);
+        }
     }
 
-    private void mergeSort(int start, int end) {
+    private void runSort(int start, int end) {
         if ((start < end) && ((end - start) >= 1)) {
             int mid = (end + start) / 2;
-            mergeSort(start, mid);
-            mergeSort(mid + 1, end);
+            runSort(start, mid);
+            runSort(mid + 1, end);
 
-            merge(start, mid, end);
+            searchSort(start, mid, end);
         }
     }
 
@@ -102,7 +68,6 @@ public class TokenSorter {
 
         Token leftToken;
         Token rightToken;
-        // TODO: Rewrite to modularize core sorting
         while ((l <= mid) && (r <= end)) {
             leftToken = tokens.get(l);
             rightToken = tokens.get(r);
@@ -153,262 +118,13 @@ public class TokenSorter {
         }
     }
 
-    private void symbolSort(int start, int mid, int end) {
-        List<Token> sortedArr = new ArrayList<>();
-        int l = start;
-        int r = mid + 1;
+    private void mergeSort(int start, int end) {
+        if ((start < end) && ((end - start) >= 1)) {
+            int mid = (end + start) / 2;
+            mergeSort(start, mid);
+            mergeSort(mid + 1, end);
 
-        Token leftToken;
-        Token rightToken;
-        while ((l <= mid) && (r <= end)) {
-            leftToken = tokens.get(l);
-            rightToken = tokens.get(r);
-
-            String leftString = leftToken.getTokenInfo().getSymbol().toLowerCase(Locale.ROOT);
-            String rightString = rightToken.getTokenInfo().getSymbol().toLowerCase(Locale.ROOT);
-
-            int cmp = strcmp(leftString, rightString);
-
-            if (cmp < 0) {
-                sortedArr.add(leftToken);
-                l++;
-            } else {
-                sortedArr.add(rightToken);
-                r++;
-            }
-        }
-
-        while (l <= mid) {
-            leftToken = tokens.get(l);
-            sortedArr.add(leftToken);
-            l++;
-        }
-
-        while (r <= end) {
-            rightToken = tokens.get(r);
-            sortedArr.add(rightToken);
-            r++;
-        }
-
-        int i = 0;
-        int j = start;
-
-        while (i < sortedArr.size()) {
-            tokens.set(j, sortedArr.get(i));
-            i++;
-            j++;
-        }
-    }
-
-    private void nameSort(int start, int mid, int end) {
-        List<Token> sortedArr = new ArrayList<>();
-        int l = start;
-        int r = mid + 1;
-
-        Token leftToken;
-        Token rightToken;
-        while ((l <= mid) && (r <= end)) {
-            leftToken = tokens.get(l);
-            rightToken = tokens.get(r);
-
-            String leftString = leftToken.getTokenInfo().getName().toLowerCase(Locale.ROOT);
-            String rightString = rightToken.getTokenInfo().getName().toLowerCase(Locale.ROOT);
-
-            int cmp = strcmp(leftString, rightString);
-
-            if (cmp < 0) {
-                sortedArr.add(leftToken);
-                l++;
-            } else {
-                sortedArr.add(rightToken);
-                r++;
-            }
-        }
-
-        while (l <= mid) {
-            leftToken = tokens.get(l);
-            sortedArr.add(leftToken);
-            l++;
-        }
-
-        while (r <= end) {
-            rightToken = tokens.get(r);
-            sortedArr.add(rightToken);
-            r++;
-        }
-
-        int i = 0;
-        int j = start;
-
-        while (i < sortedArr.size()) {
-            tokens.set(j, sortedArr.get(i));
-            i++;
-            j++;
-        }
-    }
-
-    private int strcmp(String leftString, String rightString) {
-        int leftLen = leftString.length();
-        int rightLen = rightString.length();
-        int minLen = Math.min(leftLen, rightLen);
-
-        for (int i = 0; i < minLen; i++) {
-            int leftChar = (int) leftString.charAt(i);
-            int rightChar = (int) rightString.charAt(i);
-
-            if (leftChar != rightChar) {
-                return leftChar - rightChar;
-            }
-        }
-
-        if (leftLen != rightLen) {
-            return leftLen - rightLen;
-        } else {
-            return 0;
-        }
-    }
-
-    private void volumeSort(int start, int mid, int end) {
-        List<Token> sortedArr = new ArrayList<>();
-        int l = start;
-        int r = mid + 1;
-
-        Token leftToken;
-        Token rightToken;
-        while ((l <= mid) && (r <= end)) {
-            leftToken = tokens.get(l);
-            rightToken = tokens.get(r);
-
-            Price leftPrice = (Price) leftToken.getTokenInfo().getPrice();
-            Price rightPrice = (Price) rightToken.getTokenInfo().getPrice();
-
-            Double left = leftPrice.getVolume24h();
-            Double right = rightPrice.getVolume24h();
-
-            if (left <= right) {
-                sortedArr.add(leftToken);
-                l++;
-            } else {
-                sortedArr.add(rightToken);
-                r++;
-            }
-        }
-
-        while (l <= mid) {
-            leftToken = tokens.get(l);
-            sortedArr.add(leftToken);
-            l++;
-        }
-
-        while (r <= end) {
-            rightToken = tokens.get(r);
-            sortedArr.add(rightToken);
-            r++;
-        }
-
-        int i = 0;
-        int j = start;
-
-        while (i < sortedArr.size()) {
-            tokens.set(j, sortedArr.get(i));
-            i++;
-            j++;
-        }
-    }
-
-    private void supplySort(int start, int mid, int end) {
-        List<Token> sortedArr = new ArrayList<>();
-        int l = start;
-        int r = mid + 1;
-
-        Token leftToken;
-        Token rightToken;
-        while ((l <= mid) && (r <= end)) {
-            leftToken = tokens.get(l);
-            rightToken = tokens.get(r);
-
-            Price leftPrice = (Price) leftToken.getTokenInfo().getPrice();
-            Price rightPrice = (Price) rightToken.getTokenInfo().getPrice();
-
-            Double left = leftPrice.getAvailableSupply();
-            Double right = rightPrice.getAvailableSupply();
-
-            if (left <= right) {
-                sortedArr.add(leftToken);
-                l++;
-            } else {
-                sortedArr.add(rightToken);
-                r++;
-            }
-        }
-
-        while (l <= mid) {
-            leftToken = tokens.get(l);
-            sortedArr.add(leftToken);
-            l++;
-        }
-
-        while (r <= end) {
-            rightToken = tokens.get(r);
-            sortedArr.add(rightToken);
-            r++;
-        }
-
-        int i = 0;
-        int j = start;
-
-        while (i < sortedArr.size()) {
-            tokens.set(j, sortedArr.get(i));
-            i++;
-            j++;
-        }
-    }
-
-    private void marketCapSort(int start, int mid, int end) {
-        List<Token> sortedArr = new ArrayList<>();
-        int l = start;
-        int r = mid + 1;
-
-        Token leftToken;
-        Token rightToken;
-        while ((l <= mid) && (r <= end)) {
-            leftToken = tokens.get(l);
-            rightToken = tokens.get(r);
-
-            Price leftPrice = (Price) leftToken.getTokenInfo().getPrice();
-            Price rightPrice = (Price) rightToken.getTokenInfo().getPrice();
-
-            Double left = leftPrice.getMarketCapUsd();
-            Double right = rightPrice.getMarketCapUsd();
-
-            if (left <= right) {
-                sortedArr.add(leftToken);
-                l++;
-            } else {
-                sortedArr.add(rightToken);
-                r++;
-            }
-        }
-
-        while (l <= mid) {
-            leftToken = tokens.get(l);
-            sortedArr.add(leftToken);
-            l++;
-        }
-
-        while (r <= end) {
-            rightToken = tokens.get(r);
-            sortedArr.add(rightToken);
-            r++;
-        }
-
-        int i = 0;
-        int j = start;
-
-        while (i < sortedArr.size()) {
-            tokens.set(j, sortedArr.get(i));
-            i++;
-            j++;
+            merge(start, mid, end);
         }
     }
 
@@ -442,148 +158,6 @@ public class TokenSorter {
             rightToken = tokens.get(r);
             sortedArr.add(rightToken);
             r++;
-        }
-
-        int i = 0;
-        int j = start;
-
-        while (i < sortedArr.size()) {
-            tokens.set(j, sortedArr.get(i));
-            i++;
-            j++;
-        }
-    }
-
-    private void pctSort(int start, int mid, int end) {
-        List<Token> sortedArr = new ArrayList<>();
-        int l = start;
-        int r = mid + 1;
-
-        Token leftToken;
-        Token rightToken;
-        while ((l <= mid) && (r <= end)) {
-            leftToken = tokens.get(l);
-            rightToken = tokens.get(r);
-
-            Price leftPrice = (Price) leftToken.getTokenInfo().getPrice();
-            Price rightPrice = (Price) rightToken.getTokenInfo().getPrice();
-
-            Double left = leftPrice.getDiff();
-            Double right = rightPrice.getDiff();
-
-            if (left <= right) {
-                sortedArr.add(leftToken);
-                l++;
-            } else {
-                sortedArr.add(rightToken);
-                r++;
-            }
-        }
-
-        while (l <= mid) {
-            leftToken = tokens.get(l);
-            sortedArr.add(leftToken);
-            l++;
-        }
-
-        while (r <= end) {
-            rightToken = tokens.get(r);
-            sortedArr.add(rightToken);
-            r++;
-        }
-
-        int i = 0;
-        int j = start;
-
-        while (i < sortedArr.size()) {
-            tokens.set(j, sortedArr.get(i));
-            i++;
-            j++;
-        }
-    }
-
-
-    private void priceSort(int start, int mid, int end) {
-        List<Token> sortedArr = new ArrayList<>();
-        int l = start;
-        int r = mid + 1;
-
-        Token leftToken;
-        Token rightToken;
-        while ((l <= mid) && (r <= end)) {
-            leftToken = tokens.get(l);
-            rightToken = tokens.get(r);
-
-            Price leftPrice = (Price) leftToken.getTokenInfo().getPrice();
-            Price rightPrice = (Price) rightToken.getTokenInfo().getPrice();
-
-            Double left = leftPrice.getRate();
-            Double right = rightPrice.getRate();
-
-            if (left <= right) {
-                sortedArr.add(leftToken);
-                l++;
-            } else {
-                sortedArr.add(rightToken);
-                r++;
-            }
-        }
-
-        while (l <= mid) {
-            leftToken = tokens.get(l);
-            sortedArr.add(leftToken);
-            l++;
-        }
-
-        while (r <= end) {
-            rightToken = tokens.get(r);
-            sortedArr.add(rightToken);
-            r++;
-        }
-
-        int i = 0;
-        int j = start;
-
-        while (i < sortedArr.size()) {
-            tokens.set(j, sortedArr.get(i));
-            i++;
-            j++;
-        }
-    }
-
-    private void balanceSort(int start, int mid, int end) {
-        List<Token> sortedArr = new ArrayList<>();
-        int left = start;
-        int right = mid + 1;
-
-        Token leftToken;
-        Token rightToken;
-        while ((left <= mid) && (right <= end)) {
-            leftToken = tokens.get(left);
-            rightToken = tokens.get(right);
-
-            Double leftBalance = leftToken.getTokenBalance();
-            Double rightBalance = rightToken.getTokenBalance();
-
-            if (leftBalance <= rightBalance) {
-                sortedArr.add(leftToken);
-                left++;
-            } else {
-                sortedArr.add(rightToken);
-                right++;
-            }
-        }
-
-        while (left <= mid) {
-            leftToken = tokens.get(left);
-            sortedArr.add(leftToken);
-            left++;
-        }
-
-        while (right <= end) {
-            rightToken = tokens.get(right);
-            sortedArr.add(rightToken);
-            right++;
         }
 
         int i = 0;
@@ -645,5 +219,36 @@ public class TokenSorter {
         }
 
         return dp[m][n];
+    }
+
+    private void getComparator() {
+        switch (sortType) {
+            case "Percent Change (24h)":
+                comparator = new Token.CompPctChange();
+                break;
+            case "Market Price":
+                comparator = new Token.CompMarketPrice();
+                break;
+            case "Amount Held":
+                comparator = new Token.CompAmount();
+                break;
+            case "Market Cap":
+                comparator = new Token.CompMarketCap();
+                break;
+            case "Circulating Supply":
+                comparator = new Token.CompCircSupply();
+                break;
+            case "Volume (24h)":
+                comparator = new Token.CompVolume();
+                break;
+            case "Name":
+                comparator = new Token.CompName();
+                break;
+            case "Symbol":
+                comparator = new Token.CompSymbol();
+                break;
+            default:
+                comparator = new Token.CompBalance();
+        }
     }
 }

@@ -116,4 +116,22 @@ public class Token implements Serializable {
             return left.compareTo(right);
         }
     }
+
+    public static class CompName implements Comparator<Token> {
+        @Override
+        public int compare(Token leftToken, Token rightToken) {
+            String left = leftToken.getTokenInfo().getName().trim();
+            String right = rightToken.getTokenInfo().getName().trim();
+            return left.compareTo(right);
+        }
+    }
+
+    public static class CompSymbol implements Comparator<Token> {
+        @Override
+        public int compare(Token leftToken, Token rightToken) {
+            String left = leftToken.getTokenInfo().getSymbol().trim();
+            String right = rightToken.getTokenInfo().getSymbol().trim();
+            return left.compareTo(right);
+        }
+    }
 }
