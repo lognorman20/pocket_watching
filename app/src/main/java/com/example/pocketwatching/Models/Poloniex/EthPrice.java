@@ -7,18 +7,6 @@ public class EthPrice {
     @SerializedName("date")
     @Expose
     private int date;
-    @SerializedName("high")
-    @Expose
-    private float high;
-    @SerializedName("low")
-    @Expose
-    private float low;
-    @SerializedName("open")
-    @Expose
-    private float open;
-    @SerializedName("close")
-    @Expose
-    private float close;
     @SerializedName("volume")
     @Expose
     private float volume;
@@ -35,38 +23,6 @@ public class EthPrice {
 
     public void setDate(int date) {
         this.date = date;
-    }
-
-    public float getHigh() {
-        return high;
-    }
-
-    public void setHigh(float high) {
-        this.high = high;
-    }
-
-    public float getLow() {
-        return low;
-    }
-
-    public void setLow(float low) {
-        this.low = low;
-    }
-
-    public float getOpen() {
-        return open;
-    }
-
-    public void setOpen(float open) {
-        this.open = open;
-    }
-
-    public float getClose() {
-        return close;
-    }
-
-    public void setClose(float close) {
-        this.close = close;
     }
 
     public float getVolume() {

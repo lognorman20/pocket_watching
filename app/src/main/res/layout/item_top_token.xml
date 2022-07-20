@@ -1,0 +1,81 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_margin="4dp"
+    android:id="@+id/cvItemTopToken">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clItemTopToken"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tvItemPctChange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvItemSymbol"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tvItemSymbol"
+            app:layout_constraintTop_toTopOf="@+id/tvItemSymbol"
+            tools:text="5.28%" />
+
+        <TextView
+            android:id="@+id/tvItemSymbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/tvItemPctChange"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="BTC" />
+
+        <TextView
+            android:id="@+id/tvItemBalance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lineSpacingExtra="14sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvItemSymbol"
+            tools:text="Balance: $5,860" />
+
+        <TextView
+            android:id="@+id/tvItemMarketPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lineSpacingExtra="14sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvItemAmountHeld"
+            tools:text="MarketPrice: $22" />
+
+        <TextView
+            android:id="@+id/tvItemAmountHeld"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:lineSpacingExtra="14sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvItemBalance"
+            tools:text="Amount Held: 421 BTC" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

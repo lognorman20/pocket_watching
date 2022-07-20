@@ -11,9 +11,6 @@ public class Price extends Object {
     @SerializedName("diff")
     @Expose
     private Double diff;
-    @SerializedName("diff7d")
-    @Expose
-    private Double diff7d;
     @SerializedName("ts")
     @Expose
     private Integer ts;
@@ -56,14 +53,6 @@ public class Price extends Object {
 
     public void setDiff(Double diff) {
         this.diff = diff;
-    }
-
-    public Double getDiff7d() {
-        return diff7d;
-    }
-
-    public void setDiff7d(Double diff7d) {
-        this.diff7d = diff7d;
     }
 
     public Integer getTs() {

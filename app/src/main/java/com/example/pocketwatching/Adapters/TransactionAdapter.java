@@ -1,89 +1,125 @@
 package com.example.pocketwatching.Adapters;
 
 import android.content.Context;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pocketwatching.Fragments.ProfileFragment;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
-import com.example.pocketwatching.Models.Ethplorer.Transaction;
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Operation;
 import com.example.pocketwatching.R;
+import com.example.pocketwatching.Utils.ClaimsXAxisValueFormatter;
+import com.example.pocketwatching.Utils.Utils;
+import com.parse.ParseUser;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
     private Context context;
-    private List<Transaction> txs;
+    private List<Operation> operations;
+    private List<String> wallets;
+    private String username;
 
-    public TransactionAdapter(Context context, List<Transaction> transactions) {
+    public TransactionAdapter(Context context, List<Operation> operations, List<EthWallet> inputWallets, String username) {
         this.context = context;
-        this.txs = transactions;
+        this.operations = operations;
+        this.username = username;
+
+        List<String> walletAddresses = new ArrayList<>();
+        for (int i = 0; i < inputWallets.size(); i++) {
+            walletAddresses.add(inputWallets.get(i).getAddress());
+        }
+
+        this.wallets = walletAddresses;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @NonNull
     @Override
-    public TransactionAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_transaction, parent, false);
-        return new ViewHolder(view);
+        return new TransactionAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TransactionAdapter.ViewHolder holder, int position) {
-        Transaction tx = txs.get(position);
-        holder.bind(tx);
+        Operation operation = operations.get(position);
+        holder.bind(operation);
     }
 
     @Override
     public int getItemCount() {
-        return txs.size();
+        return operations.size();
     }
 
     public void clear() {
-        txs.clear();
+        operations.clear();
         notifyDataSetChanged();
     }
 
-    public void addAll(List<Transaction> list) {
-        txs.addAll(list);
+    public void addAll(List<Operation> list) {
+        operations.addAll(list);
         notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvTo;
-        private TextView tvFrom;
-        private TextView tvTimestamp;
-        private TextView tvValue;
-        private TextView tvUsdPrice;
-        private TextView tvUsdValue;
+        private TextView tvTxTime;
+        private TextView tvTxHash;
+        private TextView tvTx;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvTo = itemView.findViewById(R.id.tvTo);
-            tvFrom = itemView.findViewById(R.id.tvFrom);
-            tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
-            tvValue = itemView.findViewById(R.id.tvValue);
-            tvUsdPrice = itemView.findViewById(R.id.tvUsdPrice);
-            tvUsdValue = itemView.findViewById(R.id.tvUsdValue);
+
+            tvTxTime = itemView.findViewById(R.id.tvTxTime);
+            tvTxHash = itemView.findViewById(R.id.tvTxHash);
+            tvTx = itemView.findViewById(R.id.tvTx);
         }
 
-        public void bind(Transaction tx) {
-            String value = String.format("%,.4f", tx.value);
-            String usdPrice = "$" + String.format("%,.2f", tx.usdPrice);
-            String usdValue = "$" + String.format("%,.2f", tx.usdValue);
+        public void bind(Operation operation) {
+            String time = toDate(operation.getTimestamp());
+            String hash = "Tx Hash: " + operation.getTransactionHash().substring(0, 24) + "...";
+            String symbol = operation.getTokenInfo().getSymbol();
 
-            tvTo.setText(tx.to.substring(0,5) + "...");
-            tvFrom.setText(tx.from.substring(0,5) + "...");
-            tvTimestamp.setText(tx.timestamp);
-            tvValue.setText(value);
-            tvUsdPrice.setText(usdPrice);
-            tvUsdValue.setText(usdValue);
-            // TODO: add ability to change the arrow based on sending or receiving
+            String tx;
+            String amount = Utils.getString(operation.getAmount());
+            String usdValue = "$" + Utils.getString(operation.getUsdValue());
+
+            if (wallets.contains(operation.getTo())) {
+                String from = operation.getFrom().substring(0, 15);
+                tx = username + " received " + amount + " " + symbol + " (" + usdValue + ")" + " from " + from;
+            } else {
+                String to = operation.getTo().substring(0, 15) + "...";
+                tx = username + " sent " + amount + " " + symbol + " (" + usdValue + ")" + " to " + to;
+            }
+
+            tvTxTime.setText(time);
+            tvTxHash.setText(hash);
+            tvTx.setText(tx);
         }
+    }
+
+    public static String toDate(long unixTime) {
+        Date date = new Date();
+        date.setTime(unixTime * 1000);
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("MMM dd hh:ss a");
+        TimeZone tz = TimeZone.getDefault();
+        sdf.setTimeZone(java.util.TimeZone.getTimeZone(String.valueOf(tz)));
+        return sdf.format(date);
     }
 }

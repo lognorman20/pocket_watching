@@ -49,7 +49,7 @@ public class TokenSorter {
          }
     }
 
-    public void runSort(int start, int end) {
+    private void runSort(int start, int end) {
         if ((start < end) && ((end - start) >= 1)) {
             int mid = (end + start) / 2;
             runSort(start, mid);
@@ -96,6 +96,7 @@ public class TokenSorter {
 
         Token leftToken;
         Token rightToken;
+        // TODO: Rewrite to modularize core sorting
         while ((l <= mid) && (r <= end)) {
             leftToken = tokens.get(l);
             rightToken = tokens.get(r);

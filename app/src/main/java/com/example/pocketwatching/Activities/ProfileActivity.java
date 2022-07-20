@@ -22,8 +22,8 @@ import java.util.ArrayList;
 public class ProfileActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     final FragmentManager fragmentManager = getSupportFragmentManager();
-    public ProfileActivity() {
-    }
+
+    public ProfileActivity() {}
 
     /**************************************************/
     /***************** Core Functions *****************/

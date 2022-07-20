@@ -1,64 +1,74 @@
 package com.example.pocketwatching.Fragments;
 
-import static com.example.pocketwatching.Models.Ethplorer.Transaction.fromTxHistoryList;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Activities.AddWalletActivity;
 import com.example.pocketwatching.Activities.MainActivity;
+import com.example.pocketwatching.Adapters.TopTokenAdapter;
 import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Apis.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Apis.Moralis.MoralisClient;
 import com.example.pocketwatching.Apis.Poloniex.PoloniexClient;
+import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Operation;
 import com.example.pocketwatching.Utils.ClaimsXAxisValueFormatter;
 import com.example.pocketwatching.Utils.CustomMarkerView;
+import com.example.pocketwatching.Utils.OperationSorter;
 import com.example.pocketwatching.Utils.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
-import com.example.pocketwatching.Models.Ethplorer.Transaction;
 import com.example.pocketwatching.Models.Ethplorer.TxHistory;
 import com.example.pocketwatching.Models.Moralis.BlockBalance;
 import com.example.pocketwatching.Models.Moralis.DateToBlock;
 import com.example.pocketwatching.Models.Poloniex.EthPrice;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
+import com.example.pocketwatching.Utils.TokenSorter;
+import com.example.pocketwatching.Utils.Utils;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.IMarker;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,22 +85,15 @@ public class ProfileFragment extends Fragment {
     private static ProfileFragment instance = null;
 
     // text views that change
-    private TextView tvEthBalance;
+    private TextView tvEthAmount;
     private TextView tvPortfolioValue;
-    private TextView tvTopThreeTokens;
-    private TextView tvCountTx;
-    private TextView tvEthPrice;
     private TextView tvTotalTokens;
-    private TextView tvWelcome;
+    private TextView tvMostInvested;
+    private TextView tvMostValue;
+    private TextView tvProfileUsername;
 
     // text views that don't change
     private TextView portfolioInformation;
-    private TextView currentBalance;
-    private TextView totalTokens;
-    private TextView ethAmount;
-    private TextView numTx;
-    private TextView topThreeTokens;
-    private TextView ethPrice;
     private TextView transactionHistory;
 
     // variables for helper functions
@@ -98,23 +101,27 @@ public class ProfileFragment extends Fragment {
     private List<Token> valuableTokens;
     private List<Token> notValuableTokens;
     private List<Token> topTokensByAmount;
+    private List<Operation> operations;
     private List<Float> floatTimes;
     private List<Long> longTimes;
     private List<Integer> blockHeights;
     private List<Float> blockBalances;
     private List<Double> ethPrices;
-    private List<Transaction> txs;
     private ParseUser currUser;
 
     // screen elements
     private RecyclerView rvTransactions;
-    private TransactionAdapter adapter;
+    private TransactionAdapter transactionAdapter;
+
+    private CardView cvOverview;
+
+    private RecyclerView rvTopTokens;
+    private TopTokenAdapter tokenAdapter;
 
     // widgets and buttons
-    private ProgressBar pbApi;
-    private Button btnLogout;
-    private Button btnAddWallet;
+    private ImageButton btnSettings;
     private LineChart volumeReportChart;
+    private PieChart pieChart;
 
     public ProfileFragment() {}
 
@@ -138,21 +145,8 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        tvEthBalance = view.findViewById(R.id.tvEthAmount);
-        tvPortfolioValue = view.findViewById(R.id.tvPortfolioValue);
-        tvTopThreeTokens = view.findViewById(R.id.tvTopThreeTokens);
-        tvTotalTokens = view.findViewById(R.id.tvTotalTokens);
-        tvCountTx = view.findViewById(R.id.tvCountTx);
-        tvEthPrice = view.findViewById(R.id.tvEthPrice);
-        tvWelcome = view.findViewById(R.id.tvWelcome);
 
         portfolioInformation = view.findViewById(R.id.tvPortfolioValue);
-        totalTokens = view.findViewById(R.id.totalTokens);
-        currentBalance = view.findViewById(R.id.currentBalance);
-        ethAmount = view.findViewById(R.id.ethAmount);
-        numTx = view.findViewById(R.id.numTx);
-        topThreeTokens = view.findViewById(R.id.topThreeTokens);
-        ethPrice = view.findViewById(R.id.ethPrice);
         transactionHistory = view.findViewById(R.id.transactionHistory);
 
         if (getArguments() == null) {
@@ -161,11 +155,11 @@ public class ProfileFragment extends Fragment {
             currUser = getArguments().getParcelable("user");
         }
 
-        txs = new ArrayList<>();
         floatTimes = new ArrayList<>();
         longTimes = new ArrayList<>();
 
         userEthWallets = new ArrayList<>();
+        operations = new ArrayList<>();
         valuableTokens = new ArrayList<>();
         notValuableTokens = new ArrayList<>();
         topTokensByAmount = new ArrayList<>();
@@ -173,30 +167,45 @@ public class ProfileFragment extends Fragment {
         blockBalances = new ArrayList<Float>(Collections.nCopies(7, (float)-9.9));
         ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
 
-        pbApi = view.findViewById(R.id.pbApi);
-        btnLogout = view.findViewById(R.id.btnLogout);
-        btnAddWallet = view.findViewById(R.id.btnAddWallet2);
+        btnSettings = view.findViewById(R.id.btnSettings);
         volumeReportChart = view.findViewById(R.id.reportingChart);
+        pieChart = view.findViewById(R.id.pieChart_view);
 
-        rvTransactions = view.findViewById(R.id.rvTransactions);
-        adapter = new TransactionAdapter(getContext(), txs);
+        rvTransactions = view.findViewById(R.id.rvTx);
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvTransactions.setAdapter(adapter);
+        transactionAdapter = new TransactionAdapter(getContext(), operations, userEthWallets, currUser.getUsername());
+        rvTransactions.setAdapter(transactionAdapter);
 
-        startLoading();
-
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+        rvTopTokens = view.findViewById(R.id.rvTopTokens);
+        tokenAdapter = new TopTokenAdapter(getContext(), valuableTokens);
+        rvTopTokens.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false){
             @Override
-            public void onClick(View v) {
-                ParseUser.logOut();
-                goMainActivity();
+            public boolean checkLayoutParams(RecyclerView.LayoutParams lp) {
+                lp.width = getWidth() / 3;
+                return true;
             }
         });
+        rvTopTokens.setAdapter(tokenAdapter);
 
-        btnAddWallet.setOnClickListener(new View.OnClickListener() {
+        cvOverview = view.findViewById(R.id.cvOverview);
+
+        tvEthAmount = cvOverview.findViewById(R.id.tvEth);
+        tvPortfolioValue = cvOverview.findViewById(R.id.tvPortfolioValue);
+        tvMostInvested = cvOverview.findViewById(R.id.tvMostInvested);
+        tvTotalTokens = cvOverview.findViewById(R.id.tvTotalTokens);
+        tvMostValue = cvOverview.findViewById(R.id.tvMostValue);
+        tvProfileUsername = cvOverview.findViewById(R.id.tvProfileUsername);
+
+//        startLoading();
+
+        btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goAddWalletActivity();
+                AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                SettingsFragment fragment = new SettingsFragment();
+
+                activity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.flContainer, fragment).commit();
             }
         });
 
@@ -226,7 +235,7 @@ public class ProfileFragment extends Fragment {
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
-                        getTxHistory(walletAddress);
+                        getTxHistory(walletAddress, "5");
                     }
                     getHistoricalBalance();
                 } else {
@@ -268,27 +277,32 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private synchronized void getTxHistory(String address) {
-        Stopwatch timer = Stopwatch.createStarted();
-        Call<List<TxHistory>> call = (Call<List<TxHistory>>) EthplorerClient.getInstance().getEthplorerApi().getTxHistory(address);
-        call.enqueue(new Callback<List<TxHistory>>() {
+    // TODO: Ask why the the tx history is out of order
+    private synchronized void getTxHistory(String address, String limit) {
+        Call<TxHistory> call = (Call<TxHistory>) EthplorerClient.getInstance().getEthplorerApi().getTxHistory(address, limit);
+        call.enqueue(new Callback<TxHistory>() {
             @Override
-            public void onResponse(Call<List<TxHistory>> call, Response<List<TxHistory>> response) {
-                Log.i("getTxHistory timing", "Method took: " + timer.stop());
-                try {
-                    List<TxHistory> txHistory = response.body();
-                    List<Transaction> cheese = fromTxHistoryList(txHistory);
-                    txs.addAll(cheese);
-                    adapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-                    Toast.makeText(getContext(), "Failed to add txHistory to txs", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
+            public void onResponse(Call<TxHistory> call, Response<TxHistory> response) {
+                List<Operation> operationHistory = response.body().getOperations();
+                operations.addAll(operationHistory);
+
+                for (int i = 0; i < operations.size(); i++) {
+                    Log.i("before" + i, String.valueOf(operations.get(i).getTimestamp()));
                 }
+
+                OperationSorter sorter = new OperationSorter(operations);
+                sorter.sort();
+
+                for (int i = 0; i < operations.size(); i++) {
+                    Log.i("after" + i, String.valueOf(operations.get(i).getTimestamp()));
+                }
+
+                transactionAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onFailure(Call<List<TxHistory>> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed to get txHistory", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<TxHistory> call, Throwable t) {
+                Toast.makeText(getContext(), "Could not get txhistory", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -302,6 +316,7 @@ public class ProfileFragment extends Fragment {
             longTimes.add(tempTime);
             tempTime -= 86400;
         }
+
         Collections.sort(longTimes);
 
         // make a list of floats for the graph
@@ -317,7 +332,6 @@ public class ProfileFragment extends Fragment {
             date.setTime(longTimes.get(i));
             getBlockHeight(longTimes.get(i));
         }
-
     }
 
     private void getEthPrices(Long start, Long end) {
@@ -385,6 +399,7 @@ public class ProfileFragment extends Fragment {
                         // TODO: get the price of each token in the wallet at the given time
                         blockBalances.set(i, (float) (usdAmount));
                     }
+                    addPortfolioData();
                     setupChart(floatTimes, blockBalances);
                 }
             }
@@ -460,8 +475,8 @@ public class ProfileFragment extends Fragment {
         LineData data = new LineData(dataSets);
         volumeReportChart.setData(data);
 
-        stopLoading();
-        Log.i("setupChart timing", "Method took: " + timer.stop());
+//        stopLoading();
+
     }
 
     // makes y values, reduce all y values by a factor of 1000 to get relative values
@@ -489,30 +504,33 @@ public class ProfileFragment extends Fragment {
     // binds values onto the display
     private void addPortfolioData() {
         String portfolioValue = "$" + String.format("%,.2f", getPortfolioBalance());
-        String ethBalance = String.format("%,.5f", getTotalEthAmount()) + " ETH";
-        String countTx = String.format("%,d", getTxCount()) + " total transactions";
-        String ethPrice = "$" + String.format("%,.2f", getEthPrice());
-        String totalTokens = String.format("%,d", getTotalTokens());
-        String topThreeTokensText = String.valueOf(getTopThreeTokensByAmount());
-        // setting top three tokens
-        if (getTopThreeTokensByAmount().size() == 0) {
-            topThreeTokensText = "N/A";
+        String ethAmount = "Hodling " + String.format("%,.2f", getTotalEthAmount()) + " ETH";
+        String totalTokens = "Owns " + String.format("%,d", getTotalTokens()) + " total tokens";
+        String profileUsername = "@" + ParseUser.getCurrentUser().getUsername();
+
+        String mostAmountToken;
+        String mostValue;
+
+        if (valuableTokens.size() > 0) {
+            Pair<String, Double> topToken = getTopTokenByAmount();
+            mostAmountToken = "Most invested in " + topToken.first + " ("
+                    + Utils.getString(topToken.second) + " tokens)";
+
+            topToken = getTopTokenByBalance();
+            Double pctOfPortfolio = topToken.second / getPortfolioBalance();
+            mostValue = String.format("%,.2f", pctOfPortfolio) +
+                    "% of portfolio balance from " + topToken.first;
+        } else {
+            mostAmountToken = "Not holding tokens with monetary value.";
+            mostValue = "Not holding tokens with monetary value.";
         }
 
-        tvWelcome.setText(currUser.getUsername() + "'s Portfolio");
         tvPortfolioValue.setText(portfolioValue);
-        tvEthBalance.setText(ethBalance);
-        tvCountTx.setText(countTx);
-        tvEthPrice.setText(ethPrice);
+        tvProfileUsername.setText(profileUsername);
+        tvEthAmount.setText(ethAmount);
         tvTotalTokens.setText(totalTokens);
-        tvTopThreeTokens.setText(topThreeTokensText);
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        tvMostInvested.setText(mostAmountToken);
+        tvMostValue.setText(mostValue);
     }
 
     /***** Initialization functions *****/
@@ -535,7 +553,15 @@ public class ProfileFragment extends Fragment {
                 }
             }
         }
+        TokenSorter sorter = new TokenSorter(valuableTokens, true);
+        sorter.sort("balance", true);
 
+        if (valuableTokens.size() > 0) {
+            loadPieChartData();
+            setupPieChart();
+        }
+
+        tokenAdapter.notifyDataSetChanged();
         // gets the top three tokens by investment distribution, add balance based implementation??
         for (int i = 0; i < topThreeTokens.size(); i++) {
             topTokensByAmount.add(topThreeTokens.pollLast());
@@ -545,36 +571,20 @@ public class ProfileFragment extends Fragment {
     // shows loading screen
     private void startLoading() {
         volumeReportChart.setVisibility(View.INVISIBLE);
-        tvWelcome.setVisibility(View.INVISIBLE);
-        currentBalance.setVisibility(View.INVISIBLE);
-        btnLogout.setVisibility(View.INVISIBLE);
+        btnSettings.setVisibility(View.INVISIBLE);
         rvTransactions.setVisibility(View.INVISIBLE);
         portfolioInformation.setVisibility(View.INVISIBLE);
-        totalTokens.setVisibility(View.INVISIBLE);
-        ethAmount.setVisibility(View.INVISIBLE);
-        numTx.setVisibility(View.INVISIBLE);
-        topThreeTokens.setVisibility(View.INVISIBLE);
-        ethPrice.setVisibility(View.INVISIBLE);
         transactionHistory.setVisibility(View.INVISIBLE);
-        pbApi.setVisibility(View.VISIBLE);
     }
 
     // hides loading screen
     private void stopLoading() {
         addPortfolioData();
-        tvWelcome.setVisibility(View.VISIBLE);
+        btnSettings.setVisibility(View.VISIBLE);
         volumeReportChart.setVisibility(View.VISIBLE);
-        currentBalance.setVisibility(View.VISIBLE);
-        btnLogout.setVisibility(View.VISIBLE);
         rvTransactions.setVisibility(View.VISIBLE);
         portfolioInformation.setVisibility(View.VISIBLE);
-        totalTokens.setVisibility(View.VISIBLE);
-        ethAmount.setVisibility(View.VISIBLE);
-        numTx.setVisibility(View.VISIBLE);
-        topThreeTokens.setVisibility(View.VISIBLE);
-        ethPrice.setVisibility(View.VISIBLE);
         transactionHistory.setVisibility(View.VISIBLE);
-        pbApi.setVisibility(View.INVISIBLE);
     }
 
     /***** Getter functions *****/
@@ -622,20 +632,94 @@ public class ProfileFragment extends Fragment {
         return balance;
     }
 
-    // gets list of top three tokens by amount
-    private List<String> getTopThreeTokensByAmount() {
-        List<String> output = new ArrayList<>();
-        int i = 0;
-        while (i < 3) {
-            if (i < topTokensByAmount.size()) {
-                output.add(topTokensByAmount.get(i).getTokenInfo().getSymbol());
-            }
-            i++;
-        }
-        return output;
+    private Pair<String, Double> getTopTokenByAmount() {
+        TokenSorter sorter = new TokenSorter(valuableTokens, true);
+        sorter.sort("balance", true);
+
+        Token topToken = valuableTokens.get(0);
+
+        String mostValuableName = topToken.getTokenInfo().getName();
+        Double mostValuableAmount = topToken.getAmount();
+
+        Pair<String, Double> topTokenInfo = new Pair<>(mostValuableName, mostValuableAmount);
+        return topTokenInfo;
     }
 
+    private Pair<String, Double> getTopTokenByBalance() {
+        TokenSorter sorter = new TokenSorter(valuableTokens, true);
+        sorter.sort("amount", true);
+
+        Token topToken = valuableTokens.get(0);
+        String name = topToken.getTokenInfo().getName();
+        Double balance = topToken.getTokenBalance();
+
+        Pair<String, Double> output = new Pair<>(name, balance);
+        return output;
+    }
     public List<Token> getValuableTokens() {
         return valuableTokens;
+    }
+
+    private void setupPieChart() {
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setEntryLabelTextSize(0);
+        pieChart.setEntryLabelColor(Color.BLACK);
+        pieChart.setUsePercentValues(true);
+        pieChart.getDescription().setEnabled(false);
+
+        Legend l = pieChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(false);
+        l.setWordWrapEnabled(true);
+        l.setEnabled(true);
+    }
+
+    private void loadPieChartData() {
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        TokenSorter sorter = new TokenSorter(valuableTokens, true);
+        sorter.sort("balance", true);
+
+        Double totalBalance = getPortfolioBalance();
+        Float totalPct = 0.0f;
+        for (int i = 0; i < 10; i++) {
+            Token token = valuableTokens.get(i);
+            Double tokenBalance = token.getTokenBalance();
+
+            Float pct = (float) ((tokenBalance / totalBalance) * 100);
+            if (pct > 3.0f) {
+                totalPct += pct;
+                entries.add(new PieEntry(pct, token.getTokenInfo().getSymbol()));
+            }
+        }
+
+        entries.add(new PieEntry(100 - totalPct, "Other"));
+
+        ArrayList<Integer> colors = new ArrayList<>();
+        for (int color: ColorTemplate.MATERIAL_COLORS) {
+            colors.add(color);
+        }
+
+        for (int color: ColorTemplate.VORDIPLOM_COLORS) {
+            colors.add(color);
+        }
+
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setColors(colors);
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        PieData data = new PieData(dataSet);
+        data.setDrawValues(true);
+        data.setValueFormatter(new PercentFormatter(pieChart));
+        data.setValueTextSize(12f);
+        data.setValueTextColor(Color.BLACK);
+
+        pieChart.setData(data);
+        pieChart.invalidate();
+
+        pieChart.animateY(1400, Easing.EaseInOutQuad);
     }
 }

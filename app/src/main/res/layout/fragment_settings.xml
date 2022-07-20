@@ -1,0 +1,20 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="49dp"
+        android:id="@+id/btnAddWallet"
+        android:onClick="onLogoutButton"
+        android:text="Add Wallet(s)" />
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="114dp"
+        android:layout_height="49dp"
+        android:onClick="onLogoutButton"
+        android:text="Log Out" />
+
+</LinearLayout>
