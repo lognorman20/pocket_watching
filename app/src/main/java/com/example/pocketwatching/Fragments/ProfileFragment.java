@@ -87,6 +87,7 @@ public class ProfileFragment extends Fragment {
     private TextView tvMostInvested;
     private TextView tvMostValue;
     private TextView tvProfileUsername;
+    private TextView tvWelcome;
 
     // text views that don't change
     private TextView portfolioInformation;
@@ -189,6 +190,7 @@ public class ProfileFragment extends Fragment {
         tvTotalTokens = cvOverview.findViewById(R.id.tvTotalTokens);
         tvMostValue = cvOverview.findViewById(R.id.tvMostValue);
         tvProfileUsername = cvOverview.findViewById(R.id.tvProfileUsername);
+        tvWelcome = view.findViewById(R.id.tvWelcome);
 
         btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,9 +252,11 @@ public class ProfileFragment extends Fragment {
         call.enqueue(new Callback<EthWallet>() {
             @Override
             public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
-                userEthWallets.add(response.body());
-                if (userEthWallets.size() == userWallets.size()) {
-                    initValuableTokens();
+                if (response.body() != null) {
+                    userEthWallets.add(response.body());
+                    if (userEthWallets.size() == userWallets.size()) {
+                        initValuableTokens();
+                    }
                 }
             }
 
@@ -270,13 +274,15 @@ public class ProfileFragment extends Fragment {
         call.enqueue(new Callback<TxHistory>() {
             @Override
             public void onResponse(Call<TxHistory> call, Response<TxHistory> response) {
-                List<Operation> operationHistory = response.body().getOperations();
-                operations.addAll(operationHistory);
+                if (response.body() != null) {
+                    List<Operation> operationHistory = response.body().getOperations();
+                    operations.addAll(operationHistory);
 
-                OperationSorter sorter = new OperationSorter(operations);
-                sorter.sort();
+                    OperationSorter sorter = new OperationSorter(operations);
+                    sorter.sort();
 
-                transactionAdapter.notifyDataSetChanged();
+                    transactionAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -341,7 +347,7 @@ public class ProfileFragment extends Fragment {
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
                             try {
-                                Thread.sleep(150);
+                                Thread.sleep(200);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -476,13 +482,14 @@ public class ProfileFragment extends Fragment {
     // binds values onto the display
     private void addPortfolioData() {
         String portfolioValue = "$" + String.format("%,.2f", getPortfolioBalance());
+
         if (getPortfolioBalance() < 100f) {
             portfolioValue = "broke";
         }
 
         String ethAmount = "Hodling " + String.format("%,.3f", getTotalEthAmount()) + " ETH";
         String totalTokens = "Owns " + String.format("%,d", getTotalTokens()) + " total tokens";
-        String profileUsername = "@" + ParseUser.getCurrentUser().getUsername();
+        String profileUsername = "@" + currUser.getUsername();
 
         String mostAmountToken;
         String mostValue;
@@ -507,6 +514,11 @@ public class ProfileFragment extends Fragment {
         tvTotalTokens.setText(totalTokens);
         tvMostInvested.setText(mostAmountToken);
         tvMostValue.setText(mostValue);
+
+        if (!currUser.equals(ParseUser.getCurrentUser())) {
+            String username = "@" + currUser.getUsername() + "'s Portfolio";
+            tvWelcome.setText(username);
+        }
     }
 
     /***** Initialization functions *****/
@@ -679,5 +691,9 @@ public class ProfileFragment extends Fragment {
         pieChart.invalidate();
 
         pieChart.animateY(1400, Easing.EaseInOutQuad);
+    }
+
+    public void setCurrUser() {
+        currUser = ParseUser.getCurrentUser();
     }
 }

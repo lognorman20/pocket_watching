@@ -21,6 +21,7 @@ import com.example.pocketwatching.Adapters.TokenAnalyticsAdapter;
 import com.example.pocketwatching.Utils.TokenSorter;
 import com.example.pocketwatching.Models.Ethplorer.Token;
 import com.example.pocketwatching.R;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 

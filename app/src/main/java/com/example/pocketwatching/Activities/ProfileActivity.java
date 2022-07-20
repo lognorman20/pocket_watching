@@ -2,6 +2,7 @@ package com.example.pocketwatching.Activities;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +16,7 @@ import com.example.pocketwatching.Fragments.SortingFragment;
 import com.example.pocketwatching.Models.Ethplorer.Token;
 import com.example.pocketwatching.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseUser;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,7 +44,9 @@ public class ProfileActivity extends AppCompatActivity {
                     case R.id.action_sorting:
                         fragment = new SortingFragment();
 
-                        ArrayList<Token> tokens = (ArrayList<Token>) ProfileFragment.getInstance().getValuableTokens();
+                        ProfileFragment profileFragment = (ProfileFragment) ProfileFragment.getInstance();
+                        profileFragment.setCurrUser();
+                        ArrayList<Token> tokens = (ArrayList<Token>) profileFragment.getValuableTokens();
 
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("tokens", (Serializable) tokens);
