@@ -47,21 +47,26 @@ public class TokenSorter {
                 comparator = new Token.CompPctChange();
                 break;
             case "Market Price":
+                comparator = new Token.CompMarketPrice();
                 break;
             case "Amount Held":
                 comparator = new Token.CompAmount();
                 break;
             case "Market Cap":
+                comparator = new Token.CompMarketCap();
                 break;
             case "Circulating Supply":
+                comparator = new Token.CompCircSupply();
                 break;
             case "Volume (24h)":
+                comparator = new Token.CompVolume();
                 break;
             case "Name":
                 break;
             case "Symbol":
                 break;
             default:
+                comparator = new Token.CompBalance();
         }
     }
 
@@ -86,37 +91,7 @@ public class TokenSorter {
             mergeSort(start, mid);
             mergeSort(mid + 1, end);
 
-            switch (sortType) {
-                case "search":
-                    searchSort(start, mid, end);
-                    break;
-                case "Percent Change (24h)":
-                    merge(start, mid, end);
-                    break;
-                case "Market Price":
-                    priceSort(start, mid, end);
-                    break;
-                case "Amount Held":
-                    merge(start, mid, end);
-                    break;
-                case "Market Cap":
-                    marketCapSort(start, mid, end);
-                    break;
-                case "Circulating Supply":
-                    supplySort(start, mid, end);
-                    break;
-                case "Volume (24h)":
-                    volumeSort(start, mid, end);
-                    break;
-                case "Name":
-                    nameSort(start, mid, end);
-                    break;
-                case "Symbol":
-                    symbolSort(start, mid, end);
-                    break;
-                default:
-                    balanceSort(start, mid, end);
-            }
+            merge(start, mid, end);
         }
     }
 
