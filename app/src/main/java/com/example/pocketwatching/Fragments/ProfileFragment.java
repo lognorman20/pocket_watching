@@ -213,7 +213,6 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initView() {
-        Stopwatch timer = Stopwatch.createStarted();
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
         query.whereEqualTo("owner", currUser);
         query.findInBackground(new FindCallback<Wallet>() {
@@ -225,19 +224,15 @@ public class ProfileFragment extends Fragment {
                         goAddWalletActivity();
                     }
 
-                    Log.i("initView timing", "Method took: " + timer.stop());
                     userWallets = objects;
+                    getHistoricalBalance();
+
                     for (int i = 0; i < userWallets.size(); i++) {
                         String walletAddress = userWallets.get(i).getWalletAddress();
                         getEthWallet(walletAddress);
-                        try {
-                            Thread.sleep(2000); // optimize with observables?
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
-                        }
+                        // api request per second limit could be reached here, might need thread.sleep
                         getTxHistory(walletAddress, "5");
                     }
-                    getHistoricalBalance();
                 } else {
                     Toast.makeText(getContext(), "Failed to get user wallets", Toast.LENGTH_SHORT).show();
                     ParseUser.logOut();
@@ -257,12 +252,10 @@ public class ProfileFragment extends Fragment {
 
     // gets EthWallet object from given address
     private synchronized void getEthWallet(String address) {
-        Stopwatch timer = Stopwatch.createStarted();
         Call<EthWallet> call = (Call<EthWallet>) EthplorerClient.getInstance().getEthplorerApi().getEthWallet(address);
         call.enqueue(new Callback<EthWallet>() {
             @Override
             public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
-                Log.i("getEthWallet timing", "Method took: " + timer.stop());
                 userEthWallets.add(response.body());
                 if (userEthWallets.size() == userWallets.size()) {
                     initValuableTokens();
@@ -286,16 +279,9 @@ public class ProfileFragment extends Fragment {
                 List<Operation> operationHistory = response.body().getOperations();
                 operations.addAll(operationHistory);
 
-                for (int i = 0; i < operations.size(); i++) {
-                    Log.i("before" + i, String.valueOf(operations.get(i).getTimestamp()));
-                }
 
                 OperationSorter sorter = new OperationSorter(operations);
                 sorter.sort();
-
-                for (int i = 0; i < operations.size(); i++) {
-                    Log.i("after" + i, String.valueOf(operations.get(i).getTimestamp()));
-                }
 
                 transactionAdapter.notifyDataSetChanged();
             }
@@ -307,9 +293,8 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // gets block heights, uses block heights to get block balances, then sets line graph values
     private void getHistoricalBalance() {
-        Stopwatch timer = Stopwatch.createStarted();
-        // make a list of longs to pass to the API
         long currTime = System.currentTimeMillis() / 1000L;
         long tempTime = currTime;
         while (tempTime >= (currTime - 604800)) {
@@ -324,7 +309,6 @@ public class ProfileFragment extends Fragment {
             floatTimes.add(Float.valueOf(longTimes.get(i) / 1000));
         }
 
-        Log.i("getHistoricalBalances timing", "Method took: " + timer.stop());
         getEthPrices(longTimes.get(0), longTimes.get(6));
 
         for (int i = 0; i < 7; i++) {
@@ -335,12 +319,10 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getEthPrices(Long start, Long end) {
-        Stopwatch timer = Stopwatch.createStarted();
         Call<List<EthPrice>> call = (Call<List<EthPrice>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start.toString(), end.toString());
         call.enqueue(new Callback<List<EthPrice>>() {
             @Override
             public void onResponse(Call<List<EthPrice>> call, Response<List<EthPrice>> response) {
-                Log.i("getEthPrices timing", "Method took: " + timer.stop());
                 for (int i = 0; i < response.body().size(); i++) {
                     ethPrices.set(i, Double.valueOf(response.body().get(i).getWeightedAverage()));
                 }
@@ -354,19 +336,17 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getBlockHeight(Long timestamp) {
-        Stopwatch timer = Stopwatch.createStarted();
         Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().timeToBlock(timestamp.toString());
         call.enqueue(new Callback<DateToBlock>() {
             @Override
             public void onResponse(Call<DateToBlock> call, Response<DateToBlock> response) {
-                Log.i("getBlockHeight timing", "Method took: " + timer.stop());
                 blockHeights.add(response.body().getBlock());
                 if (blockHeights.size() == 7) {
                     Collections.sort(blockHeights);
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
                             try {
-                                Thread.sleep(200);
+                                Thread.sleep(120);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -384,12 +364,10 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getBlockBalance(String address, long blockHeight, int index) {
-        Stopwatch timer = Stopwatch.createStarted();
         Call<BlockBalance> call = (Call<BlockBalance>) MoralisClient.getInstance().getMoralisApi().getBlockBalance(address, blockHeight);
         call.enqueue(new Callback<BlockBalance>() {
             @Override
             public void onResponse(Call<BlockBalance> call, Response<BlockBalance> response) {
-                Log.i("getBlockBalance timing", "Method took: " + timer.stop());
                 blockBalances.set(index, Float.valueOf(response.body().getBalance()));
                 if (index == 6) {
                     for (int i = 0; i < blockBalances.size(); i++) {
@@ -412,8 +390,6 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupChart(List<Float> xValues, List<Float> yValues) {
-        Stopwatch timer = Stopwatch.createStarted();
-
         XAxis xAxis = volumeReportChart.getXAxis();
 
         volumeReportChart.getAxisLeft().setEnabled(false);
@@ -504,7 +480,11 @@ public class ProfileFragment extends Fragment {
     // binds values onto the display
     private void addPortfolioData() {
         String portfolioValue = "$" + String.format("%,.2f", getPortfolioBalance());
-        String ethAmount = "Hodling " + String.format("%,.2f", getTotalEthAmount()) + " ETH";
+        if (getPortfolioBalance() < 100f) {
+            portfolioValue = "broke";
+        }
+
+        String ethAmount = "Hodling " + String.format("%,.3f", getTotalEthAmount()) + " ETH";
         String totalTokens = "Owns " + String.format("%,d", getTotalTokens()) + " total tokens";
         String profileUsername = "@" + ParseUser.getCurrentUser().getUsername();
 

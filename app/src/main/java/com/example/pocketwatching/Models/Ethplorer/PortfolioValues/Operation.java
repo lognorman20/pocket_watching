@@ -69,8 +69,13 @@ public class Operation {
     public Double getUsdValue() {
         Double amount = getAmount();
 
-        Price price = (Price) getTokenInfo().getPrice();
-        Double marketPrice = price.getRate();
+        Object price =  getTokenInfo().getPrice();
+        if (price.equals(false)) {
+            return 0.0;
+        }
+
+        Price realPrice = (Price) price;
+        Double marketPrice = realPrice.getRate();
 
         return amount * marketPrice;
     }
