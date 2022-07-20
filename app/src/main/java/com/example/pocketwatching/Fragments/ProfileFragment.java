@@ -4,7 +4,6 @@ package com.example.pocketwatching.Fragments;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -135,7 +134,6 @@ public class ProfileFragment extends Fragment {
         return instance;
     }
 
-    // Inflate the layout for this fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_profile, container, false);
@@ -196,8 +194,6 @@ public class ProfileFragment extends Fragment {
         tvMostValue = cvOverview.findViewById(R.id.tvMostValue);
         tvProfileUsername = cvOverview.findViewById(R.id.tvProfileUsername);
 
-//        startLoading();
-
         btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,6 +208,7 @@ public class ProfileFragment extends Fragment {
         initView();
     }
 
+    // gets user wallets and loads profile data onto screen
     private void initView() {
         ParseQuery<Wallet> query = ParseQuery.getQuery(Wallet.class);
         query.whereEqualTo("owner", currUser);
@@ -244,6 +241,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // takes user to add wallet activity
     private void goAddWalletActivity() {
         Intent i = new Intent(getContext(), AddWalletActivity.class);
         startActivity(i);
@@ -270,7 +268,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    // TODO: Ask why the the tx history is out of order
+    // gets wallet transactions from api
     private synchronized void getTxHistory(String address, String limit) {
         Call<TxHistory> call = (Call<TxHistory>) EthplorerClient.getInstance().getEthplorerApi().getTxHistory(address, limit);
         call.enqueue(new Callback<TxHistory>() {
@@ -278,7 +276,6 @@ public class ProfileFragment extends Fragment {
             public void onResponse(Call<TxHistory> call, Response<TxHistory> response) {
                 List<Operation> operationHistory = response.body().getOperations();
                 operations.addAll(operationHistory);
-
 
                 OperationSorter sorter = new OperationSorter(operations);
                 sorter.sort();
@@ -318,6 +315,7 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    // gets price of eth within the specified range
     private void getEthPrices(Long start, Long end) {
         Call<List<EthPrice>> call = (Call<List<EthPrice>>) PoloniexClient.getInstance().getPoloniexApi().getEthPrices(start.toString(), end.toString());
         call.enqueue(new Callback<List<EthPrice>>() {
@@ -335,6 +333,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // gets the block height at a given timestamp
     private void getBlockHeight(Long timestamp) {
         Call<DateToBlock> call = (Call<DateToBlock>) MoralisClient.getInstance().getMoralisApi().timeToBlock(timestamp.toString());
         call.enqueue(new Callback<DateToBlock>() {
@@ -363,6 +362,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // calculates blockBalance at given block height, starts building historical balance graph
     private void getBlockBalance(String address, long blockHeight, int index) {
         Call<BlockBalance> call = (Call<BlockBalance>) MoralisClient.getInstance().getMoralisApi().getBlockBalance(address, blockHeight);
         call.enqueue(new Callback<BlockBalance>() {
@@ -389,6 +389,8 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // builds the historical balance graph
+    // TODO: Remove yValues as parameter
     private void setupChart(List<Float> xValues, List<Float> yValues) {
         XAxis xAxis = volumeReportChart.getXAxis();
 
@@ -414,6 +416,7 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
         xAxis.setPosition(position);
 
@@ -450,9 +453,6 @@ public class ProfileFragment extends Fragment {
         dataSets.add(set1);
         LineData data = new LineData(dataSets);
         volumeReportChart.setData(data);
-
-//        stopLoading();
-
     }
 
     // makes y values, reduce all y values by a factor of 1000 to get relative values
@@ -548,25 +548,6 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    // shows loading screen
-    private void startLoading() {
-        volumeReportChart.setVisibility(View.INVISIBLE);
-        btnSettings.setVisibility(View.INVISIBLE);
-        rvTransactions.setVisibility(View.INVISIBLE);
-        portfolioInformation.setVisibility(View.INVISIBLE);
-        transactionHistory.setVisibility(View.INVISIBLE);
-    }
-
-    // hides loading screen
-    private void stopLoading() {
-        addPortfolioData();
-        btnSettings.setVisibility(View.VISIBLE);
-        volumeReportChart.setVisibility(View.VISIBLE);
-        rvTransactions.setVisibility(View.VISIBLE);
-        portfolioInformation.setVisibility(View.VISIBLE);
-        transactionHistory.setVisibility(View.VISIBLE);
-    }
-
     /***** Getter functions *****/
     // gets the amount of eth in all wallets
     private Double getTotalEthAmount() {
@@ -612,6 +593,7 @@ public class ProfileFragment extends Fragment {
         return balance;
     }
 
+    // gets top token in wallet by amount in a pair
     private Pair<String, Double> getTopTokenByAmount() {
         TokenSorter sorter = new TokenSorter(valuableTokens, true);
         sorter.sort("balance", true);
@@ -625,6 +607,7 @@ public class ProfileFragment extends Fragment {
         return topTokenInfo;
     }
 
+    // gets top token in wallet by balance in a pair
     private Pair<String, Double> getTopTokenByBalance() {
         TokenSorter sorter = new TokenSorter(valuableTokens, true);
         sorter.sort("amount", true);
@@ -636,10 +619,13 @@ public class ProfileFragment extends Fragment {
         Pair<String, Double> output = new Pair<>(name, balance);
         return output;
     }
+
+    // allows outside functions to access valuable tokens
     public List<Token> getValuableTokens() {
         return valuableTokens;
     }
 
+    // initializes asset distribution pie chart view
     private void setupPieChart() {
         pieChart.setDrawHoleEnabled(true);
         pieChart.setEntryLabelTextSize(0);
@@ -656,6 +642,7 @@ public class ProfileFragment extends Fragment {
         l.setEnabled(true);
     }
 
+    // adds data to asset distribution pie chart
     private void loadPieChartData() {
         ArrayList<PieEntry> entries = new ArrayList<>();
         TokenSorter sorter = new TokenSorter(valuableTokens, true);
