@@ -31,6 +31,7 @@ import com.example.pocketwatching.Apis.Poloniex.PoloniexClient;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Operation;
 import com.example.pocketwatching.Utils.ClaimsXAxisValueFormatter;
 import com.example.pocketwatching.Utils.CustomMarkerView;
+import com.example.pocketwatching.Utils.OperationSorter;
 import com.example.pocketwatching.Utils.TokenAmountComparator;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
 import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
@@ -41,7 +42,7 @@ import com.example.pocketwatching.Models.Moralis.DateToBlock;
 import com.example.pocketwatching.Models.Poloniex.EthPrice;
 import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
-import com.example.pocketwatching.Utils.Sorter;
+import com.example.pocketwatching.Utils.TokenSorter;
 import com.example.pocketwatching.Utils.Utils;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
@@ -283,6 +284,18 @@ public class ProfileFragment extends Fragment {
             public void onResponse(Call<TxHistory> call, Response<TxHistory> response) {
                 List<Operation> operationHistory = response.body().getOperations();
                 operations.addAll(operationHistory);
+
+                for (int i = 0; i < operations.size(); i++) {
+                    Log.i("before" + i, String.valueOf(operations.get(i).getTimestamp()));
+                }
+
+                OperationSorter sorter = new OperationSorter(operations);
+                sorter.sort();
+
+                for (int i = 0; i < operations.size(); i++) {
+                    Log.i("after" + i, String.valueOf(operations.get(i).getTimestamp()));
+                }
+
                 transactionAdapter.notifyDataSetChanged();
             }
 
@@ -302,6 +315,7 @@ public class ProfileFragment extends Fragment {
             longTimes.add(tempTime);
             tempTime -= 86400;
         }
+
         Collections.sort(longTimes);
 
         // make a list of floats for the graph
@@ -538,7 +552,7 @@ public class ProfileFragment extends Fragment {
                 }
             }
         }
-        Sorter sorter = new Sorter(valuableTokens, true);
+        TokenSorter sorter = new TokenSorter(valuableTokens, true);
         sorter.sort("balance", true);
 
         if (valuableTokens.size() > 0) {
@@ -618,7 +632,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private Pair<String, Double> getTopTokenByAmount() {
-        Sorter sorter = new Sorter(valuableTokens, true);
+        TokenSorter sorter = new TokenSorter(valuableTokens, true);
         sorter.sort("balance", true);
 
         Token topToken = valuableTokens.get(0);
@@ -631,7 +645,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private Pair<String, Double> getTopTokenByBalance() {
-        Sorter sorter = new Sorter(valuableTokens, true);
+        TokenSorter sorter = new TokenSorter(valuableTokens, true);
         sorter.sort("amount", true);
 
         Token topToken = valuableTokens.get(0);
@@ -663,7 +677,7 @@ public class ProfileFragment extends Fragment {
 
     private void loadPieChartData() {
         ArrayList<PieEntry> entries = new ArrayList<>();
-        Sorter sorter = new Sorter(valuableTokens, true);
+        TokenSorter sorter = new TokenSorter(valuableTokens, true);
         sorter.sort("balance", true);
 
         Double totalBalance = getPortfolioBalance();

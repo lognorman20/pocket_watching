@@ -165,6 +165,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvTx"
                 android:layout_width="375dp"
+                android:layout_margin="4dp"
                 android:layout_height="200dp" />
         </androidx.cardview.widget.CardView>
 
