@@ -345,7 +345,7 @@ public class ProfileFragment extends Fragment {
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
                             try {
-                                Thread.sleep(130);
+                                Thread.sleep(150);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }

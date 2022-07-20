@@ -40,11 +40,23 @@ public class Token implements Serializable {
         return balance;
     }
 
-    // Token Comparators for sorting
+    // ***** Token Comparators for sorting ***** \\
     public static class CompAmount implements Comparator<Token> {
         @Override
         public int compare(Token left, Token right) {
             return left.getAmount().compareTo(right.getAmount());
+        }
+    }
+
+    public static class CompPctChange implements Comparator<Token> {
+        @Override
+        public int compare(Token left, Token right) {
+            Price leftPrice = (Price) left.getTokenInfo().getPrice();
+            Price rightPrice = (Price) right.getTokenInfo().getPrice();
+
+            Double leftPct = leftPrice.getDiff();
+            Double rightPct = rightPrice.getDiff();
+            return leftPct.compareTo(rightPct);
         }
     }
 }

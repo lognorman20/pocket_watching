@@ -44,6 +44,7 @@ public class TokenSorter {
             case "search":
                 break;
             case "Percent Change (24h)":
+                comparator = new Token.CompPctChange();
                 break;
             case "Market Price":
                 break;
@@ -90,7 +91,7 @@ public class TokenSorter {
                     searchSort(start, mid, end);
                     break;
                 case "Percent Change (24h)":
-                    pctSort(start, mid, end);
+                    merge(start, mid, end);
                     break;
                 case "Market Price":
                     priceSort(start, mid, end);
