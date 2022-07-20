@@ -45,6 +45,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         this.wallets = walletAddresses;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -112,7 +117,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public static String toDate(long unixTime) {
         Date date = new Date();
         date.setTime(unixTime * 1000);
-        SimpleDateFormat sdf = new java.text.SimpleDateFormat("MMM dd hh:ss");
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("MMM dd hh:ss a");
         TimeZone tz = TimeZone.getDefault();
         sdf.setTimeZone(java.util.TimeZone.getTimeZone(String.valueOf(tz)));
         return sdf.format(date);

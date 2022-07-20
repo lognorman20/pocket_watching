@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 public class Operation {
     @SerializedName("timestamp")
     @Expose
-    private int timestamp;
+    private Long timestamp;
     @SerializedName("transactionHash")
     @Expose
     private String transactionHash;
@@ -29,11 +29,11 @@ public class Operation {
     @Expose
     private String to;
 
-    public int getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(int timestamp) {
+    public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 

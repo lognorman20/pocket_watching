@@ -277,6 +277,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // TODO: Ask why the the tx history is out of order
     private synchronized void getTxHistory(String address, String limit) {
         Call<TxHistory> call = (Call<TxHistory>) EthplorerClient.getInstance().getEthplorerApi().getTxHistory(address, limit);
         call.enqueue(new Callback<TxHistory>() {

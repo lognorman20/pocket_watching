@@ -41,8 +41,8 @@ public class OperationSorter {
             leftOperation = operations.get(l);
             rightOperation = operations.get(r);
 
-            int left = leftOperation.getTimestamp();
-            int right = rightOperation.getTimestamp();
+            Long left = leftOperation.getTimestamp();
+            Long right = rightOperation.getTimestamp();
 
             if (left < right) {
                 sortedArr.add(leftOperation);
