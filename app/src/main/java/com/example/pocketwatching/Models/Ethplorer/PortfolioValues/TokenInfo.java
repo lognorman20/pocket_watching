@@ -32,33 +32,12 @@ public class TokenInfo {
     @SerializedName("owner")
     @Expose
     private String owner;
-    @SerializedName("lastUpdated")
-    @Expose
-    private Integer lastUpdated;
     @SerializedName("issuancesCount")
     @Expose
     private Integer issuancesCount;
-    @SerializedName("holdersCount")
-    @Expose
-    private Integer holdersCount;
-    @SerializedName("description")
-    @Expose
-    private String description;
-    @SerializedName("website")
-    @Expose
-    private String website;
-    @SerializedName("image")
-    @Expose
-    private String image;
-    @SerializedName("ethTransfersCount")
-    @Expose
-    private Integer ethTransfersCount;
     @SerializedName("price")
     @Expose
     private Object price;
-    @SerializedName("publicTags")
-    @Expose
-    private List<String> publicTags = null;
 
     public String getAddress() {
         return address;
@@ -108,61 +87,6 @@ public class TokenInfo {
         this.owner = owner;
     }
 
-    public Integer getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Integer lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public Integer getIssuancesCount() {
-        return issuancesCount;
-    }
-
-    public void setIssuancesCount(Integer issuancesCount) {
-        this.issuancesCount = issuancesCount;
-    }
-
-    public Integer getHoldersCount() {
-        return holdersCount;
-    }
-
-    public void setHoldersCount(Integer holdersCount) {
-        this.holdersCount = holdersCount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public Integer getEthTransfersCount() {
-        return ethTransfersCount;
-    }
-
-    public void setEthTransfersCount(Integer ethTransfersCount) {
-        this.ethTransfersCount = ethTransfersCount;
-    }
 
     public Object getPrice() {
         return price;
@@ -170,14 +94,6 @@ public class TokenInfo {
 
     public void setPrice(Price price) {
         this.price = price;
-    }
-
-    public List<String> getPublicTags() {
-        return publicTags;
-    }
-
-    public void setPublicTags(List<String> publicTags) {
-        this.publicTags = publicTags;
     }
 
     public static class DataStateDeserializer implements JsonDeserializer<TokenInfo> {
@@ -195,13 +111,11 @@ public class TokenInfo {
                 Price price = new Gson().fromJson(json, Price.class);
                 price.setRate(elem.get("rate").getAsDouble());
                 price.setDiff(elem.get("diff").getAsDouble());
-                price.setDiff7d(elem.get("diff7d").getAsDouble());
                 price.setTs(elem.get("ts").getAsInt());
                 price.setVolume24h(elem.get("volume24h").getAsDouble());
                 price.setMarketCapUsd(elem.get("marketCapUsd").getAsDouble());
                 price.setAvailableSupply(elem.get("availableSupply").getAsDouble());
 
-                price.setDiff7d(elem.get("diff7d").getAsDouble());
                 price.setCurrency(elem.get("currency").getAsString());
 
                 tokenInfo.setPrice(price);

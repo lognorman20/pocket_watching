@@ -13,15 +13,6 @@ public class Token implements Serializable {
     @SerializedName("balance")
     @Expose
     private Double balance;
-    @SerializedName("totalIn")
-    @Expose
-    private Integer totalIn;
-    @SerializedName("totalOut")
-    @Expose
-    private Integer totalOut;
-    @SerializedName("rawBalance")
-    @Expose
-    private String rawBalance;
 
     public TokenInfo getTokenInfo() {
         return tokenInfo;
@@ -38,30 +29,6 @@ public class Token implements Serializable {
 
     public void setAmount(Double balance) {
         this.balance = balance;
-    }
-
-    public Integer getTotalIn() {
-        return totalIn;
-    }
-
-    public void setTotalIn(Integer totalIn) {
-        this.totalIn = totalIn;
-    }
-
-    public Integer getTotalOut() {
-        return totalOut;
-    }
-
-    public void setTotalOut(Integer totalOut) {
-        this.totalOut = totalOut;
-    }
-
-    public String getRawAmount() {
-        return rawBalance;
-    }
-
-    public void setRawAmount(String rawBalance) {
-        this.rawBalance = rawBalance;
     }
 
     // gets token balance in $
