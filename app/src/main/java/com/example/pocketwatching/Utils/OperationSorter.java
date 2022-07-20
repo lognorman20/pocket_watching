@@ -1,6 +1,6 @@
 package com.example.pocketwatching.Utils;
 
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Operation;
+import com.example.pocketwatching.Models.Ethplorer.Operation;
 
 import java.util.ArrayList;
 import java.util.List;

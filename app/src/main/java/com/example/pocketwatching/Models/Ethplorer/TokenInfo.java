@@ -1,7 +1,6 @@
-package com.example.pocketwatching.Models.Ethplorer.PortfolioValues;
+package com.example.pocketwatching.Models.Ethplorer;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;

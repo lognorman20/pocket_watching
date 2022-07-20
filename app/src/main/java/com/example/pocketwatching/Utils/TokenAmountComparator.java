@@ -1,6 +1,6 @@
 package com.example.pocketwatching.Utils;
 
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
+import com.example.pocketwatching.Models.Ethplorer.Token;
 
 import java.util.Comparator;
 

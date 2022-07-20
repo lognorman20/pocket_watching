@@ -1,24 +1,18 @@
 package com.example.pocketwatching.Adapters;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pocketwatching.Fragments.ProfileFragment;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Operation;
+import com.example.pocketwatching.Models.Ethplorer.EthWallet;
+import com.example.pocketwatching.Models.Ethplorer.Operation;
 import com.example.pocketwatching.R;
-import com.example.pocketwatching.Utils.ClaimsXAxisValueFormatter;
 import com.example.pocketwatching.Utils.Utils;
-import com.parse.ParseUser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

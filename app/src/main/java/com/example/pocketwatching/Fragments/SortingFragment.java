@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Adapters.TokenAnalyticsAdapter;
 import com.example.pocketwatching.Utils.TokenSorter;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
+import com.example.pocketwatching.Models.Ethplorer.Token;
 import com.example.pocketwatching.R;
 
 import java.util.ArrayList;

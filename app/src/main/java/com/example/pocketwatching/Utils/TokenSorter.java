@@ -1,7 +1,7 @@
 package com.example.pocketwatching.Utils;
 
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Price;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
+import com.example.pocketwatching.Models.Ethplorer.Price;
+import com.example.pocketwatching.Models.Ethplorer.Token;
 
 import java.util.ArrayList;
 import java.util.Arrays;

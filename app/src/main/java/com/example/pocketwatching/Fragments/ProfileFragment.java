@@ -27,14 +27,14 @@ import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Apis.Ethplorer.EthplorerClient;
 import com.example.pocketwatching.Apis.Moralis.MoralisClient;
 import com.example.pocketwatching.Apis.Poloniex.PoloniexClient;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Operation;
+import com.example.pocketwatching.Models.Ethplorer.Operation;
 import com.example.pocketwatching.Utils.ClaimsXAxisValueFormatter;
 import com.example.pocketwatching.Utils.CustomMarkerView;
 import com.example.pocketwatching.Utils.OperationSorter;
 import com.example.pocketwatching.Utils.TokenAmountComparator;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.EthWallet;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.Token;
-import com.example.pocketwatching.Models.Ethplorer.PortfolioValues.TokenInfo;
+import com.example.pocketwatching.Models.Ethplorer.EthWallet;
+import com.example.pocketwatching.Models.Ethplorer.Token;
+import com.example.pocketwatching.Models.Ethplorer.TokenInfo;
 import com.example.pocketwatching.Models.Ethplorer.TxHistory;
 import com.example.pocketwatching.Models.Moralis.BlockBalance;
 import com.example.pocketwatching.Models.Moralis.DateToBlock;
@@ -62,7 +62,6 @@ import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -136,6 +135,7 @@ public class ProfileFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -345,7 +345,7 @@ public class ProfileFragment extends Fragment {
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
                             try {
-                                Thread.sleep(120);
+                                Thread.sleep(130);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
