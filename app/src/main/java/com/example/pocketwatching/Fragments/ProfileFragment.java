@@ -340,7 +340,7 @@ public class ProfileFragment extends Fragment {
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
                             try {
-                                Thread.sleep(200);
+                                Thread.sleep(150);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -511,6 +511,7 @@ public class ProfileFragment extends Fragment {
         if (!currUser.equals(ParseUser.getCurrentUser())) {
             String username = "@" + currUser.getUsername() + "'s Portfolio";
             tvWelcome.setText(username);
+            btnSettings.setVisibility(View.INVISIBLE);
         }
     }
 
