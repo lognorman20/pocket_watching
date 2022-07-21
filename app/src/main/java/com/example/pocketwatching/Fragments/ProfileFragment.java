@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Activities.AddWalletActivity;
 import com.example.pocketwatching.Activities.MainActivity;
+import com.example.pocketwatching.Activities.ProfileActivity;
 import com.example.pocketwatching.Adapters.TopTokenAdapter;
 import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Apis.Ethplorer.EthplorerClient;
@@ -129,7 +130,6 @@ public class ProfileFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -531,6 +531,11 @@ public class ProfileFragment extends Fragment {
                     }
                 }
             }
+        }
+
+        ProfileActivity profileActivity = (ProfileActivity) getActivity();
+        if (profileActivity.getTokens() == null) {
+            profileActivity.setTokens(valuableTokens);
         }
 
         TokenSorter sorter = new TokenSorter(valuableTokens, true);
