@@ -1,6 +1,7 @@
 package com.example.pocketwatching.Activities;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -45,13 +46,13 @@ public class ProfileActivity extends AppCompatActivity {
                         fragment = new SortingFragment();
 
                         ProfileFragment profileFragment = (ProfileFragment) ProfileFragment.getInstance();
-                        profileFragment.setCurrUser();
                         ArrayList<Token> tokens = (ArrayList<Token>) profileFragment.getValuableTokens();
 
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("tokens", (Serializable) tokens);
-                        fragment.setArguments(bundle);
+                        bundle.putParcelable("user", (Parcelable) ParseUser.getCurrentUser());
 
+                        fragment.setArguments(bundle);
                         break;
                     case R.id.action_search:
                         fragment = new SearchFragment();

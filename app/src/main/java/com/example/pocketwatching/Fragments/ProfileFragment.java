@@ -89,10 +89,6 @@ public class ProfileFragment extends Fragment {
     private TextView tvProfileUsername;
     private TextView tvWelcome;
 
-    // text views that don't change
-    private TextView portfolioInformation;
-    private TextView transactionHistory;
-
     // variables for helper functions
     private List<Wallet> userWallets;
     private List<Token> valuableTokens;
@@ -141,14 +137,11 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        portfolioInformation = view.findViewById(R.id.tvPortfolioValue);
-        transactionHistory = view.findViewById(R.id.transactionHistory);
-
         if (getArguments() == null) {
             currUser = ParseUser.getCurrentUser();
         } else {
             currUser = getArguments().getParcelable("user");
+            getArguments().clear();
         }
 
         floatTimes = new ArrayList<>();
