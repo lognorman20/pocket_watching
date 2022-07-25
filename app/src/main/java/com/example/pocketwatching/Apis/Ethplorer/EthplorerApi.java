@@ -11,7 +11,7 @@ import retrofit2.http.Query;
 public interface EthplorerApi {
     String BASE_URL = "https://api.ethplorer.io/";
 
-    @GET("getAddressInfo/{address}?apiKey=freekey")
+    @GET("getAddressInfo/{address}?apiKey=EK-j487i-c7DKYYw-JEjGw")
     Call<EthWallet> getEthWallet(@Path("address") String address);
 
     @GET("getAddressHistory/{address}?apiKey=freekey&type=transfer)")

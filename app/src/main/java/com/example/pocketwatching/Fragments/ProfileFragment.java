@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Activities.AddWalletActivity;
 import com.example.pocketwatching.Activities.MainActivity;
+import com.example.pocketwatching.Activities.ProfileActivity;
 import com.example.pocketwatching.Adapters.TopTokenAdapter;
 import com.example.pocketwatching.Adapters.TransactionAdapter;
 import com.example.pocketwatching.Apis.Ethplorer.EthplorerClient;
@@ -87,10 +89,12 @@ public class ProfileFragment extends Fragment {
     private TextView tvMostInvested;
     private TextView tvMostValue;
     private TextView tvProfileUsername;
+    private TextView tvWelcome;
 
     // text views that don't change
-    private TextView portfolioInformation;
-    private TextView transactionHistory;
+    private TextView tvTopTokens;
+    private TextView tvAssetDistribution;
+    private TextView tvRecentTransactions;
 
     // variables for helper functions
     private List<Wallet> userWallets;
@@ -117,6 +121,7 @@ public class ProfileFragment extends Fragment {
     private ImageButton btnSettings;
     private LineChart volumeReportChart;
     private PieChart pieChart;
+    private ProgressBar pbLoading;
 
     public ProfileFragment() {}
 
@@ -132,7 +137,6 @@ public class ProfileFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -140,14 +144,11 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        portfolioInformation = view.findViewById(R.id.tvPortfolioValue);
-        transactionHistory = view.findViewById(R.id.transactionHistory);
-
         if (getArguments() == null) {
             currUser = ParseUser.getCurrentUser();
         } else {
             currUser = getArguments().getParcelable("user");
+            getArguments().clear();
         }
 
         floatTimes = new ArrayList<>();
@@ -162,6 +163,7 @@ public class ProfileFragment extends Fragment {
         ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
 
         btnSettings = view.findViewById(R.id.btnSettings);
+        pbLoading = view.findViewById(R.id.pbLoading);
         volumeReportChart = view.findViewById(R.id.reportingChart);
         pieChart = view.findViewById(R.id.pieChart_view);
 
@@ -189,6 +191,11 @@ public class ProfileFragment extends Fragment {
         tvTotalTokens = cvOverview.findViewById(R.id.tvTotalTokens);
         tvMostValue = cvOverview.findViewById(R.id.tvMostValue);
         tvProfileUsername = cvOverview.findViewById(R.id.tvProfileUsername);
+        tvWelcome = view.findViewById(R.id.tvWelcome);
+
+        tvRecentTransactions = view.findViewById(R.id.transactionHistory);
+        tvAssetDistribution = view.findViewById(R.id.AssetDistribution);
+        tvTopTokens = view.findViewById(R.id.TopTokens);
 
         btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,7 +208,38 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        startLoading();
         initView();
+    }
+
+    private void startLoading() {
+        pbLoading.setVisibility(View.VISIBLE);
+
+        tvWelcome.setVisibility(View.INVISIBLE);
+        btnSettings.setVisibility(View.INVISIBLE);
+        volumeReportChart.setVisibility(View.INVISIBLE);
+        cvOverview.setVisibility(View.INVISIBLE);
+        rvTopTokens.setVisibility(View.INVISIBLE);
+        pieChart.setVisibility(View.INVISIBLE);
+        rvTransactions.setVisibility(View.INVISIBLE);
+        tvAssetDistribution.setVisibility(View.INVISIBLE);
+        tvTopTokens.setVisibility(View.INVISIBLE);
+        tvRecentTransactions.setVisibility(View.INVISIBLE);
+    }
+
+    private void stopLoading() {
+        pbLoading.setVisibility(View.INVISIBLE);
+
+        tvWelcome.setVisibility(View.VISIBLE);
+        btnSettings.setVisibility(View.VISIBLE);
+        volumeReportChart.setVisibility(View.VISIBLE);
+        cvOverview.setVisibility(View.VISIBLE);
+        rvTopTokens.setVisibility(View.VISIBLE);
+        pieChart.setVisibility(View.VISIBLE);
+        rvTransactions.setVisibility(View.VISIBLE);
+        tvAssetDistribution.setVisibility(View.VISIBLE);
+        tvTopTokens.setVisibility(View.VISIBLE);
+        tvRecentTransactions.setVisibility(View.VISIBLE);
     }
 
     // gets user wallets and loads profile data onto screen
@@ -250,9 +288,11 @@ public class ProfileFragment extends Fragment {
         call.enqueue(new Callback<EthWallet>() {
             @Override
             public void onResponse(Call<EthWallet> call, Response<EthWallet> response) {
-                userEthWallets.add(response.body());
-                if (userEthWallets.size() == userWallets.size()) {
-                    initValuableTokens();
+                if (response.body() != null) {
+                    userEthWallets.add(response.body());
+                    if (userEthWallets.size() == userWallets.size()) {
+                        initValuableTokens();
+                    }
                 }
             }
 
@@ -270,13 +310,15 @@ public class ProfileFragment extends Fragment {
         call.enqueue(new Callback<TxHistory>() {
             @Override
             public void onResponse(Call<TxHistory> call, Response<TxHistory> response) {
-                List<Operation> operationHistory = response.body().getOperations();
-                operations.addAll(operationHistory);
+                if (response.body() != null) {
+                    List<Operation> operationHistory = response.body().getOperations();
+                    operations.addAll(operationHistory);
 
-                OperationSorter sorter = new OperationSorter(operations);
-                sorter.sort();
+                    OperationSorter sorter = new OperationSorter(operations);
+                    sorter.sort();
 
-                transactionAdapter.notifyDataSetChanged();
+                    transactionAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -388,6 +430,8 @@ public class ProfileFragment extends Fragment {
     // builds the historical balance graph
     // TODO: Remove yValues as parameter
     private void setupChart(List<Float> xValues, List<Float> yValues) {
+        stopLoading();
+
         XAxis xAxis = volumeReportChart.getXAxis();
 
         volumeReportChart.getAxisLeft().setEnabled(false);
@@ -476,13 +520,14 @@ public class ProfileFragment extends Fragment {
     // binds values onto the display
     private void addPortfolioData() {
         String portfolioValue = "$" + String.format("%,.2f", getPortfolioBalance());
+
         if (getPortfolioBalance() < 100f) {
             portfolioValue = "broke";
         }
 
         String ethAmount = "Hodling " + String.format("%,.3f", getTotalEthAmount()) + " ETH";
         String totalTokens = "Owns " + String.format("%,d", getTotalTokens()) + " total tokens";
-        String profileUsername = "@" + ParseUser.getCurrentUser().getUsername();
+        String profileUsername = "@" + currUser.getUsername();
 
         String mostAmountToken;
         String mostValue;
@@ -507,6 +552,12 @@ public class ProfileFragment extends Fragment {
         tvTotalTokens.setText(totalTokens);
         tvMostInvested.setText(mostAmountToken);
         tvMostValue.setText(mostValue);
+
+        if (!currUser.equals(ParseUser.getCurrentUser())) {
+            String username = "@" + currUser.getUsername() + "'s Portfolio";
+            tvWelcome.setText(username);
+            btnSettings.setVisibility(View.INVISIBLE);
+        }
     }
 
     /***** Initialization functions *****/
@@ -526,6 +577,11 @@ public class ProfileFragment extends Fragment {
                     }
                 }
             }
+        }
+
+        ProfileActivity profileActivity = (ProfileActivity) getActivity();
+        if (profileActivity.getTokens() == null) {
+            profileActivity.setTokens(valuableTokens);
         }
 
         TokenSorter sorter = new TokenSorter(valuableTokens, true);
@@ -679,5 +735,9 @@ public class ProfileFragment extends Fragment {
         pieChart.invalidate();
 
         pieChart.animateY(1400, Easing.EaseInOutQuad);
+    }
+
+    public void setCurrUser() {
+        currUser = ParseUser.getCurrentUser();
     }
 }

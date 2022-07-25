@@ -1,12 +1,7 @@
 package com.example.pocketwatching.Fragments;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pocketwatching.Adapters.UserAdapter;
-import com.example.pocketwatching.Models.Wallet;
 import com.example.pocketwatching.R;
-import com.google.firebase.firestore.auth.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -107,6 +100,7 @@ public class SearchFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_search:
                 // Not implemented here
+                Toast.makeText(getContext(), "cheese", Toast.LENGTH_SHORT).show();
                 return false;
             default:
                 break;
