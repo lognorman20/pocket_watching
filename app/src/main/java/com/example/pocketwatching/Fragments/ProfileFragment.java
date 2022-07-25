@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,6 +91,11 @@ public class ProfileFragment extends Fragment {
     private TextView tvProfileUsername;
     private TextView tvWelcome;
 
+    // text views that don't change
+    private TextView tvTopTokens;
+    private TextView tvAssetDistribution;
+    private TextView tvRecentTransactions;
+
     // variables for helper functions
     private List<Wallet> userWallets;
     private List<Token> valuableTokens;
@@ -115,6 +121,7 @@ public class ProfileFragment extends Fragment {
     private ImageButton btnSettings;
     private LineChart volumeReportChart;
     private PieChart pieChart;
+    private ProgressBar pbLoading;
 
     public ProfileFragment() {}
 
@@ -156,6 +163,7 @@ public class ProfileFragment extends Fragment {
         ethPrices = new ArrayList<Double>(Collections.nCopies(7, -9.9));
 
         btnSettings = view.findViewById(R.id.btnSettings);
+        pbLoading = view.findViewById(R.id.pbLoading);
         volumeReportChart = view.findViewById(R.id.reportingChart);
         pieChart = view.findViewById(R.id.pieChart_view);
 
@@ -185,6 +193,10 @@ public class ProfileFragment extends Fragment {
         tvProfileUsername = cvOverview.findViewById(R.id.tvProfileUsername);
         tvWelcome = view.findViewById(R.id.tvWelcome);
 
+        tvRecentTransactions = view.findViewById(R.id.transactionHistory);
+        tvAssetDistribution = view.findViewById(R.id.AssetDistribution);
+        tvTopTokens = view.findViewById(R.id.TopTokens);
+
         btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,7 +208,38 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        startLoading();
         initView();
+    }
+
+    private void startLoading() {
+        pbLoading.setVisibility(View.VISIBLE);
+
+        tvWelcome.setVisibility(View.INVISIBLE);
+        btnSettings.setVisibility(View.INVISIBLE);
+        volumeReportChart.setVisibility(View.INVISIBLE);
+        cvOverview.setVisibility(View.INVISIBLE);
+        rvTopTokens.setVisibility(View.INVISIBLE);
+        pieChart.setVisibility(View.INVISIBLE);
+        rvTransactions.setVisibility(View.INVISIBLE);
+        tvAssetDistribution.setVisibility(View.INVISIBLE);
+        tvTopTokens.setVisibility(View.INVISIBLE);
+        tvRecentTransactions.setVisibility(View.INVISIBLE);
+    }
+
+    private void stopLoading() {
+        pbLoading.setVisibility(View.INVISIBLE);
+
+        tvWelcome.setVisibility(View.VISIBLE);
+        btnSettings.setVisibility(View.VISIBLE);
+        volumeReportChart.setVisibility(View.VISIBLE);
+        cvOverview.setVisibility(View.VISIBLE);
+        rvTopTokens.setVisibility(View.VISIBLE);
+        pieChart.setVisibility(View.VISIBLE);
+        rvTransactions.setVisibility(View.VISIBLE);
+        tvAssetDistribution.setVisibility(View.VISIBLE);
+        tvTopTokens.setVisibility(View.VISIBLE);
+        tvRecentTransactions.setVisibility(View.VISIBLE);
     }
 
     // gets user wallets and loads profile data onto screen
@@ -387,6 +430,8 @@ public class ProfileFragment extends Fragment {
     // builds the historical balance graph
     // TODO: Remove yValues as parameter
     private void setupChart(List<Float> xValues, List<Float> yValues) {
+        stopLoading();
+
         XAxis xAxis = volumeReportChart.getXAxis();
 
         volumeReportChart.getAxisLeft().setEnabled(false);
