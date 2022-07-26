@@ -127,10 +127,6 @@ public class TokenAnalyticsAdapter extends RecyclerView.Adapter<TokenAnalyticsAd
             return String.format("%.2fM", number/ 1000000.0);
         }
 
-        if(number >= 100000){
-            return String.format("%.2fL", number/ 100000.0);
-        }
-
         if(number >=1000){
             return String.format("%.2fK", number/ 1000.0);
         }

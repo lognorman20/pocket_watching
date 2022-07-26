@@ -11,7 +11,7 @@
         android:id="@+id/action_search"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_search_24"
-        android:title="Search"
+        android:title="Discover"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_sorting"
