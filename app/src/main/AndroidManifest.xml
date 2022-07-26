@@ -37,6 +37,7 @@
             android:exported="true" />
         <activity
             android:name=".Activities.ProfileActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
             android:exported="true" />
         <activity
             android:name=".Activities.AddWalletActivity"
