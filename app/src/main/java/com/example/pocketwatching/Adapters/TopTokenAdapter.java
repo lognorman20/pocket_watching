@@ -1,6 +1,7 @@
 package com.example.pocketwatching.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,14 @@ public class TopTokenAdapter extends RecyclerView.Adapter<TopTokenAdapter.ViewHo
             tvItemBalance.setText(balance);
             tvItemAmountHeld.setText(amountHeld);
             tvItemMarketPrice.setText(marketPrice);
+
+            if (price.getDiff() < 0) {
+                tvItemPctChange.setTextColor(Color.parseColor("#a30716"));
+            } else if (price.getDiff() > 0) {
+                tvItemPctChange.setTextColor(Color.parseColor("#07a319"));
+            } else {
+                tvItemPctChange.setTextColor(Color.parseColor("#000000"));
+            }
         }
     }
 }
