@@ -72,11 +72,11 @@ public class TokenSorter {
             leftToken = tokens.get(l);
             rightToken = tokens.get(r);
 
-            String leftSymbol = leftToken.getTokenInfo().getSymbol().toLowerCase(Locale.ROOT);
-            String rightSymbol = rightToken.getTokenInfo().getSymbol().toLowerCase(Locale.ROOT);
+            String leftSymbol = leftToken.getTokenInfo().getSymbol().toLowerCase(Locale.ROOT).trim();
+            String rightSymbol = rightToken.getTokenInfo().getSymbol().toLowerCase(Locale.ROOT).trim();
 
-            String leftName = leftToken.getTokenInfo().getName().toLowerCase(Locale.ROOT);
-            String rightName = rightToken.getTokenInfo().getName().toLowerCase(Locale.ROOT);
+            String leftName = leftToken.getTokenInfo().getName().toLowerCase(Locale.ROOT).trim();
+            String rightName = rightToken.getTokenInfo().getName().toLowerCase(Locale.ROOT).trim();
 
             int leftSymbolDistance = minDistance(query, leftSymbol);
             int rightSymbolDistance = minDistance(query, rightSymbol);

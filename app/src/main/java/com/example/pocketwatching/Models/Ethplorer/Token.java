@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Locale;
 
 public class Token implements Serializable {
 
@@ -120,8 +121,8 @@ public class Token implements Serializable {
     public static class CompName implements Comparator<Token> {
         @Override
         public int compare(Token leftToken, Token rightToken) {
-            String left = leftToken.getTokenInfo().getName().trim();
-            String right = rightToken.getTokenInfo().getName().trim();
+            String left = leftToken.getTokenInfo().getName().toLowerCase(Locale.ROOT).trim();
+            String right = rightToken.getTokenInfo().getName().toLowerCase(Locale.ROOT).trim();
             return left.compareTo(right);
         }
     }
@@ -129,8 +130,8 @@ public class Token implements Serializable {
     public static class CompSymbol implements Comparator<Token> {
         @Override
         public int compare(Token leftToken, Token rightToken) {
-            String left = leftToken.getTokenInfo().getSymbol().trim();
-            String right = rightToken.getTokenInfo().getSymbol().trim();
+            String left = leftToken.getTokenInfo().getSymbol().toLowerCase(Locale.ROOT).trim();
+            String right = rightToken.getTokenInfo().getSymbol().toLowerCase(Locale.ROOT).trim();
             return left.compareTo(right);
         }
     }

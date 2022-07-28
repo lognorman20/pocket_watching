@@ -439,6 +439,7 @@ public class ProfileFragment extends Fragment {
         volumeReportChart.getAxisRight().setAxisMaximum(10);
         volumeReportChart.getDescription().setEnabled(false);
         volumeReportChart.setTouchEnabled(true);
+        volumeReportChart.setElevation(6f);
         volumeReportChart.setDragEnabled(true);
         volumeReportChart.animateY(1250, Easing.EaseInCubic);
 
@@ -488,6 +489,8 @@ public class ProfileFragment extends Fragment {
                 return volumeReportChart.getAxisLeft().getAxisMinimum();
             }
         });
+
+        set1.setCubicIntensity(8f);
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
