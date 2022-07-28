@@ -22,6 +22,11 @@ public class TokenInfo {
     @SerializedName("decimals")
     @Expose
     private String decimals;
+
+    @SerializedName("image")
+    @Expose
+    private String image;
+
     @SerializedName("symbol")
     @Expose
     private String symbol;
@@ -37,6 +42,10 @@ public class TokenInfo {
     @SerializedName("price")
     @Expose
     private Object price;
+
+    public String getImage() {
+        return image;
+    }
 
     public String getAddress() {
         return address;
