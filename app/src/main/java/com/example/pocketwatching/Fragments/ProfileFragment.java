@@ -83,9 +83,7 @@ public class ProfileFragment extends Fragment {
     private static ProfileFragment instance = null;
 
     // text views that change
-    private TextView tvEthAmount;
     private TextView tvPortfolioValue;
-    private TextView tvTotalTokens;
     private TextView tvMostInvested;
     private TextView tvMostValue;
     private TextView tvProfileUsername;
@@ -185,10 +183,8 @@ public class ProfileFragment extends Fragment {
 
         cvOverview = view.findViewById(R.id.cvOverview);
 
-        tvEthAmount = cvOverview.findViewById(R.id.tvEth);
         tvPortfolioValue = cvOverview.findViewById(R.id.tvPortfolioValue);
         tvMostInvested = cvOverview.findViewById(R.id.tvMostInvested);
-        tvTotalTokens = cvOverview.findViewById(R.id.tvTotalTokens);
         tvMostValue = cvOverview.findViewById(R.id.tvMostValue);
         tvProfileUsername = cvOverview.findViewById(R.id.tvProfileUsername);
         tvWelcome = view.findViewById(R.id.tvWelcome);
@@ -383,7 +379,7 @@ public class ProfileFragment extends Fragment {
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
                             try {
-                                Thread.sleep(150);
+                                Thread.sleep(200);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -541,7 +537,7 @@ public class ProfileFragment extends Fragment {
                     + Utils.getString(topToken.second) + " tokens)";
 
             topToken = getTopTokenByBalance();
-            Double pctOfPortfolio = topToken.second / getPortfolioBalance();
+            Double pctOfPortfolio = (topToken.second / getPortfolioBalance()) * 100;
             mostValue = String.format("%,.2f", pctOfPortfolio) +
                     "% of portfolio balance from " + topToken.first;
         } else {
@@ -551,8 +547,6 @@ public class ProfileFragment extends Fragment {
 
         tvPortfolioValue.setText(portfolioValue);
         tvProfileUsername.setText(profileUsername);
-        tvEthAmount.setText(ethAmount);
-        tvTotalTokens.setText(totalTokens);
         tvMostInvested.setText(mostAmountToken);
         tvMostValue.setText(mostValue);
 
