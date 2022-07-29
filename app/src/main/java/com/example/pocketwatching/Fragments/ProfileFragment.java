@@ -4,6 +4,7 @@ package com.example.pocketwatching.Fragments;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -643,6 +644,8 @@ public class ProfileFragment extends Fragment {
         sorter.sort("balance", true);
 
         Token topToken = valuableTokens.get(0);
+
+        Log.i("debugging", topToken.getTokenInfo().getImage());
 
         String mostValuableName = topToken.getTokenInfo().getName();
         Double mostValuableAmount = topToken.getAmount();
