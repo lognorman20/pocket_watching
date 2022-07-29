@@ -8,10 +8,11 @@
         android:id="@+id/tvTxTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/tvTxHash"
+        app:layout_constraintEnd_toStartOf="@+id/tvTxHash"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvTxHash"
         tools:text="5:32 pm Jul 12th 2022" />
@@ -28,12 +29,13 @@
 
     <TextView
         android:id="@+id/tvTxHash"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="13dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvTxTime"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Tx Hash: 0x2b3929dcbc884c07c08be023aa..." />
@@ -42,11 +44,11 @@
         android:id="@+id/tvTx"
         android:layout_width="397dp"
         android:layout_height="20dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTxTime"
         tools:text="Obama sent 300 ETH ($3000.00) to ejubjhburhuerhj" />

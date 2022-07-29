@@ -228,7 +228,9 @@ public class ProfileFragment extends Fragment {
         pbLoading.setVisibility(View.INVISIBLE);
 
         tvWelcome.setVisibility(View.VISIBLE);
-        btnSettings.setVisibility(View.VISIBLE);
+        if (ParseUser.getCurrentUser() == currUser) {
+            btnSettings.setVisibility(View.VISIBLE);
+        }
         volumeReportChart.setVisibility(View.VISIBLE);
         cvOverview.setVisibility(View.VISIBLE);
         rvTopTokens.setVisibility(View.VISIBLE);
@@ -259,7 +261,7 @@ public class ProfileFragment extends Fragment {
                         String walletAddress = userWallets.get(i).getWalletAddress();
                         getEthWallet(walletAddress);
                         // api request per second limit could be reached here, might need thread.sleep
-                        getTxHistory(walletAddress, "5");
+                        getTxHistory(walletAddress, "10");
                     }
                 } else {
                     Toast.makeText(getContext(), "Failed to get user wallets", Toast.LENGTH_SHORT).show();
@@ -380,7 +382,7 @@ public class ProfileFragment extends Fragment {
                     for (int i = 0; i < userWallets.size(); i++) {
                         for (int j = 0; j < 7; j++) {
                             try {
-                                Thread.sleep(200);
+                                Thread.sleep(300);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -552,9 +554,8 @@ public class ProfileFragment extends Fragment {
         tvMostValue.setText(mostValue);
 
         if (!currUser.equals(ParseUser.getCurrentUser())) {
-            String username = "@" + currUser.getUsername() + "'s Portfolio";
+            String username = "@" + currUser.getUsername() + "'s Pockets";
             tvWelcome.setText(username);
-            btnSettings.setVisibility(View.INVISIBLE);
         }
     }
 
